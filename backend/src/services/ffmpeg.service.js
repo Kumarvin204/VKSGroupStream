@@ -66,32 +66,14 @@ class FFmpegService {
     
     const args = [
       '-fflags', '+genpts',                    // Generate missing presentation timestamps (PTS) from input file
-      ...(process.platform === 'win32' ? ['-hwaccel', 'd3d11va'] : []), // Only use Direct3D 11 hardware decoding on Windows host locally, omit on Linux cloud servers
       '-thread_queue_size', '4096',             // Increase thread queue buffer size to handle non-interleaved mobile video tracks
       '-re',                                   // Read input video file at native frame rate (essential for files)
       ...(loop ? ['-stream_loop', '-1'] : []), // Loop input infinitely if specified
       '-i', filePath,                          // Target video file input path
       '-map', '0:v:0',                         // Map only first video stream to discard secondary/metadata tracks
       '-map', '0:a:0?',                        // Map only first audio stream optionally (FLV container only supports at most one audio stream)
-      '-c:v', 'libx264',                       // Transcode video to H.264
-      '-preset', 'ultrafast',                  // Ultrafast preset to prevent CPU choke on loops
-      '-vf', "scale=w='if(gt(ih,iw),if(gte(ih/iw,1280/720),-2,720),if(gte(ih/iw,720/1280),-2,1280))':h='if(gt(ih,iw),if(gte(ih/iw,1280/720),1280,-2),if(gte(ih/iw,720/1280),720,-2))',pad=w='if(gt(ih,iw),720,1280)':h='if(gt(ih,iw),1280,720)':x='(ow-iw)/2':y='(oh-ih)/2':color=black", // Auto-detect orientation: output 1280x720 for landscape or 720x1280 for portrait to avoid windowboxing on mobile viewports
-      '-threads', '0',                         // Let FFmpeg automatically choose the optimal number of threads based on CPU cores
-      '-r', '30',                              // Force output frame rate of 30 FPS
-      '-vsync', '1',                           // Force Constant Frame Rate (CFR) using backward-compatible -vsync 1
-      '-g', '60',                              // Force keyframe every 60 frames (exactly 2 seconds)
-      '-keyint_min', '60',                     // Lock minimum keyframe interval
-      '-sc_threshold', '0',                    // Disable scene cut keyframe triggers
-      '-b:v', '3000k',                         // Target video bitrate (3 Mbps - Sweet spot for home connections)
-      '-minrate', '3000k',                     // Min video bitrate (forces constant bitrate control)
-      '-maxrate', '3000k',                     // Max video bitrate
-      '-bufsize', '6000k',                     // Buffer size (2x bitrate)
-      '-pix_fmt', 'yuv420p',                   // Force YUV 4:2:0 pixel format
-      '-c:a', 'aac',                           // Transcode audio to AAC
-      '-b:a', '128k',                          // Audio bitrate
-      '-ac', '2',                              // Force stereo
-      '-ar', '44100',                          // Audio sample rate (44.1 kHz)
-      '-max_muxing_queue_size', '1024',        // Allow larger muxing queues to prevent bottleneck on network write delays
+      '-c:v', 'copy',                          // Stream copy video directly (0% CPU usage, prevents server CPU throttling and buffering)
+      '-c:a', 'copy',                          // Stream copy audio directly
       '-f', 'flv',                             // FLV container for RTMP push
       rtmpUrl                                  // Target RTMP URL
     ];
