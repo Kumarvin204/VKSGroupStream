@@ -66,7 +66,7 @@ class FFmpegService {
     
     const args = [
       '-fflags', '+genpts',                    // Generate missing presentation timestamps (PTS) from input file
-      '-hwaccel', 'd3d11va',                   // Direct3D 11 video acceleration for high-performance Windows GPU decoding
+      ...(process.platform === 'win32' ? ['-hwaccel', 'd3d11va'] : []), // Only use Direct3D 11 hardware decoding on Windows host locally, omit on Linux cloud servers
       '-thread_queue_size', '4096',             // Increase thread queue buffer size to handle non-interleaved mobile video tracks
       '-re',                                   // Read input video file at native frame rate (essential for files)
       '-readrate_initial_burst', '20.0',       // Initial 20-second read burst to fill the network buffers and prevent initial lags
