@@ -69,7 +69,6 @@ class FFmpegService {
       ...(process.platform === 'win32' ? ['-hwaccel', 'd3d11va'] : []), // Only use Direct3D 11 hardware decoding on Windows host locally, omit on Linux cloud servers
       '-thread_queue_size', '4096',             // Increase thread queue buffer size to handle non-interleaved mobile video tracks
       '-re',                                   // Read input video file at native frame rate (essential for files)
-      '-readrate_initial_burst', '20.0',       // Initial 20-second read burst to fill the network buffers and prevent initial lags
       ...(loop ? ['-stream_loop', '-1'] : []), // Loop input infinitely if specified
       '-i', filePath,                          // Target video file input path
       '-map', '0:v',                           // Map only video stream to discard non-synchronized Apple metadata/timecode tracks
@@ -79,7 +78,7 @@ class FFmpegService {
       '-vf', "scale=w='if(gt(ih,iw),if(gte(ih/iw,1280/720),-2,720),if(gte(ih/iw,720/1280),-2,1280))':h='if(gt(ih,iw),if(gte(ih/iw,1280/720),1280,-2),if(gte(ih/iw,720/1280),720,-2))',pad=w='if(gt(ih,iw),720,1280)':h='if(gt(ih,iw),1280,720)':x='(ow-iw)/2':y='(oh-ih)/2':color=black", // Auto-detect orientation: output 1280x720 for landscape or 720x1280 for portrait to avoid windowboxing on mobile viewports
       '-threads', '0',                         // Let FFmpeg automatically choose the optimal number of threads based on CPU cores
       '-r', '30',                              // Force output frame rate of 30 FPS
-      '-fps_mode', 'cfr',                      // Force Constant Frame Rate (CFR) to prevent mobile video timestamp drift
+      '-vsync', '1',                           // Force Constant Frame Rate (CFR) using backward-compatible -vsync 1
       '-g', '60',                              // Force keyframe every 60 frames (exactly 2 seconds)
       '-keyint_min', '60',                     // Lock minimum keyframe interval
       '-sc_threshold', '0',                    // Disable scene cut keyframe triggers
