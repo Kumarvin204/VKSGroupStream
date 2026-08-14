@@ -1,0 +1,28 @@
+{
+  "name": "livestreamadda-frontend",
+  "version": "1.0.0",
+  "description": "YouTube Live Streaming Frontend — Next.js Studio UI",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "googleapis": "^144.0.0",
+    "lucide-react": "^1.31.0",
+    "next": "^14.2.21",
+    "next-auth": "^4.24.11",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "zustand": "^4.5.6"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^14.2.21",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17"
+  }
+}
