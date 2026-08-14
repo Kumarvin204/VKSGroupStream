@@ -99,8 +99,8 @@ export default function ScheduleStream() {
         body: JSON.stringify({
           title,
           streamKey,
-          startTime,
-          endTime,
+          startTime: new Date(startTime).toISOString(),
+          endTime: new Date(endTime).toISOString(),
           filePath: videoPath,
           loop,
         }),
