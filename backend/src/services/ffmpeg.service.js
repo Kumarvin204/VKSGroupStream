@@ -73,7 +73,7 @@ class FFmpegService {
       ...(loop ? ['-stream_loop', '-1'] : []), // Loop input infinitely if specified
       '-i', filePath,                          // Target video file input path
       '-map', '0:v',                           // Map only video stream to discard non-synchronized Apple metadata/timecode tracks
-      '-map', '0:a',                           // Map only audio stream
+      '-map', '0:a?',                          // Map audio stream optionally (does not crash if video has no audio track)
       '-c:v', 'libx264',                       // Transcode video to H.264
       '-preset', 'ultrafast',                  // Ultrafast preset to prevent CPU choke on loops
       '-vf', "scale=w='if(gt(ih,iw),if(gte(ih/iw,1280/720),-2,720),if(gte(ih/iw,720/1280),-2,1280))':h='if(gt(ih,iw),if(gte(ih/iw,1280/720),1280,-2),if(gte(ih/iw,720/1280),720,-2))',pad=w='if(gt(ih,iw),720,1280)':h='if(gt(ih,iw),1280,720)':x='(ow-iw)/2':y='(oh-ih)/2':color=black", // Auto-detect orientation: output 1280x720 for landscape or 720x1280 for portrait to avoid windowboxing on mobile viewports
