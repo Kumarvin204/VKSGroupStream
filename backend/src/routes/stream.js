@@ -72,10 +72,16 @@ router.post('/api/stream/stop', (req, res) => {
 router.get('/api/stream/status/:sessionId', (req, res) => {
   try {
     const { sessionId } = req.params;
-    const session = streamService.getSession(sessionId);
+    let session = streamService.getSession(sessionId);
+    let type = 'camera';
     
     if (!session) {
-      return res.status(404).json({ success: false, message: 'Session not found' });
+      const slot = schedulerService.getSlot(sessionId);
+      if (!slot) {
+        return res.status(404).json({ success: false, message: 'Session or Slot not found' });
+      }
+      session = slot;
+      type = 'scheduled';
     }
 
     const isRunning = ffmpegService.isStreaming(sessionId);
@@ -83,6 +89,7 @@ router.get('/api/stream/status/:sessionId', (req, res) => {
     res.json({
       success: true,
       session,
+      type,
       isRunning
     });
   } catch (error) {
