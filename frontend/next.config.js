@@ -10,14 +10,15 @@ const nextConfig = {
   },
   // Proxy API calls to backend during development
   async rewrites() {
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000';
     return [
       {
         source: '/api/stream/:path*',
-        destination: 'http://localhost:4000/api/stream/:path*',
+        destination: `${backendUrl}/api/stream/:path*`,
       },
       {
         source: '/api/youtube/:path*',
-        destination: 'http://localhost:4000/api/youtube/:path*',
+        destination: `${backendUrl}/api/youtube/:path*`,
       },
     ];
   },
