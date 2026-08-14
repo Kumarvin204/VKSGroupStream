@@ -181,4 +181,19 @@ router.post('/api/stream/slots/cancel', (req, res) => {
   }
 });
 
+// GET /api/logs — Diagnostic route to read backend server logs
+router.get('/api/logs', (req, res) => {
+  try {
+    const logPath = path.join(__dirname, '../../logs/server.log');
+    if (fs.existsSync(logPath)) {
+      const logs = fs.readFileSync(logPath, 'utf8');
+      res.type('text/plain').send(logs);
+    } else {
+      res.status(404).send('Log file not found');
+    }
+  } catch (error) {
+    res.status(500).send(`Error reading logs: ${error.message}`);
+  }
+});
+
 module.exports = router;
