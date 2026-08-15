@@ -2,6 +2,9 @@ const { v4: uuidv4 } = require('uuid');
 const ffmpegService = require('./ffmpeg.service');
 const logger = require('../utils/logger');
 const fs = require('fs');
+const path = require('path');
+
+const slotsFilePath = path.join(__dirname, '../../uploads/slots.json');
 
 // Helper to safely delete video file from disk to save space
 function deleteFile(filePath) {
@@ -16,11 +19,55 @@ function deleteFile(filePath) {
   }
 }
 
-
 class SchedulerService {
   constructor() {
     this.slots = new Map();
     this.timers = new Map();
+    
+    // Load persisted slots from slots.json on startup (with 1s delay to let server initialize)
+    setTimeout(() => {
+      this.loadSlots();
+    }, 1000);
+  }
+
+  saveSlots() {
+    try {
+      const slotsArray = Array.from(this.slots.values());
+      // Ensure directory exists
+      const dir = path.dirname(slotsFilePath);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+      fs.writeFileSync(slotsFilePath, JSON.stringify(slotsArray, null, 2), 'utf8');
+      logger.info(`Saved active slots to persistence file: ${slotsFilePath}`);
+    } catch (err) {
+      logger.error(`Error saving slots to persistence file: ${err.message}`);
+    }
+  }
+
+  loadSlots() {
+    try {
+      if (fs.existsSync(slotsFilePath)) {
+        const data = fs.readFileSync(slotsFilePath, 'utf8');
+        const loadedSlots = JSON.parse(data);
+        const now = Date.now();
+        
+        logger.info(`Loaded ${loadedSlots.length} slots from persistence file`);
+        
+        for (const slotData of loadedSlots) {
+          const endTime = new Date(slotData.endTime);
+          if (endTime.getTime() > now) {
+            logger.info(`Re-scheduling persistent slot on startup: ${slotData.title} (ID: ${slotData.id})`);
+            this.scheduleSlotDirect(slotData);
+          } else {
+            // Stream has already ended while server was offline, cleanup its file
+            deleteFile(slotData.filePath);
+          }
+        }
+      }
+    } catch (err) {
+      logger.error(`Error loading persistent slots: ${err.message}`);
+    }
   }
 
   scheduleSlot(slotData) {
@@ -38,8 +85,19 @@ class SchedulerService {
       status: 'scheduled'
     };
 
+    logger.info(`Scheduling new slot ${id} - ${title} from ${slot.startTime} to ${slot.endTime}`);
+    this.scheduleSlotDirect(slot);
+    this.saveSlots(); // Persist changes
+    return slot;
+  }
+
+  scheduleSlotDirect(slot) {
+    const id = slot.id;
+    // Normalize dates to Date objects
+    slot.startTime = new Date(slot.startTime);
+    slot.endTime = new Date(slot.endTime);
+    slot.status = 'scheduled';
     this.slots.set(id, slot);
-    logger.info(`Scheduled slot ${id} - ${title} from ${slot.startTime} to ${slot.endTime}`);
 
     const now = Date.now();
     const startDelay = slot.startTime.getTime() - now;
@@ -57,9 +115,10 @@ class SchedulerService {
       
       this.timers.set(`${id}_start`, startTimer);
     } else if (endDelay > 0) {
-      // Already started
+      // Already started (or server restarted during stream)
       slot.status = 'live';
-      ffmpegService.startFileStream(id, streamKey, filePath, loop);
+      logger.info(`Resuming/Starting file stream for slot ${id} immediately`);
+      ffmpegService.startFileStream(id, slot.streamKey, slot.filePath, slot.loop);
     }
 
     if (endDelay > 0) {
@@ -69,23 +128,19 @@ class SchedulerService {
           currentSlot.status = 'completed';
           logger.info(`Stopping scheduled stream for slot ${id}`);
           ffmpegService.stopStream(id);
-          // Delete file upon natural completion to save server storage space
           deleteFile(currentSlot.filePath);
-          // Remove slot from memory so it is fully cleaned up from the dashboard list
           this.slots.delete(id);
+          this.saveSlots(); // Save updated slots list
         }
       }, endDelay);
       
       this.timers.set(`${id}_end`, endTimer);
     } else {
       slot.status = 'completed';
-      // If it has already completed, delete the file immediately
-      deleteFile(filePath);
-      // Remove from slot list
+      deleteFile(slot.filePath);
       this.slots.delete(id);
+      this.saveSlots(); // Save updated slots list
     }
-
-    return slot;
   }
 
   cancelSlot(slotId) {
@@ -111,8 +166,9 @@ class SchedulerService {
       this.timers.delete(`${slotId}_end`);
     }
 
-    // Remove the slot completely from memory to clean it from the project dashboard
+    // Remove the slot completely from memory and persistence file
     this.slots.delete(slotId);
+    this.saveSlots();
 
     logger.info(`Cancelled and fully deleted slot ${slotId} from project`);
     return true;
