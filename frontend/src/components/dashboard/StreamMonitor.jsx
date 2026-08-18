@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Button from '@/components/ui/Button';
+import { BACKEND_URL } from '@/lib/constants';
 
 export default function StreamMonitor() {
   const [slots, setSlots] = useState([]);
@@ -10,7 +11,7 @@ export default function StreamMonitor() {
 
   const fetchSlots = async () => {
     try {
-      const res = await fetch('/api/stream/slots');
+      const res = await fetch(`${BACKEND_URL}/api/stream/slots`);
       if (!res.ok) throw new Error('Failed to fetch scheduled streams');
       const data = await res.json();
       setSlots(data.slots || []);
@@ -35,7 +36,7 @@ export default function StreamMonitor() {
     if (!confirm('Are you sure you want to cancel this scheduled stream?')) return;
 
     try {
-      const res = await fetch('/api/stream/slots/cancel', {
+      const res = await fetch(`${BACKEND_URL}/api/stream/slots/cancel`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ slotId })

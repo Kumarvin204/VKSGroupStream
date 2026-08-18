@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
+import { BACKEND_URL } from '@/lib/constants';
 
 export default function ScheduleStream() {
   const [title, setTitle] = useState('');
@@ -62,7 +63,7 @@ export default function ScheduleStream() {
 
         xhr.onerror = () => reject(new Error('Network error during upload'));
         
-        xhr.open('POST', '/api/stream/upload');
+        xhr.open('POST', `${BACKEND_URL}/api/stream/upload`);
         xhr.send(formData);
       });
 
@@ -93,7 +94,7 @@ export default function ScheduleStream() {
     setStatus({ type: '', message: '' });
 
     try {
-      const res = await fetch('/api/stream/schedule', {
+      const res = await fetch(`${BACKEND_URL}/api/stream/schedule`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
