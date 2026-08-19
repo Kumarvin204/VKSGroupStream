@@ -1,46 +1,98 @@
-name: 24/7 Multi-Channel Live Streamer
+name: 24/7 Universal YouTube Playlist & Video Live Streamer
 
 on:
   workflow_dispatch:
     inputs:
       stream_key:
-        description: '🔑 Kisi Bhi Channel Ki YouTube Stream Key Yahan Paste Karein'
+        description: '🔑 YouTube Stream Key (Jis Channel Par Live Jana Ho)'
         required: true
         type: string
         default: 'vg5h-m29m-mgwc-y0am-72vb'
-      video_name:
-        description: '📹 Video File Ka Naam (Default: ganesh.mp4)'
+      playlist_or_video_url:
+        description: '🔗 YouTube Playlist Ya Video Link (Khali Chhodne Par Repo Video Chalegi)'
         required: false
-        default: 'ganesh.mp4'
+        type: string
+        default: ''
 
 jobs:
   stream:
     runs-on: ubuntu-latest
-    container: linuxserver/ffmpeg:latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Start 24/7 Live Stream Loop (Instant Start)
+      - name: Install FFmpeg & YT-DLP
         run: |
-          KEY=$(echo "${{ github.event.inputs.stream_key }}" | tr -d '\r\n\t ')
-          VIDEO="${{ github.event.inputs.video_name }}"
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg python3-pip
+          pip install --upgrade --no-cache-dir yt-dlp
+
+      - name: Prepare Playlist & Videos
+        run: |
+          mkdir -p videos
+          URL=$(echo "${{ github.event.inputs.playlist_or_video_url }}" | xargs)
           
-          if [ -z "$VIDEO" ]; then
-            VIDEO="ganesh.mp4"
+          if [ -n "$URL" ]; then
+            echo "=========================================="
+            echo "Downloading Playlist/Video from URL: $URL"
+            echo "=========================================="
+            
+            yt-dlp -f "bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/best[height<=1080][ext=mp4]/best" \
+              --merge-output-format mp4 \
+              --yes-playlist \
+              --max-downloads 50 \
+              -o "videos/%(playlist_index)03d_%(title).50s.%(ext)s" \
+              "$URL" || yt-dlp -f "best[ext=mp4]/best" -o "videos/001_video.mp4" "$URL"
           fi
           
+          # If no video downloaded, use repository video
+          if [ -z "$(ls -A videos 2>/dev/null)" ]; then
+            echo "No URL provided, checking repository videos..."
+            if [ -f "ganesh.mp4" ]; then
+              cp ganesh.mp4 videos/001_ganesh.mp4
+            else
+              for vid in *.mp4; do
+                [ -f "$vid" ] && cp "$vid" videos/
+              done
+            fi
+          fi
+          
+          # Build ordered playlist file
+          > playlist.txt
+          for f in videos/*; do
+            if [ -f "$f" ]; then
+              echo "Found Video: $f"
+              echo "file '$PWD/$f'" >> playlist.txt
+            fi
+          done
+          
           echo "=========================================="
-          echo "Instant 24/7 Live Streaming Started..."
-          echo "Video: $VIDEO"
+          echo "TOTAL VIDEOS IN STREAM QUEUE:"
+          cat playlist.txt
+          echo "=========================================="
+
+      - name: Start 24/7 Live Stream Loop
+        run: |
+          KEY=$(echo "${{ github.event.inputs.stream_key }}" | tr -d '\r\n\t ')
+          
+          echo "=========================================="
+          echo "Starting 24/7 Non-Stop Broadcast to YouTube..."
           echo "=========================================="
           
           while true; do
-            ffmpeg -re -i "$VIDEO" \
-              -vf "format=yuv420p,scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(1920-iw)/2:(1080-ih)/2:black" \
-              -c:v libx264 -preset superfast -b:v 2500k -maxrate 2500k -bufsize 5000k \
-              -pix_fmt yuv420p -g 60 -keyint_min 60 \
-              -c:a aac -b:a 128k -ar 44100 \
-              -flvflags no_duration_filesize \
-              -f flv "rtmps://a.rtmps.youtube.com/live2/$KEY" || sleep 1
+            while IFS= read -r line || [ -n "$line" ]; do
+              VID_PATH=$(echo "$line" | sed -e "s/^file '//" -e "s/'$//")
+              if [ -f "$VID_PATH" ]; then
+                echo "🔴 NOW LIVE STREAMING: $VID_PATH"
+                ffmpeg -re -i "$VID_PATH" \
+                  -vf "format=yuv420p,scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(1920-iw)/2:(1080-ih)/2:black" \
+                  -c:v libx264 -preset superfast -b:v 2500k -maxrate 2500k -bufsize 5000k \
+                  -pix_fmt yuv420p -g 60 -keyint_min 60 \
+                  -c:a aac -b:a 128k -ar 44100 \
+                  -flvflags no_duration_filesize \
+                  -f flv "rtmps://a.rtmps.youtube.com/live2/$KEY" || sleep 1
+              fi
+            done < playlist.txt
+            echo "🔁 Playlist reached end. Seamlessly restarting from first video..."
+            sleep 1
           done
