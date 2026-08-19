@@ -16,16 +16,12 @@ on:
 jobs:
   stream:
     runs-on: ubuntu-latest
+    container: linuxserver/ffmpeg:latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Install Stable FFmpeg
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq ffmpeg
-
-      - name: Start 24/7 Live Stream Loop
+      - name: Start 24/7 Live Stream Loop (Instant Start)
         run: |
           KEY=$(echo "${{ github.event.inputs.stream_key }}" | tr -d '\r\n\t ')
           VIDEO="${{ github.event.inputs.video_name }}"
@@ -35,7 +31,7 @@ jobs:
           fi
           
           echo "=========================================="
-          echo "Broadcasting 24/7 Live Stream to YouTube..."
+          echo "Instant 24/7 Live Streaming Started..."
           echo "Video: $VIDEO"
           echo "=========================================="
           
