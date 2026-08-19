@@ -20,7 +20,10 @@ jobs:
 
       - name: Start 24/7 Live Stream Loop
         run: |
-          ffmpeg -re -stream_loop -1 -i ganesh.mp4 \
-            -c:v libx264 -preset veryfast -b:v 2500k -maxrate 2500k -bufsize 5000k \
-            -pix_fmt yuv420p -g 50 -c:a aac -b:a 128k -ar 44100 \
-            -f flv "rtmp://a.rtmp.youtube.com/live2/${{ github.event.inputs.stream_key }}"
+          KEY="${{ github.event.inputs.stream_key }}"
+          while true; do
+            ffmpeg -re -i ganesh.mp4 \
+              -c:v libx264 -preset ultrafast -b:v 2500k -maxrate 2500k -bufsize 5000k \
+              -pix_fmt yuv420p -g 50 -c:a aac -b:a 128k -ar 44100 \
+              -f flv "rtmp://a.rtmp.youtube.com/live2/$KEY" || sleep 1
+          done
