@@ -1,12 +1,16 @@
-name: 24/7 YouTube Live Stream Loop
+name: 24/7 Multi-Channel Live Streamer
 
 on:
   workflow_dispatch:
     inputs:
       stream_key:
-        description: 'Apni YouTube Stream Key Yahan Paste Karein'
+        description: '🔑 Kisi Bhi Channel Ki YouTube Stream Key Yahan Paste Karein'
         required: true
-        default: 'v1mc-x3hv-h54q-bt61-247v'
+        type: string
+      video_name:
+        description: '📹 Video File Ka Naam (Default: ganesh.mp4)'
+        required: false
+        default: 'ganesh.mp4'
 
 jobs:
   stream:
@@ -20,9 +24,18 @@ jobs:
 
       - name: Start 24/7 Live Stream Loop
         run: |
-          KEY="${{ github.event.inputs.stream_key }}"
+          # Clean and trim stream key
+          KEY=$(echo "${{ github.event.inputs.stream_key }}" | xargs)
+          VIDEO="${{ github.event.inputs.video_name }}"
+          
+          if [ -z "$VIDEO" ]; then
+            VIDEO="ganesh.mp4"
+          fi
+          
+          echo "Streaming video: $VIDEO"
+          
           while true; do
-            ffmpeg -re -i ganesh.mp4 \
+            ffmpeg -re -i "$VIDEO" \
               -c:v libx264 -preset ultrafast -b:v 2500k -maxrate 2500k -bufsize 5000k \
               -pix_fmt yuv420p -g 50 -c:a aac -b:a 128k -ar 44100 \
               -f flv "rtmp://a.rtmp.youtube.com/live2/$KEY" || sleep 1
