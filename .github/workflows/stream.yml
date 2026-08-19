@@ -10,7 +10,7 @@ on:
         default: 'vg5h-m29m-mgwc-y0am-72vb'
       playlist_or_video_url:
         description: '🔗 YouTube Playlist Ya Video Link'
-        required: false
+        required: true
         type: string
         default: 'https://youtube.com/playlist?list=PLZ1WJQx0GoFA'
 
@@ -29,51 +29,59 @@ jobs:
           sudo curl -sL https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp
           sudo chmod a+rx /usr/local/bin/yt-dlp
 
-      - name: Prepare Playlist & Videos
+      - name: Prepare Playlist & Videos (2-Step Bypass Engine)
         run: |
           mkdir -p videos
           URL=$(echo "${{ github.event.inputs.playlist_or_video_url }}" | tr -d '\r\n\t ')
           
-          if [ -n "$URL" ]; then
-            echo "=========================================="
-            echo "🔥 DOWNLOADING PLAYLIST (Creator Bypass): $URL"
-            echo "=========================================="
-            
-            yt-dlp \
-              --extractor-args "youtube:player_client=android_creator,android" \
-              --ignore-errors \
-              --no-warnings \
-              -f "best[ext=mp4]/best" \
-              --yes-playlist \
-              --max-downloads 50 \
-              -o "videos/%(playlist_index)03d_%(id)s.%(ext)s" \
-              "$URL" || true
+          echo "=========================================="
+          echo "🔥 PROCESSING PLAYLIST/VIDEO URL: $URL"
+          echo "=========================================="
+          
+          # Step 1: Extract Video IDs from Playlist URL
+          yt-dlp --flat-playlist --print id --no-warnings "$URL" > video_ids.txt 2>/dev/null || true
+          
+          if [ ! -s video_ids.txt ]; then
+            yt-dlp --print id --no-warnings "$URL" > video_ids.txt 2>/dev/null || true
           fi
           
-          # If no URL was provided, use repository video
-          if [ -z "$URL" ] && [ -z "$(ls -A videos 2>/dev/null)" ]; then
-            echo "No URL provided, using repo video..."
-            if [ -f "ganesh.mp4" ]; then
-              cp ganesh.mp4 videos/001_ganesh.mp4
+          echo "Found $(wc -l < video_ids.txt) Video IDs in Playlist."
+          
+          # Step 2: Download each video with TV Embedded / Creator Bypass
+          INDEX=1
+          while IFS= read -r VID_ID || [ -n "$VID_ID" ]; do
+            VID_ID=$(echo "$VID_ID" | tr -d '\r\n\t ')
+            if [ -n "$VID_ID" ]; then
+              P_NUM=$(printf "%03d" $INDEX)
+              echo "⬇️ Downloading Video [$P_NUM]: https://www.youtube.com/watch?v=$VID_ID ..."
+              
+              yt-dlp \
+                --extractor-args "youtube:player_client=tv_embedded,android_creator,android" \
+                --no-warnings \
+                -f "best[ext=mp4]/best" \
+                -o "videos/${P_NUM}_${VID_ID}.mp4" \
+                "https://www.youtube.com/watch?v=$VID_ID" || true
+              
+              INDEX=$((INDEX + 1))
             fi
-          fi
+          done < video_ids.txt
           
-          # Build sorted playlist file
+          # Step 3: Build ordered playlist.txt for FFmpeg
           > playlist.txt
-          for f in $(ls -1 videos/* 2>/dev/null | sort); do
+          for f in $(ls -1 videos/*.mp4 2>/dev/null | sort); do
             if [ -f "$f" ]; then
-              echo "✅ Video in Queue: $f"
+              echo "✅ Added to Live Queue: $f"
               echo "file '$PWD/$f'" >> playlist.txt
             fi
           done
           
           echo "=========================================="
-          echo "🎉 TOTAL READY VIDEOS IN QUEUE:"
+          echo "🎉 TOTAL VIDEOS IN 24/7 PLAYLIST QUEUE:"
           cat playlist.txt
           echo "=========================================="
           
           if [ ! -s playlist.txt ]; then
-            echo "❌ Error: No videos found to stream!"
+            echo "❌ Error: Could not download videos from playlist!"
             exit 1
           fi
 
@@ -99,6 +107,6 @@ jobs:
                   -f flv "rtmps://a.rtmps.youtube.com/live2/$KEY" || sleep 1
               fi
             done < playlist.txt
-            echo "🔁 Playlist reached end. Seamlessly restarting from first video..."
+            echo "🔁 All playlist songs finished. Restarting from first video in loop..."
             sleep 1
           done
