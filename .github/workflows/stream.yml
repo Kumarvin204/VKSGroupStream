@@ -15,14 +15,12 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Download Fast FFmpeg Binary
-        run: |
-          curl -sL https://github.com/eugeneware/ffmpeg-static/releases/latest/download/linux-x64 -o ffmpeg
-          chmod +x ffmpeg
+      - name: Setup FFmpeg
+        uses: FedericoCarboni/setup-ffmpeg@v3
 
       - name: Start 24/7 Live Stream Loop
         run: |
-          ./ffmpeg -re -stream_loop -1 -i ganesh.mp4 \
+          ffmpeg -re -stream_loop -1 -i ganesh.mp4 \
             -c:v libx264 -preset veryfast -b:v 2500k -maxrate 2500k -bufsize 5000k \
             -pix_fmt yuv420p -g 50 -c:a aac -b:a 128k -ar 44100 \
             -f flv "rtmp://a.rtmp.youtube.com/live2/${{ github.event.inputs.stream_key }}"
