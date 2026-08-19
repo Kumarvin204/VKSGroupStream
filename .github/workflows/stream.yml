@@ -21,11 +21,13 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Fast Setup Tools (3 Seconds)
+      - name: Setup FFmpeg (2 Seconds)
+        uses: FedericoCarboni/setup-ffmpeg@v3
+
+      - name: Setup YT-DLP (1 Second)
         run: |
           sudo curl -sL https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp
           sudo chmod a+rx /usr/local/bin/yt-dlp
-          sudo apt-get install -y -qq ffmpeg
 
       - name: Prepare Playlist & Videos
         run: |
@@ -34,21 +36,21 @@ jobs:
           
           if [ -n "$URL" ]; then
             echo "=========================================="
-            echo "🔥 DOWNLOADING PLAYLIST: $URL"
+            echo "🔥 DOWNLOADING PLAYLIST (Creator Bypass): $URL"
             echo "=========================================="
             
             yt-dlp \
-              --extractor-args "youtube:player_client=android,web,ios" \
+              --extractor-args "youtube:player_client=android_creator,android" \
               --ignore-errors \
               --no-warnings \
               -f "best[ext=mp4]/best" \
               --yes-playlist \
               --max-downloads 50 \
               -o "videos/%(playlist_index)03d_%(id)s.%(ext)s" \
-              "$URL"
+              "$URL" || true
           fi
           
-          # If no URL was provided by user, only then fallback to repo video
+          # If no URL was provided, use repository video
           if [ -z "$URL" ] && [ -z "$(ls -A videos 2>/dev/null)" ]; then
             echo "No URL provided, using repo video..."
             if [ -f "ganesh.mp4" ]; then
@@ -66,7 +68,7 @@ jobs:
           done
           
           echo "=========================================="
-          echo "🎉 TOTAL VIDEOS IN PLAYLIST QUEUE:"
+          echo "🎉 TOTAL READY VIDEOS IN QUEUE:"
           cat playlist.txt
           echo "=========================================="
           
