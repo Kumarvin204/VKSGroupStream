@@ -21,11 +21,12 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Install FFmpeg & YT-DLP
+      - name: Fast Setup Tools (3 Seconds)
         run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq ffmpeg python3-pip
-          pip install --upgrade --no-cache-dir yt-dlp
+          # Fast direct binary install (Zero waiting time)
+          sudo curl -sL https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp
+          sudo chmod a+rx /usr/local/bin/yt-dlp
+          sudo apt-get install -y -qq ffmpeg
 
       - name: Prepare Playlist & Videos
         run: |
@@ -34,7 +35,7 @@ jobs:
           
           if [ -n "$URL" ]; then
             echo "=========================================="
-            echo "Downloading Playlist/Video (Android Bypass Active): $URL"
+            echo "Downloading Playlist/Video (Bypass Active): $URL"
             echo "=========================================="
             
             yt-dlp \
@@ -51,7 +52,7 @@ jobs:
           
           # If no video downloaded from URL, use repository video
           if [ -z "$(ls -A videos 2>/dev/null)" ]; then
-            echo "No video downloaded from link, using repository videos..."
+            echo "Using repository uploaded videos..."
             if [ -f "ganesh.mp4" ]; then
               cp ganesh.mp4 videos/001_ganesh.mp4
             else
