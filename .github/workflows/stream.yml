@@ -34,20 +34,24 @@ jobs:
           
           if [ -n "$URL" ]; then
             echo "=========================================="
-            echo "Downloading Playlist/Video from URL: $URL"
+            echo "Downloading Playlist/Video (Android Bypass Active): $URL"
             echo "=========================================="
             
-            yt-dlp -f "bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/best[height<=1080][ext=mp4]/best" \
+            yt-dlp \
+              --extractor-args "youtube:player_client=android,web,ios" \
+              --ignore-errors \
+              --no-warnings \
+              -f "bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/best[height<=1080][ext=mp4]/best" \
               --merge-output-format mp4 \
               --yes-playlist \
               --max-downloads 50 \
               -o "videos/%(playlist_index)03d_%(title).50s.%(ext)s" \
-              "$URL" || yt-dlp -f "best[ext=mp4]/best" -o "videos/001_video.mp4" "$URL"
+              "$URL" || yt-dlp --extractor-args "youtube:player_client=android,web,ios" --ignore-errors -f "best[ext=mp4]/best" -o "videos/001_video.mp4" "$URL" || true
           fi
           
-          # If no video downloaded, use repository video
+          # If no video downloaded from URL, use repository video
           if [ -z "$(ls -A videos 2>/dev/null)" ]; then
-            echo "No URL provided, checking repository videos..."
+            echo "No video downloaded from link, using repository videos..."
             if [ -f "ganesh.mp4" ]; then
               cp ganesh.mp4 videos/001_ganesh.mp4
             else
@@ -61,13 +65,13 @@ jobs:
           > playlist.txt
           for f in videos/*; do
             if [ -f "$f" ]; then
-              echo "Found Video: $f"
+              echo "Found Video in Queue: $f"
               echo "file '$PWD/$f'" >> playlist.txt
             fi
           done
           
           echo "=========================================="
-          echo "TOTAL VIDEOS IN STREAM QUEUE:"
+          echo "TOTAL READY VIDEOS FOR 24/7 STREAM:"
           cat playlist.txt
           echo "=========================================="
 
