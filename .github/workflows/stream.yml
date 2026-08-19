@@ -4,15 +4,15 @@ on:
   workflow_dispatch:
     inputs:
       stream_key:
-        description: '🔑 YouTube Stream Key (Jis Channel Par Live Jana Ho)'
+        description: '🔑 YouTube Stream Key'
         required: true
         type: string
         default: 'vg5h-m29m-mgwc-y0am-72vb'
       playlist_or_video_url:
-        description: '🔗 YouTube Playlist Ya Video Link (Khali Chhodne Par Repo Video Chalegi)'
+        description: '🔗 YouTube Playlist Ya Video Link'
         required: false
         type: string
-        default: ''
+        default: 'https://youtube.com/playlist?list=PLZ1WJQx0GoFA'
 
 jobs:
   stream:
@@ -23,7 +23,6 @@ jobs:
 
       - name: Fast Setup Tools (3 Seconds)
         run: |
-          # Fast direct binary install (Zero waiting time)
           sudo curl -sL https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp
           sudo chmod a+rx /usr/local/bin/yt-dlp
           sudo apt-get install -y -qq ffmpeg
@@ -31,50 +30,50 @@ jobs:
       - name: Prepare Playlist & Videos
         run: |
           mkdir -p videos
-          URL=$(echo "${{ github.event.inputs.playlist_or_video_url }}" | xargs)
+          URL=$(echo "${{ github.event.inputs.playlist_or_video_url }}" | tr -d '\r\n\t ')
           
           if [ -n "$URL" ]; then
             echo "=========================================="
-            echo "Downloading Playlist/Video (Bypass Active): $URL"
+            echo "🔥 DOWNLOADING PLAYLIST: $URL"
             echo "=========================================="
             
             yt-dlp \
               --extractor-args "youtube:player_client=android,web,ios" \
               --ignore-errors \
               --no-warnings \
-              -f "bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/best[height<=1080][ext=mp4]/best" \
-              --merge-output-format mp4 \
+              -f "best[ext=mp4]/best" \
               --yes-playlist \
               --max-downloads 50 \
-              -o "videos/%(playlist_index)03d_%(title).50s.%(ext)s" \
-              "$URL" || yt-dlp --extractor-args "youtube:player_client=android,web,ios" --ignore-errors -f "best[ext=mp4]/best" -o "videos/001_video.mp4" "$URL" || true
+              -o "videos/%(playlist_index)03d_%(id)s.%(ext)s" \
+              "$URL"
           fi
           
-          # If no video downloaded from URL, use repository video
-          if [ -z "$(ls -A videos 2>/dev/null)" ]; then
-            echo "Using repository uploaded videos..."
+          # If no URL was provided by user, only then fallback to repo video
+          if [ -z "$URL" ] && [ -z "$(ls -A videos 2>/dev/null)" ]; then
+            echo "No URL provided, using repo video..."
             if [ -f "ganesh.mp4" ]; then
               cp ganesh.mp4 videos/001_ganesh.mp4
-            else
-              for vid in *.mp4; do
-                [ -f "$vid" ] && cp "$vid" videos/
-              done
             fi
           fi
           
-          # Build ordered playlist file
+          # Build sorted playlist file
           > playlist.txt
-          for f in videos/*; do
+          for f in $(ls -1 videos/* 2>/dev/null | sort); do
             if [ -f "$f" ]; then
-              echo "Found Video in Queue: $f"
+              echo "✅ Video in Queue: $f"
               echo "file '$PWD/$f'" >> playlist.txt
             fi
           done
           
           echo "=========================================="
-          echo "TOTAL READY VIDEOS FOR 24/7 STREAM:"
+          echo "🎉 TOTAL VIDEOS IN PLAYLIST QUEUE:"
           cat playlist.txt
           echo "=========================================="
+          
+          if [ ! -s playlist.txt ]; then
+            echo "❌ Error: No videos found to stream!"
+            exit 1
+          fi
 
       - name: Start 24/7 Live Stream Loop
         run: |
