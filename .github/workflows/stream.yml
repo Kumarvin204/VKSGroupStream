@@ -7,6 +7,7 @@ on:
         description: '🔑 Kisi Bhi Channel Ki YouTube Stream Key Yahan Paste Karein'
         required: true
         type: string
+        default: 'vg5h-m29m-mgwc-y0am-72vb'
       video_name:
         description: '📹 Video File Ka Naam (Default: ganesh.mp4)'
         required: false
@@ -22,21 +23,29 @@ jobs:
       - name: Setup FFmpeg
         uses: FedericoCarboni/setup-ffmpeg@v3
 
-      - name: Start 24/7 Live Stream Loop
+      - name: Start 24/7 Live Stream Loop (1080p Auto-Scale)
         run: |
-          # Clean and trim stream key
-          KEY=$(echo "${{ github.event.inputs.stream_key }}" | xargs)
+          KEY=$(echo "${{ github.event.inputs.stream_key }}" | tr -d '\r\n\t ')
           VIDEO="${{ github.event.inputs.video_name }}"
           
           if [ -z "$VIDEO" ]; then
             VIDEO="ganesh.mp4"
           fi
           
-          echo "Streaming video: $VIDEO"
+          echo "=========================================="
+          echo "Broadcasting 24/7 Stream to YouTube..."
+          echo "Video: $VIDEO"
+          echo "=========================================="
           
           while true; do
             ffmpeg -re -i "$VIDEO" \
+              -vf "scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2:black,setsar=1" \
               -c:v libx264 -preset ultrafast -b:v 2500k -maxrate 2500k -bufsize 5000k \
-              -pix_fmt yuv420p -g 50 -c:a aac -b:a 128k -ar 44100 \
-              -f flv "rtmp://a.rtmp.youtube.com/live2/$KEY" || sleep 1
+              -pix_fmt yuv420p -g 60 -keyint_min 60 \
+              -c:a aac -b:a 128k -ar 44100 \
+              -flvflags no_duration_filesize \
+              -f flv "rtmps://a.rtmps.youtube.com/live2/$KEY"
+            
+            echo "Loop restarting in 1 second..."
+            sleep 1
           done
