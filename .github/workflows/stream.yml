@@ -12,11 +12,9 @@ on:
         description: '📹 Video File Name in Releases v1.0 (e.g. df.mp4 or ep6_khatushyam.mp4)'
         required: false
         type: string
-        default: 'df.mp4'
+        default: 'ep6_khatushyam.mp4'
 
 # 🛡️ SMART CONCURRENCY: हर Stream Key का अलग स्वतंत्र ग्रुप!
-# अलग-अलग Stream Keys एक साथ बिना रोक-टोक चलेंगी।
-# एक ही Stream Key पर दोबारा चलाने पर पुराना रन ऑटोमैटिक सुरक्षित बंद हो जाएगा ताकि टकराव न हो।
 concurrency:
   group: stream-${{ github.event.inputs.stream_key || 'default' }}
   cancel-in-progress: true
@@ -41,7 +39,7 @@ jobs:
         run: |
           VIDEO="${{ github.event.inputs.video_name }}"
           if [ -z "$VIDEO" ]; then
-            VIDEO="df.mp4"
+            VIDEO="ep6_khatushyam.mp4"
           fi
           
           echo "Target Video: $VIDEO"
@@ -75,7 +73,7 @@ jobs:
           VIDEO="${{ env.FINAL_VIDEO }}"
           
           echo "=========================================="
-          echo "🚀 24/7 Live Streaming Relay Active..."
+          echo "🚀 24/7 Live Streaming Relay Active (Zero-Buffering Direct Stream)..."
           echo "Streaming Video: $VIDEO"
           echo "Stream Key Hash: ${KEY:0:4}****${KEY: -4}"
           echo "=========================================="
@@ -84,10 +82,15 @@ jobs:
           END_TIME=$(( $(date +%s) + 20700 ))
           
           while [ $(date +%s) -lt $END_TIME ]; do
+            # ⚡ ULTRA-FAST DIRECT STREAM COPY (0% CPU Load, Zero Buffering)
+            ffmpeg -re -stream_loop -1 -i "$VIDEO" \
+              -c:v copy -c:a copy \
+              -flvflags no_duration_filesize \
+              -t 20700 \
+              -f flv "rtmps://a.rtmps.youtube.com/live2/$KEY" || \
             ffmpeg -re -i "$VIDEO" \
-              -vf "format=yuv420p,scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(1280-iw)/2:(720-ih)/2:black" \
-              -c:v libx264 -preset veryfast -b:v 1800k -maxrate 2200k -bufsize 4000k \
-              -pix_fmt yuv420p -r 25 -g 50 -keyint_min 25 \
+              -c:v libx264 -preset ultrafast -tune zerolatency -b:v 1800k -maxrate 2000k -bufsize 4000k \
+              -pix_fmt yuv420p -r 25 -g 50 \
               -c:a aac -b:a 128k -ar 44100 \
               -flvflags no_duration_filesize \
               -f flv "rtmps://a.rtmps.youtube.com/live2/$KEY" || sleep 2
