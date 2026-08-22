@@ -1,22 +1,21 @@
-name: 24/7 Multi-Stream Collision-Free Auto-Relay
+name: 24/7 Non-Stop Auto-Relay Live Streamer
 
 on:
   workflow_dispatch:
     inputs:
       stream_key:
-        description: '🔑 YouTube Stream Key (हर लाइव की अपनी की डालें)'
+        description: '🔑 YouTube Stream Key'
         required: true
         type: string
         default: 'vg5h-m29m-mgwc-y0am-72vb'
       video_name:
-        description: '📹 Video File Name in Releases v1.0 (e.g. df.mp4 or ep6_khatushyam.mp4)'
+        description: '📹 Video File Name in Releases v1.0 (e.g. df.mp4)'
         required: false
         type: string
-        default: 'ep6_khatushyam.mp4'
+        default: 'df.mp4'
 
-concurrency:
-  group: stream-${{ github.event.inputs.stream_key || 'default' }}
-  cancel-in-progress: true
+  schedule:
+    - cron: '0 */5 * * *'  # हर 5 घंटे में ऑटोमैटिक फ्रेश रनर चालू करेगा
 
 permissions: write-all
 
@@ -38,11 +37,12 @@ jobs:
         run: |
           VIDEO="${{ github.event.inputs.video_name }}"
           if [ -z "$VIDEO" ]; then
-            VIDEO="ep6_khatushyam.mp4"
+            VIDEO="df.mp4"
           fi
           
           echo "Target Video: $VIDEO"
           
+          # Download from Release v1.0 storage if not in repo
           if [ ! -f "$VIDEO" ]; then
             echo "Downloading $VIDEO from GitHub Release v1.0 storage..."
             gh release download v1.0 -p "$VIDEO" --repo ${{ github.repository }} || true
@@ -71,30 +71,23 @@ jobs:
           VIDEO="${{ env.FINAL_VIDEO }}"
           
           echo "=========================================="
-          echo "🚀 24/7 Live Streaming Relay Active (2500kbps CBR, 2s GOP, Zero Latency)..."
+          echo "🚀 24/7 Live Streaming Relay Active..."
           echo "Streaming Video: $VIDEO"
           echo "=========================================="
           
+          # 5 घंटे 45 मिनट तक लगातार स्ट्रीम चलाएगा
           END_TIME=$(( $(date +%s) + 20700 ))
           
           while [ $(date +%s) -lt $END_TIME ]; do
-            ffmpeg -re -stream_loop -1 -i "$VIDEO" \
-              -c:v libx264 -preset ultrafast -tune zerolatency \
-              -b:v 2500k -minrate 2500k -maxrate 2500k -bufsize 5000k \
-              -pix_fmt yuv420p -r 25 -g 50 -keyint_min 25 \
+            ffmpeg -re -i "$VIDEO" \
+              -vf "format=yuv420p,scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(1280-iw)/2:(720-ih)/2:black" \
+              -c:v libx264 -preset veryfast -b:v 2200k -maxrate 2600k -bufsize 5000k \
+              -pix_fmt yuv420p -g 40 -keyint_min 20 \
               -c:a aac -b:a 128k -ar 44100 \
-              -f flv -flvflags no_duration_filesize \
-              -t 20700 \
-              "rtmp://a.rtmp.youtube.com/live2/$KEY" || \
-            ffmpeg -re -stream_loop -1 -i "$VIDEO" \
-              -c:v libx264 -preset ultrafast -tune zerolatency \
-              -b:v 2500k -minrate 2500k -maxrate 2500k -bufsize 5000k \
-              -pix_fmt yuv420p -r 25 -g 50 -keyint_min 25 \
-              -c:a aac -b:a 128k -ar 44100 \
-              -f flv -flvflags no_duration_filesize \
-              -t 20700 \
-              "rtmps://a.rtmps.youtube.com/live2/$KEY" || sleep 2
+              -flvflags no_duration_filesize \
+              -f flv "rtmps://a.rtmps.youtube.com/live2/$KEY" || sleep 2
           done
           
-          echo "⚡ Triggering Next Relay Runner..."
+          echo "⚡ Triggering Next Relay Runner to keep stream 24/7 Non-Stop..."
           gh workflow run stream.yml -f stream_key="$KEY" -f video_name="$VIDEO" --repo ${{ github.repository }} || true
+          echo "✅ Next Relay Run Dispatched Successfully!"
