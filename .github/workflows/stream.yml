@@ -71,7 +71,7 @@ jobs:
           VIDEO="${{ env.FINAL_VIDEO }}"
           
           echo "=========================================="
-          echo "🚀 24/7 Live Streaming (Constant 2500kbps CBR, Ultra-Low Latency)..."
+          echo "🚀 24/7 Live Streaming Relay Active (2500kbps CBR, 2s GOP, Zero Latency)..."
           echo "Streaming Video: $VIDEO"
           echo "=========================================="
           
