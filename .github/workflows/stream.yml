@@ -7,7 +7,7 @@ on:
         description: '🔑 YouTube Stream Key (हर लाइव की अपनी की डालें)'
         required: true
         type: string
-        default: 'vg5h-m29m-mgwc-y0am-72vb'
+        default: 'bqgr-fqwk-0mdc-e0fm-5pxk'
       video_name:
         description: '📹 Video File Name in Releases v1.0 (e.g. df.mp4 or ep6_khatushyam.mp4)'
         required: false
@@ -64,14 +64,14 @@ jobs:
             KEY="${{ secrets.YOUTUBE_STREAM_KEY }}"
           fi
           if [ -z "$KEY" ]; then
-            KEY="vg5h-m29m-mgwc-y0am-72vb"
+            KEY="bqgr-fqwk-0mdc-e0fm-5pxk"
           fi
           
           KEY=$(echo "$KEY" | tr -d '\r\n\t ')
           VIDEO="${{ env.FINAL_VIDEO }}"
           
           echo "=========================================="
-          echo "🚀 24/7 Live Streaming Relay Active (2500kbps CBR, 2s GOP, Zero Latency)..."
+          echo "🚀 24/7 Continuous Flush Live Streaming (3000kbps, Zero Burst Jitter)..."
           echo "Streaming Video: $VIDEO"
           echo "=========================================="
           
@@ -80,18 +80,18 @@ jobs:
           while [ $(date +%s) -lt $END_TIME ]; do
             ffmpeg -re -stream_loop -1 -i "$VIDEO" \
               -c:v libx264 -preset ultrafast -tune zerolatency \
-              -b:v 2500k -minrate 2500k -maxrate 2500k -bufsize 5000k \
+              -b:v 3000k -maxrate 3500k -bufsize 6000k \
               -pix_fmt yuv420p -r 25 -g 50 -keyint_min 25 \
               -c:a aac -b:a 128k -ar 44100 \
-              -f flv -flvflags no_duration_filesize \
+              -f flv -flvflags no_duration_filesize -flush_packets 1 \
               -t 20700 \
               "rtmp://a.rtmp.youtube.com/live2/$KEY" || \
             ffmpeg -re -stream_loop -1 -i "$VIDEO" \
               -c:v libx264 -preset ultrafast -tune zerolatency \
-              -b:v 2500k -minrate 2500k -maxrate 2500k -bufsize 5000k \
+              -b:v 3000k -maxrate 3500k -bufsize 6000k \
               -pix_fmt yuv420p -r 25 -g 50 -keyint_min 25 \
               -c:a aac -b:a 128k -ar 44100 \
-              -f flv -flvflags no_duration_filesize \
+              -f flv -flvflags no_duration_filesize -flush_packets 1 \
               -t 20700 \
               "rtmps://a.rtmps.youtube.com/live2/$KEY" || sleep 2
           done
