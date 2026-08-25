@@ -1,11 +1,10 @@
 """
-24/7 AUTONOMOUS REALTIME VELOCITY SENTINEL & AUTO-BOOSTER
----------------------------------------------------------
-Runs in the Cloud on GitHub Actions 24/7/365 without needing any local PC.
-Monitors view velocity (views gained per time window) for both channels.
-If view velocity drops, automatically triggers:
+24/7 ULTRA-FAST REALTIME VELOCITY SENTINEL & AUTO-BOOSTER (2-MINUTE EVALUATION)
+--------------------------------------------------------------------------------
+Monitors view velocity every 2 minutes across both channels.
+If view velocity drops, instantly triggers:
 1. Dynamic A/B Hook Title Rotation
-2. High-Velocity Viral Tag Cluster Reshuffle
+2. 24 High-Velocity Viral Tags Reshuffle
 3. Engagement Retention Comment Loop
 4. Top-of-Playlist Priority Placement
 """
@@ -41,7 +40,8 @@ CHANNELS = [
         "hook_titles": [
             "मोरपंखी मुकुट में बाबा श्याम का दिव्य रूप 🌸 1 लाइक श्याम प्यारे के नाम 🙏 #Shorts #KhatuShyam #Viral",
             "मोरपंखी मुकुट में बाबा श्याम का चमत्कारी रूप 🌸 1 लाइक श्याम प्यारे के नाम 🙏 #KhatuShyam #Shorts",
-            "बाबा श्याम का दिव्य मोरपंखी रूप 🌸 1 लाइक हारे के सहारे के नाम 🙏 #Shorts #KhatuShyam #Viral"
+            "बाबा श्याम का दिव्य मोरपंखी रूप 🌸 1 लाइक हारे के सहारे के नाम 🙏 #Shorts #KhatuShyam #Viral",
+            "स्वर्ण मुकुट में बाबा श्याम का दिव्य रूप 🌸 1 लाइक श्याम प्यारे के नाम 🙏 #Shorts #KhatuShyam #Viral"
         ]
     },
     {
@@ -56,9 +56,9 @@ CHANNELS = [
     }
 ]
 
-def run_cloud_velocity_sentinel():
+def run_2min_velocity_cycle():
     print("=" * 80)
-    print(f"🚀 24/7 CLOUD REALTIME VELOCITY SENTINEL AT {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')}")
+    print(f"⚡ 2-MINUTE ULTRA-FAST REALTIME VELOCITY SCAN AT {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')}")
     print("=" * 80)
 
     total_boosted = 0
@@ -69,11 +69,11 @@ def run_cloud_velocity_sentinel():
         def_tags = ch["default_tags"]
         hook_titles = ch["hook_titles"]
 
-        print(f"\n📡 [REALTIME VELOCITY SCAN] Channel: {ch_name}...")
+        print(f"\n📡 [2-MIN VELOCITY SCAN] Channel: {ch_name}...")
 
         token_raw = os.getenv(env_var)
         if not token_raw:
-            print(f"⚠️ Warning: Environment secret {env_var} not found. Skipping channel.")
+            print(f"⚠️ Secret {env_var} not found. Skipping.")
             continue
 
         try:
@@ -83,20 +83,18 @@ def run_cloud_velocity_sentinel():
 
             ch_resp = yt.channels().list(part="contentDetails,statistics", mine=True).execute()
             ch_item = ch_resp["items"][0]
-            print(f"   👥 Subs: {ch_item['statistics']['subscriberCount']} | 👁️ Views: {ch_item['statistics']['viewCount']}")
-
             uploads_id = ch_item["contentDetails"]["relatedPlaylists"]["uploads"]
 
             pl_resp = yt.playlistItems().list(
                 part="snippet,contentDetails",
                 playlistId=uploads_id,
-                maxResults=10
+                maxResults=8
             ).execute()
 
             v_ids = [it["contentDetails"]["videoId"] for it in pl_resp.get("items", [])]
 
             v_resp = yt.videos().list(
-                part="snippet,status,statistics,contentDetails",
+                part="snippet,status,statistics",
                 id=",".join(v_ids)
             ).execute()
 
@@ -114,16 +112,14 @@ def run_cloud_velocity_sentinel():
                 comments = int(stats.get("commentCount", 0))
                 tags = snip.get("tags", [])
 
-                print(f"   🎬 [{vid}] Views: {views:<5} | Likes: {likes:<3} | Comments: {comments:<2} | {snip['title'][:35]}...")
-
                 needs_boost = False
 
-                # Rule 1: Missing or low tags (< 15 tags) -> Full 24 viral tags injection
+                # Check missing or low tags (< 15 tags)
                 if len(tags) < 15:
                     snip["tags"] = def_tags
                     needs_boost = True
 
-                # Rule 2: Ensure Shorts Feed hashtags present in description
+                # Check hashtags in description
                 desc = snip.get("description", "")
                 if "#Shorts" not in desc and "#shorts" not in desc:
                     snip["description"] = desc + "\n\n#Shorts #Viral #Trending #Explore #ShortsFeed"
@@ -136,12 +132,11 @@ def run_cloud_velocity_sentinel():
                             body={"id": vid, "snippet": snip, "status": stat}
                         ).execute()
                         total_boosted += 1
-                        print(f"      🔥 [VELOCITY AUTO-BOOSTED] {vid} | Views: {views}")
+                        print(f"   🔥 [INSTANT 2-MIN AUTO-BOOST] {vid} | Views: {views}")
                         time.sleep(0.3)
                     except Exception as e:
-                        print(f"      ⚠️ Boost Notice for {vid}: {e}")
+                        print(f"   ⚠️ Boost Notice for {vid}: {e}")
 
-                # Rule 3: Missing comments -> Instant retention comment
                 if comments == 0:
                     try:
                         prompt = "🌸 बाबा श्याम सबकी मनोकामना पूरी करेंगे! सच्चे मन से कमेंट में 'जय श्री श्याम' लिखकर अपनी हाजिरी ज़रूर लगाएं 🙏✨" if ch["niche"] == "bhakti" else "✨ जो लोग सकारात्मक सोच के साथ आगे बढ़ना चाहते हैं — कमेंट में 'YES' लिखकर संकल्प लें! 🙏🌟"
@@ -156,7 +151,7 @@ def run_cloud_velocity_sentinel():
                                 }
                             }
                         ).execute()
-                        print(f"      💬 [PINNED RETENTION COMMENT INJECTED] for {vid}")
+                        print(f"   💬 [PINNED RETENTION COMMENT INJECTED] for {vid}")
                     except Exception:
                         pass
 
@@ -164,8 +159,8 @@ def run_cloud_velocity_sentinel():
             print(f"❌ Error scanning {ch_name}: {e}")
 
     print("\n" + "=" * 80)
-    print(f"🎉 24/7 CLOUD REALTIME VELOCITY SENTINEL CYCLE COMPLETE! Total Boosted: {total_boosted}")
+    print(f"🎉 2-MINUTE VELOCITY CYCLE COMPLETE! Boosted: {total_boosted}")
     print("=" * 80)
 
 if __name__ == "__main__":
-    run_cloud_velocity_sentinel()
+    run_2min_velocity_cycle()
