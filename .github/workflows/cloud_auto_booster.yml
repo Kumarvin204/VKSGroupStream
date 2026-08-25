@@ -1,0 +1,44 @@
+name: 24/7 GitHub Cloud Realtime Velocity Auto-Booster
+
+on:
+  schedule:
+    # Run every 6 hours as a backup cron trigger
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: cloud-velocity-booster
+  cancel-in-progress: true
+
+permissions: write-all
+
+jobs:
+  cloud_boost:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: |
+          pip install google-api-python-client google-auth-oauthlib google-auth-httplib2
+
+      - name: Run 24/7 Cloud Velocity Auto-Booster Runner (5.5 Hours Continuous)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TOKEN_NANDINI_JSON: ${{ secrets.TOKEN_NANDINI_JSON }}
+          TOKEN_LEARNING_JSON: ${{ secrets.TOKEN_LEARNING_JSON }}
+        run: |
+          python cloud_auto_booster.py
+
+      - name: Auto-Relay to Next Cloud Runner (24/7/365 Non-Stop)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "⚡ Triggering Next 24/7 Cloud Auto-Booster Runner..."
+          gh workflow run cloud_auto_booster.yml --repo ${{ github.repository }} || true
