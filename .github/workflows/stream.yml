@@ -7,16 +7,13 @@ on:
         description: '🔑 YouTube Stream Key (हर लाइव की अपनी की डालें)'
         required: true
         type: string
-        default: 'vg5h-m29m-mgwc-y0am-72vb'
+        default: 'bqgr-fqwk-0mdc-e0fm-5pxk'
       video_name:
         description: '📹 Video File Name in Releases v1.0 (e.g. df.mp4 or ep6_khatushyam.mp4)'
         required: false
         type: string
         default: 'ep6_khatushyam.mp4'
 
-# 🛡️ SMART CONCURRENCY: हर Stream Key का अलग स्वतंत्र ग्रुप!
-# अलग-अलग Stream Keys एक साथ बिना रोक-टोक चलेंगी।
-# एक ही Stream Key पर दोबारा चलाने पर पुराना रन ऑटोमैटिक सुरक्षित बंद हो जाएगा ताकि टकराव न हो।
 concurrency:
   group: stream-${{ github.event.inputs.stream_key || 'default' }}
   cancel-in-progress: true
@@ -46,7 +43,6 @@ jobs:
           
           echo "Target Video: $VIDEO"
           
-          # Download from Release v1.0 storage if not in repo
           if [ ! -f "$VIDEO" ]; then
             echo "Downloading $VIDEO from GitHub Release v1.0 storage..."
             gh release download v1.0 -p "$VIDEO" --repo ${{ github.repository }} || true
@@ -68,36 +64,37 @@ jobs:
             KEY="${{ secrets.YOUTUBE_STREAM_KEY }}"
           fi
           if [ -z "$KEY" ]; then
-            KEY="vg5h-m29m-mgwc-y0am-72vb"
+            KEY="bqgr-fqwk-0mdc-e0fm-5pxk"
           fi
           
           KEY=$(echo "$KEY" | tr -d '\r\n\t ')
           VIDEO="${{ env.FINAL_VIDEO }}"
           
           echo "=========================================="
-          echo "🚀 24/7 Live Streaming Relay Active (Zero-Buffering Direct Stream)..."
+          echo "🚀 24/7 Continuous Flush Live Streaming (3000kbps, Zero Burst Jitter)..."
           echo "Streaming Video: $VIDEO"
-          echo "Stream Key Hash: ${KEY:0:4}****${KEY: -4}"
           echo "=========================================="
           
-          # 5 घंटे 45 मिनट तक लगातार स्ट्रीम चलाएगा
           END_TIME=$(( $(date +%s) + 20700 ))
           
           while [ $(date +%s) -lt $END_TIME ]; do
-            # ⚡ ULTRA-FAST DIRECT STREAM COPY (0% CPU Load, Zero Buffering)
             ffmpeg -re -stream_loop -1 -i "$VIDEO" \
-              -c:v copy -c:a copy \
-              -flvflags no_duration_filesize \
-              -t 20700 \
-              -f flv "rtmps://a.rtmps.youtube.com/live2/$KEY" || \
-            ffmpeg -re -i "$VIDEO" \
-              -c:v libx264 -preset ultrafast -tune zerolatency -b:v 1800k -maxrate 2000k -bufsize 4000k \
-              -pix_fmt yuv420p -r 25 -g 50 \
+              -c:v libx264 -preset ultrafast -tune zerolatency \
+              -b:v 3000k -maxrate 3500k -bufsize 6000k \
+              -pix_fmt yuv420p -r 25 -g 50 -keyint_min 25 \
               -c:a aac -b:a 128k -ar 44100 \
-              -flvflags no_duration_filesize \
-              -f flv "rtmps://a.rtmps.youtube.com/live2/$KEY" || sleep 2
+              -f flv -flvflags no_duration_filesize -flush_packets 1 \
+              -t 20700 \
+              "rtmp://a.rtmp.youtube.com/live2/$KEY" || \
+            ffmpeg -re -stream_loop -1 -i "$VIDEO" \
+              -c:v libx264 -preset ultrafast -tune zerolatency \
+              -b:v 3000k -maxrate 3500k -bufsize 6000k \
+              -pix_fmt yuv420p -r 25 -g 50 -keyint_min 25 \
+              -c:a aac -b:a 128k -ar 44100 \
+              -f flv -flvflags no_duration_filesize -flush_packets 1 \
+              -t 20700 \
+              "rtmps://a.rtmps.youtube.com/live2/$KEY" || sleep 2
           done
           
-          echo "⚡ Triggering Next Relay Runner for this specific stream..."
+          echo "⚡ Triggering Next Relay Runner..."
           gh workflow run stream.yml -f stream_key="$KEY" -f video_name="$VIDEO" --repo ${{ github.repository }} || true
-          echo "✅ Next Relay Run Dispatched Successfully!"
