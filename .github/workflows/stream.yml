@@ -1,4 +1,4 @@
-name: 24/7 Multi-Stream Collision-Free Auto-Relay
+name: 24/7 Multi-Stream 11-Hour Safe Auto-Stop Relay
 
 on:
   workflow_dispatch:
@@ -9,10 +9,15 @@ on:
         type: string
         default: 'bqgr-fqwk-0mdc-e0fm-5pxk'
       video_name:
-        description: '📹 Video File Name in Releases v1.0 (e.g. df.mp4 or ep6_khatushyam.mp4)'
+        description: '📹 Video File Name in Releases v1.0 (e.g. seth_karamsi_khatu_shyam_1hr_movie.mp4)'
         required: false
         type: string
-        default: 'ep6_khatushyam.mp4'
+        default: 'seth_karamsi_khatu_shyam_1hr_movie.mp4'
+      relay_part:
+        description: '🔄 Relay Part (1 = First 5.5 Hours, 2 = Second 5.5 Hours [Auto-Stops at 11h])'
+        required: false
+        type: string
+        default: '1'
 
 concurrency:
   group: stream-${{ github.event.inputs.stream_key || 'default' }}
@@ -23,6 +28,7 @@ permissions: write-all
 jobs:
   stream:
     runs-on: ubuntu-latest
+    timeout-minutes: 360
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -38,7 +44,7 @@ jobs:
         run: |
           VIDEO="${{ github.event.inputs.video_name }}"
           if [ -z "$VIDEO" ]; then
-            VIDEO="ep6_khatushyam.mp4"
+            VIDEO="seth_karamsi_khatu_shyam_1hr_movie.mp4"
           fi
           
           echo "Target Video: $VIDEO"
@@ -55,7 +61,7 @@ jobs:
           echo "FINAL_VIDEO=$VIDEO" >> $GITHUB_ENV
           ls -lh "$VIDEO"
 
-      - name: Run 24/7 Live Stream Relay (5 Hours 45 Mins + Auto-Trigger Next)
+      - name: Run Safe Live Stream (5.5 Hours x 2 Parts = Exactly 11 Hours, then Auto-Stop)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -69,22 +75,38 @@ jobs:
           
           KEY=$(echo "$KEY" | tr -d '\r\n\t ')
           VIDEO="${{ env.FINAL_VIDEO }}"
+          PART="${{ github.event.inputs.relay_part }}"
+          if [ -z "$PART" ]; then
+            PART="1"
+          fi
           
-          echo "=========================================="
-          echo "🚀 24/7 Continuous Flush Live Streaming (3000kbps, Zero Burst Jitter)..."
+          # Exact 5.5 Hours = 19,800 seconds per part
+          # Part 1 (5.5 hrs) + Part 2 (5.5 hrs) = EXACTLY 11 HOURS TOTAL
+          PART_DURATION=19800
+          
+          echo "=========================================================================="
+          echo "🚀 11-HOUR SAFE YOUTUBE LIVE STREAMING PROTOCOL"
+          echo "Current Leg: Part $PART of 2"
+          echo "Part Duration: 5 Hours 30 Minutes ($PART_DURATION seconds)"
+          echo "Total Target Limit: Exactly 11.0 Hours (Prevents YouTube 12h Processing Trap)"
           echo "Streaming Video: $VIDEO"
-          echo "=========================================="
+          echo "=========================================================================="
           
-          END_TIME=$(( $(date +%s) + 20700 ))
+          END_TIME=$(( $(date +%s) + PART_DURATION ))
           
           while [ $(date +%s) -lt $END_TIME ]; do
+            REMAINING=$(( END_TIME - $(date +%s) ))
+            if [ $REMAINING -le 0 ]; then
+              break
+            fi
+            
             ffmpeg -re -stream_loop -1 -i "$VIDEO" \
               -c:v libx264 -preset ultrafast -tune zerolatency \
               -b:v 3000k -maxrate 3500k -bufsize 6000k \
               -pix_fmt yuv420p -r 25 -g 50 -keyint_min 25 \
               -c:a aac -b:a 128k -ar 44100 \
               -f flv -flvflags no_duration_filesize -flush_packets 1 \
-              -t 20700 \
+              -t $REMAINING \
               "rtmp://a.rtmp.youtube.com/live2/$KEY" || \
             ffmpeg -re -stream_loop -1 -i "$VIDEO" \
               -c:v libx264 -preset ultrafast -tune zerolatency \
@@ -92,9 +114,16 @@ jobs:
               -pix_fmt yuv420p -r 25 -g 50 -keyint_min 25 \
               -c:a aac -b:a 128k -ar 44100 \
               -f flv -flvflags no_duration_filesize -flush_packets 1 \
-              -t 20700 \
+              -t $REMAINING \
               "rtmps://a.rtmps.youtube.com/live2/$KEY" || sleep 2
           done
           
-          echo "⚡ Triggering Next Relay Runner..."
-          gh workflow run stream.yml -f stream_key="$KEY" -f video_name="$VIDEO" --repo ${{ github.repository }} || true
+          if [ "$PART" -eq 1 ]; then
+            echo "⚡ Part 1 (5.5 Hours) Complete. Triggering Part 2 (Final 5.5 Hours) for a total of exactly 11 Hours..."
+            gh workflow run stream.yml -f stream_key="$KEY" -f video_name="$VIDEO" -f relay_part="2" --repo ${{ github.repository }} || true
+          else
+            echo "=========================================================================="
+            echo "🎉 EXACTLY 11 HOURS OF CONTINUOUS STREAMING COMPLETED!"
+            echo "🛑 Auto-stopping stream now so YouTube archives & processes the video cleanly!"
+            echo "=========================================================================="
+          fi
