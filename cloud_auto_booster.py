@@ -276,7 +276,7 @@ def run_cloud_cycle():
                 continue
 
             v_resp = yt.videos().list(
-                part="snippet,status,statistics",
+                part="snippet,status,statistics,contentDetails",
                 id=",".join(v_ids)
             ).execute()
 
@@ -291,6 +291,8 @@ def run_cloud_cycle():
                 snip = v["snippet"]
                 stat = v["status"]
                 stats = v["statistics"]
+                dur = v.get("contentDetails", {}).get("duration", "PT15S")
+                is_short = not ("M" in dur or "H" in dur)
                 title_curr = snip.get("title", "")
 
                 # TRIGGER CHECK
@@ -336,33 +338,28 @@ def run_cloud_cycle():
 
                 # Momentum
                 if views_gained >= 5 and velocity_per_min >= 0.5:
-                    snip["tags"] = tags
+                    if is_short:
+                        snip["tags"] = tags
                     snip["categoryId"] = "22"
                     try:
                         yt.videos().update(part="snippet,status", body={"id": vid, "snippet": snip, "status": stat}).execute()
                     except Exception:
                         pass
 
-                # Slowdown Revival (Zero Duplicate Protection)
-                elif (time_diff_mins >= 10 and views_gained < 5) or (current_views < 50 and time_diff_mins >= 8):
-                    all_pool = UNIQUE_TITLES_KHATU_SHYAM if niche == "bhakti" else UNIQUE_TITLES_MOTIVATION
-                    other_titles = {t.strip().lower() for t in existing_channel_titles if t.strip().lower() != title_curr.strip().lower()}
-                    unique_hook = None
-                    for h in all_pool:
-                        if h.strip().lower() not in other_titles:
-                            unique_hook = h
-                            break
+                # Slowdown Revival (ONLY FOR SHORTS <60s, never corrupt long movies/katha)
+                elif is_short and ((time_diff_mins >= 10 and views_gained < 5) or (current_views < 50 and time_diff_mins >= 8)):
+                    new_unique_title = generate_dynamic_unique_title(niche, existing_channel_titles)
 
-                    if unique_hook and unique_hook != title_curr:
-                        snip["title"] = unique_hook
+                    if new_unique_title and new_unique_title != title_curr:
+                        snip["title"] = new_unique_title
                         snip["tags"] = tags
                         snip["categoryId"] = "22"
                         try:
                             yt.videos().update(part="snippet,status", body={"id": vid, "snippet": snip, "status": stat}).execute()
-                            print(f"     🔥 [CLOUD HOOK ROTATED TO UNIQUE] -> {snip['title'][:40]}...")
+                            print(f"     🔥 [CLOUD SHORTS HOOK ROTATED] -> {snip['title'][:40]}...")
                             if title_curr in existing_channel_titles:
                                 existing_channel_titles.remove(title_curr)
-                            existing_channel_titles.append(unique_hook)
+                            existing_channel_titles.append(new_unique_title)
                         except Exception:
                             pass
 
