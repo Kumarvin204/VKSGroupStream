@@ -164,6 +164,34 @@ def run_cloud_cycle():
                     except Exception as e:
                         print(f"     ⚠️ Update note: {e}")
 
+                # 3. Auto-Pinned Engagement Comment on Live Release
+                comments_cnt = int(stats.get("commentCount", 0))
+                if comments_cnt == 0:
+                    if vid == "rRVGvqYh4R8":
+                        pin_msg = "🙏 जय श्री श्याम! नीले के सवार, खाटू नरेश बाबा श्याम के सभी सच्चे भक्त कमेंट में 'खाटू नरेश की जय' ज़रूर लिखें! 🌸👑"
+                    elif ch_cfg["niche"] == "bhakti":
+                        pin_msg = "🙏 जय श्री श्याम! बाबा श्याम के सभी सच्चे भक्त कमेंट में एक बार 'जय श्री श्याम' ज़रूर लिखें! 🌸👑"
+                    else:
+                        pin_msg = "✨ जीवन में कभी हार मत मानो, ईश्वर हर पल आपके साथ हैं! 🌟 कमेंट में 'Yes' लिखें! 💫"
+
+                    try:
+                        yt.commentThreads().insert(
+                            part="snippet",
+                            body={
+                                "snippet": {
+                                    "videoId": vid,
+                                    "topLevelComment": {
+                                        "snippet": {
+                                            "textOriginal": pin_msg
+                                        }
+                                    }
+                                }
+                            }
+                        ).execute()
+                        print(f"     📌 [CLOUD AUTO-PINNED COMMENT POSTED] on {vid}")
+                    except Exception as e:
+                        pass
+
                 state[vid] = {
                     "views": current_views,
                     "likes": current_likes,
