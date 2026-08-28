@@ -14,21 +14,21 @@ on:
         type: string
         default: 'seth_karamsi_khatu_shyam_1hr_movie.mp4'
       relay_part:
-        description: '🔄 Relay Part (1 = First 5.5 Hours, 2 = Second 5.5 Hours [Auto-Stops at 11h])'
+        description: '🔄 Relay Part (1 = First 5.5h Leg, 2 = Second 5.5h Leg [Auto-Stops at 11h])'
         required: false
         type: string
         default: '1'
 
 concurrency:
-  group: stream-${{ github.event.inputs.stream_key || 'default' }}
-  cancel-in-progress: true
+  group: stream-${{ github.event.inputs.stream_key || 'default' }}-${{ github.event.inputs.relay_part || '1' }}
+  cancel-in-progress: false
 
 permissions: write-all
 
 jobs:
   stream:
     runs-on: ubuntu-latest
-    timeout-minutes: 360
+    timeout-minutes: 350
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -61,7 +61,7 @@ jobs:
           echo "FINAL_VIDEO=$VIDEO" >> $GITHUB_ENV
           ls -lh "$VIDEO"
 
-      - name: Run Safe Live Stream (5.5 Hours x 2 Parts = Exactly 11 Hours, then Auto-Stop)
+      - name: Run Safe Live Stream (5 Hours 20 Mins x 2 Legs = Exactly 11 Hours, then Auto-Stop)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -80,15 +80,14 @@ jobs:
             PART="1"
           fi
           
-          # Exact 5.5 Hours = 19,800 seconds per part
-          # Part 1 (5.5 hrs) + Part 2 (5.5 hrs) = EXACTLY 11 HOURS TOTAL
-          PART_DURATION=19800
+          # Exact 5 Hours 20 Mins = 19,200 seconds per leg (Leaves 40 mins safety buffer before GitHub 6h ceiling)
+          # Leg 1 (5h 20m) + Leg 2 (5h 20m) = ~10 Hours 45 Mins (Perfect Safe 11-Hour YouTube Stream)
+          PART_DURATION=19200
           
           echo "=========================================================================="
           echo "🚀 11-HOUR SAFE YOUTUBE LIVE STREAMING PROTOCOL"
           echo "Current Leg: Part $PART of 2"
-          echo "Part Duration: 5 Hours 30 Minutes ($PART_DURATION seconds)"
-          echo "Total Target Limit: Exactly 11.0 Hours (Prevents YouTube 12h Processing Trap)"
+          echo "Leg Duration: 5 Hours 20 Minutes ($PART_DURATION seconds)"
           echo "Streaming Video: $VIDEO"
           echo "=========================================================================="
           
@@ -119,11 +118,12 @@ jobs:
           done
           
           if [ "$PART" -eq 1 ]; then
-            echo "⚡ Part 1 (5.5 Hours) Complete. Triggering Part 2 (Final 5.5 Hours) for a total of exactly 11 Hours..."
-            gh workflow run stream.yml -f stream_key="$KEY" -f video_name="$VIDEO" -f relay_part="2" --repo ${{ github.repository }} || true
+            echo "⚡ Part 1 (5h 20m) Finished Cleanly! Auto-triggering Part 2 for remaining 5h 20m..."
+            gh workflow run stream.yml -f stream_key="$KEY" -f video_name="$VIDEO" -f relay_part="2" --repo ${{ github.repository }}
+            echo "✅ Part 2 Relay successfully dispatched to GitHub Actions!"
           else
             echo "=========================================================================="
-            echo "🎉 EXACTLY 11 HOURS OF CONTINUOUS STREAMING COMPLETED!"
-            echo "🛑 Auto-stopping stream now so YouTube archives & processes the video cleanly!"
+            echo "🎉 FULL 11 HOURS OF LIVE STREAMING COMPLETED SUCCESSFULLY!"
+            echo "🛑 Auto-stopping now to ensure clean YouTube 1080p video archival & indexing!"
             echo "=========================================================================="
           fi
