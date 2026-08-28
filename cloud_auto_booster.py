@@ -325,18 +325,28 @@ def run_cloud_cycle():
                     except Exception:
                         pass
 
-                # Slowdown Revival
+                # Slowdown Revival (Zero Duplicate Protection)
                 elif (time_diff_mins >= 10 and views_gained < 5) or (current_views < 50 and time_diff_mins >= 8):
-                    curr_idx = prev_record.get("hook_index", 0)
-                    next_idx = (curr_idx + 1) % len(hooks)
-                    snip["title"] = hooks[next_idx]
-                    snip["tags"] = tags
-                    snip["categoryId"] = "22"
-                    try:
-                        yt.videos().update(part="snippet,status", body={"id": vid, "snippet": snip, "status": stat}).execute()
-                        prev_record["hook_index"] = next_idx
-                    except Exception:
-                        pass
+                    all_pool = UNIQUE_TITLES_KHATU_SHYAM if niche == "bhakti" else UNIQUE_TITLES_MOTIVATION
+                    other_titles = {t.strip().lower() for t in existing_channel_titles if t.strip().lower() != title_curr.strip().lower()}
+                    unique_hook = None
+                    for h in all_pool:
+                        if h.strip().lower() not in other_titles:
+                            unique_hook = h
+                            break
+
+                    if unique_hook and unique_hook != title_curr:
+                        snip["title"] = unique_hook
+                        snip["tags"] = tags
+                        snip["categoryId"] = "22"
+                        try:
+                            yt.videos().update(part="snippet,status", body={"id": vid, "snippet": snip, "status": stat}).execute()
+                            print(f"     🔥 [CLOUD HOOK ROTATED TO UNIQUE] -> {snip['title'][:40]}...")
+                            if title_curr in existing_channel_titles:
+                                existing_channel_titles.remove(title_curr)
+                            existing_channel_titles.append(unique_hook)
+                        except Exception:
+                            pass
 
                 # Auto Pinned Comment on Live Release
                 if comments_cnt == 0:
