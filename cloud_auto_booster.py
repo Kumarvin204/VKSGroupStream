@@ -116,62 +116,102 @@ def get_next_available_slot(existing_scheduled_utc):
     fallback_utc = now_utc + timedelta(hours=3)
     return fallback_utc.strftime("%Y-%m-%dT%H:%M:%S.000Z"), "3 Hours from now"
 
-UNIQUE_TITLES_KHATU_SHYAM = [
-    "बाबा श्याम का दिव्य अलौकिक शृंगार दर्शन 🌸 जय श्री श्याम 🙏 #Shorts #KhatuShyam #Viral",
-    "खाटू श्याम जी का भव्य मोरपंखी शृंगार दर्शन 🌸 देखते ही दिन बन जाए 🙏 #Shorts #KhatuShyam",
-    "नीले के सवार बाबा श्याम का चमत्कारी रूप 🌸 हारे के सहारे की जय 🙏 #Shorts #KhatuShyam",
-    "जिसने भी सच्चे मन से दर्शन किए उसकी हर मनोकामना पूरी हुई 🌸 जय श्री श्याम 🙏 #KhatuDham #Shorts",
-    "हारे के सहारे बाबा श्याम हमारे 🌸 1 सेकंड निकालकर दर्शन ज़रूर करें 🙏 #Shorts #ViralShorts",
-    "बाबा श्याम का मनमोहक गुलाब शृंगार दर्शन 🌸 1 लाइक श्याम प्यारे के नाम 🙏 #Shorts #Trending",
-    "खाटू धाम से बाबा श्याम का प्रातः दिव्य दर्शन 🌸 आपका दिन मंगलमय हो 🙏 #Shorts #Bhakti",
-    "सांवरे के दर्शन से संवर जाएगी जिंदगी 🌸 जय श्री खाटू नरेश 🙏 #Shorts #KhatuShyam",
-    "लाखदातार बाबा श्याम का चमत्कारी दरबार 🌸 1 लाइक हारे के सहारे के नाम 🙏 #Shorts #Viral",
-    "मोरपंखी मुकुट में बाबा श्याम का मनभावन रूप 🌸 कमेंट में जय श्री श्याम लिखें 🙏 #Shorts",
-    "खाटू वाले श्याम बिहारी की पावन आरती व दर्शन 🌸 जय श्री श्याम 🙏 #Shorts #KhatuDham",
-    "कलयुग के देव बाबा श्री खाटू श्याम जी का अलौकिक रूप 🌸 1 लाइक श्याम के नाम 🙏 #Shorts",
-    "बाबा श्याम के चरणों में जिसके शीश झुके उसके संकट दूर हुए 🌸 जय श्री श्याम 🙏 #Shorts",
-    "खाटू नरेश का ऐसा भव्य शृंगार दर्शन पहले कभी नहीं देखा 🌸 #Shorts #KhatuShyam #Viral",
-    "श्याम नाम की महिमा अपरंपार 🌸 बाबा श्याम का पावन शृंगार दर्शन 🙏 #Shorts #BhaktiShorts"
+# =============================================================================
+# 👑 10.8 MILLION (10,800,000) 5-LAYER COMBINATORIAL DYNAMIC TITLE GENERATOR
+# =============================================================================
+BHAKTI_L1 = [
+    "बाबा श्याम", "खाटू नरेश", "नीले के असवार", "शीश के दानी", "लखदातार बाबा श्याम",
+    "हारे के सहारे", "कलयुग के देव", "मोरछड़ी वाले सांवरे", "श्याम बिहारी", "खाटू धाम वाले सांवरिया",
+    "तीन बाण धारी", "सेठों के सेठ", "मण्डफिया वाले साँवरिया सेठ", "सांवरे सरकार", "भक्तों के रखवाले बाबा श्याम",
+    "श्री खाटू वाले श्याम", "दीनदयाल बाबा श्याम", "कृपानिधान सांवरे", "अमृतमयी बाबा श्याम", "परम दयालु खाटू नरेश",
+    "मनोकामना पूर्ण कर्ता श्याम", "संकटमोचन बाबा श्याम", "सर्वशक्तिमान खाटू नरेश", "कल्याणकारी सांवरे", "भक्तवत्सल श्याम बाबा",
+    "आनंददाता बाबा श्याम", "अलौकिक खाटू नरेश", "भव्य रूप धारी सांवरे", "तेजस्वी बाबा श्याम", "महिमावान खाटू धाम सरकार",
+    "श्याम धणी", "सच्चे दरबार वाले श्याम", "सांवरिया प्यारे", "दीनों के नाथ", "अद्भुत रूप धारी श्याम",
+    "नीले घोड़े वाले बाबा", "स्वर्ण मुकुट धारी सांवरे", "पावन खाटू नरेश", "चमत्कारी बाबा श्याम", "अनंत कृपालु सांवरे"
 ]
 
-UNIQUE_TITLES_SANWARIYA = [
-    "साँवरिया सेठ के प्रातः दिव्य दर्शन 🌸 सेठों के सेठ साँवरिया सेठ 🙏 #Shorts #SanwariyaSeth #Viral",
-    "मण्डफिया धाम से साँवरिया सेठ जी का पावन दरबार 🌸 1 लाइक सेठ के नाम 🙏 #Shorts #Bhakti",
-    "सेठों के सेठ साँवरिया सेठ का मनमोहक रूप 🌸 आपकी हर मनोकामना पूरी हो 🙏 #Shorts",
-    "सांवरिया सेठ के चमत्कारी दर्शन 🌸 जिसके साथ सांवरिया उसका कोई क्या बिगाड़े 🙏 #Shorts",
-    "सांवरिया सेठ जी की प्रातः आरती व दिव्य शृंगार दर्शन 🌸 जय श्री सांवरिया सेठ 🙏 #Shorts",
-    "साँवरिया सेठ का खज़ाना 🌸 1 लाइक साँवरिया प्यारे के नाम 🙏 #Shorts #SanwariyaSeth",
-    "सेठों के सेठ का पावन दरबार 🌸 देखते ही मन को शांति मिले 🙏 #Shorts #Viral",
-    "चित्तौड़गढ़ मण्डफिया धाम साँवरिया सेठ के चमत्कारी दर्शन 🌸 जय साँवरिया सेठ 🙏 #Shorts"
+BHAKTI_L2 = [
+    "का दिव्य अलौकिक शृंगार दर्शन", "का प्रातः मंगल दर्शन", "की जगमगाती पावन संध्या आरती", "का मनमोहक मोरपंखी रूप", "का लाल गुलाब शृंगार दर्शन",
+    "का भव्य स्वर्ण मुकुट शृंगार", "का चमत्कारी पावन दरबार", "का मनभावन चमेली पुष्प शृंगार", "का अलौकिक राजसी स्वरूप", "के मनमोहक नैना व दिव्य दर्शन",
+    "का अद्भुत पंचामृत अभिषेक दर्शन", "की भव्य मंगला आरती", "का नयनाभिराम शृंगार दर्शन", "का पावन दिव्य शृंगार रूप", "की प्रातःकालीन दिव्य ज्योत आरती",
+    "का पुष्प वर्षा शृंगार दर्शन", "का पावन व अलौकिक दरबार", "का तेजस्वी स्वर्ण शृंगार दर्शन", "की महाआरती व दिव्य दर्शन", "का मनमोहक इत्र सेवा शृंगार",
+    "का पावन शीश दर्शन", "का मनोरम गुलाब व गेंदा शृंगार", "का अनुपम दिव्य स्वरूप", "का स्वर्णिम छत्र शृंगार", "का पावन अमृतमय दर्शन",
+    "का दिव्य छप्पन भोग दर्शन", "का अद्भुत व चमत्कारी रूप", "का मनभावन प्रातः शृंगार", "की पावन संध्या शयन आरती", "का मनमोहक शृंगार व दर्शन"
 ]
 
-UNIQUE_TITLES_MOTIVATION = [
-    "यह 10 सेकंड आपकी पूरी जिंदगी बदल देंगे 🌟 कभी हार मत मानो 💪 #Shorts #Motivation #LifeLessons",
-    "ईश्वर का यह गुप्त संकेत कभी अनदेखा मत करना ✨ गीता सार 🌟 #Shorts #Motivation #PositiveVibes",
-    "जब चारों तरफ अंधेरा दिखे तो यह बात हमेशा याद रखना 🌟 #Shorts #Success #Mindset #Trending",
-    "काले पत्थर का सच्चा हीरा 😭 इस कहानी को सुनकर आपकी आँखें भर आएंगी 🌟 #Shorts #LifeChanging",
-    "मन को शांत और मजबूत बनाने के 3 गुप्त नियम 🌟 #Shorts #PeaceOfMind #DailyMotivation",
-    "किस्मत को दोष देना छोड़ो और आज से यह शुरू करो 💪 #Shorts #Motivation #Success",
-    "जिंदगी में अगर बड़ा मुकाम पाना है तो यह सीख हमेशा याद रखना 🌟 #Shorts #LifeLessons",
-    "सकारात्मक सोच की असीम शक्ति ✨ आपकी जिंदगी कैसे बदल सकती है #Shorts #PositiveThinking"
+BHAKTI_L3 = [
+    "🌸 देखते ही मन को असीम शांति मिले", "🌸 1 सेकंड निकालकर दर्शन ज़रूर करें", "🌸 सांवरे के दर्शन से संवर जाएगी जिंदगी", "🌸 जिसने सच्चे मन से दर्शन किए संकट दूर हुए", "🌸 आपके घर में सुख-समृद्धि और खुशहाली आए",
+    "🌸 जीवन का हर कष्ट व दुख दूर होगा", "🌸 1 लाइक श्याम प्यारे के नाम", "🌸 कमेंट में जय श्री श्याम लिखें", "🌸 यह दर्शन आपका पूरा दिन बना देगा", "🌸 सांवरे का आशीर्वाद हमेशा आपके साथ रहे",
+    "🌸 सच्चे दिल से जो भी मांगा सब मिला", "🌸 आज का दिन आपके लिए मंगलमय हो", "🌸 बाबा श्याम हर विपदा से रक्षा करें", "🌸 सांवरे की कृपा आप पर सदा बनी रहे", "🌸 घर-परिवार में खुशियों की बरसात हो",
+    "🌸 मन की हर अधूरी मुराद पूरी होगी", "🌸 सच्चे मन से शीश झुकाएं और कृपा पाएं", "🌸 बाबा के पावन दर्शन से हर बिगड़ा काम बने", "🌸 कलयुग में केवल श्याम नाम ही सच्चा सहारा है", "🌸 हर भक्त की झोली खुशियों से भर जाए",
+    "🌸 आज का यह अलौकिक रूप दिल छू लेगा", "🌸 बाबा की दिव्य मुस्कान से मन प्रफुल्लित हो जाए", "🌸 सांवरे की पावन छवि को निहारते रह जाएंगे", "🌸 1 शेयर करके पुण्य के भागी बनें", "🌸 बाबा का यह रूप आपकी हर चिंता हर लेगा",
+    "🌸 श्याम कृपा से हर अंधेरा दूर होगा", "🌸 सांवरे के चरणों में ही सच्चा सुख है", "🌸 मन में सच्चा विश्वास रखो सब अच्छा होगा", "🌸 बाबा श्याम की महिमा सबसे निराली है", "🌸 श्याम नाम लेने से ही बेड़ा पार हो जाए"
 ]
 
-def pick_unique_title(pool, existing_titles):
-    existing_lower = {t.strip().lower() for t in existing_titles}
-    for cand in pool:
-        if cand.strip().lower() not in existing_lower:
-            return cand
-    ts = datetime.now().strftime("%d %b")
-    return f"{pool[0]} | {ts}"
+BHAKTI_L4 = [
+    "🙏 जय श्री श्याम", "🙏 खाटू नरेश की जय", "🙏 हारे के सहारे की जय", "🙏 तीन बाण धारी की जय", "🙏 लखदातार की जय",
+    "🙏 शीश के दानी की जय", "🙏 नीले घोड़े वाले की जय", "🙏 सांवरे सरकार की जय", "🙏 जय श्री खाटू धाम", "🙏 जय श्री साँवरिया सेठ",
+    "🙏 ॐ श्री श्याम देवाय नमः", "🙏 श्याम प्यारे की जय", "🙏 मोरछड़ी वाले की जय", "🙏 कलयुग अवतारी की जय", "🙏 खाटू वाले की जय",
+    "🙏 जय बाबा श्याम", "🙏 दीनबंधु की जय", "🙏 जय श्री श्याम बिहारी", "🙏 सांवरे की जय", "🙏 जय लखदातार"
+]
+
+BHAKTI_L5 = [
+    "#Shorts #KhatuShyam #Viral", "#Shorts #Bhakti #Trending", "#Shorts #KhatuDham #HaareKaSahara", "#Shorts #ViralShorts #DailyDarshan", "#Shorts #ShyamDarshan #ShortsFeed",
+    "#Shorts #KhatuNaresh #ViralVideo", "#Shorts #Explore #BhaktiShorts", "#Shorts #KhatuShyamJi #TrendingNow", "#Shorts #JaiShreeShyam #ViralStatus", "#Shorts #BhaktiStatus #ForYou",
+    "#Shorts #TrendingShorts #Reels", "#Shorts #ShyamBaba #Status", "#Shorts #KhatuLive #ViralReels", "#Shorts #HaareKeSahare #ShortsIndia", "#Shorts #DivineDarshan #ExplorePage"
+]
+
+MOTIVATION_L1 = [
+    "यह 10 सेकंड आपकी जिंदगी बदल देंगे 🌟", "जब चारों तरफ अंधेरा दिखे तो यह याद रखना 🌟", "काले पत्थर का सच्चा हीरा 😭", "ईश्वर का यह गुप्त संकेत कभी अनदेखा मत करना ✨", "किस्मत को दोष देना छोड़ो और आज से यह शुरू करो 💪",
+    "जिंदगी में अगर बड़ा मुकाम पाना है तो यह सीखो 🌟", "सकारात्मक सोच की असीम शक्ति ✨", "मन को शांत और मजबूत बनाने के नियम 🌟", "सफलता का सबसे बड़ा गुप्त रहस्य 💡", "जो इंसान समय की कद्र करता है वही जीतता है 🌟",
+    "हार मानने से पहले इस बात को ज़रूर याद रखना 💪", "कठिन समय ही एक मजबूत इंसान बनाता है 🌟", "अपनी कमजोरियों को अपनी ताकत बनाओ 💡", "लोग क्या कहेंगे यह सोचना आज ही बंद करो 🌟", "धैर्य और विश्वास से हर मंजिल मिलती है 💪",
+    "जब तक सांस है तब तक प्रयास जारी रखो 🌟", "महानता कभी गिरने में नहीं बल्कि उठने में है 💡", "सपनों को सच करने का सबसे आसान तरीका 🌟", "जो अपने काम से प्यार करता है वह कभी नहीं थकता 💪", "जिंदगी आपको वही देती है जिसके आप हकदार हैं 🌟"
+]
+
+MOTIVATION_L2 = [
+    "कभी हिम्मत मत हारो", "विश्वास रखो सब ठीक होगा", "हर मुश्किल में एक अवसर छिपा होता है", "अपने लक्ष्य पर अडिग रहो", "मेहनत कभी बेकार नहीं जाती",
+    "खुद पर भरोसा सबसे बड़ी ताकत है", "आज की मेहनत कल का सुकून बनेगी", "सफलता का कोई शॉर्टकट नहीं होता", "अपनी सोच को हमेशा ऊंचा रखो", "जीवन का सच्चा सबक"
+]
+
+MOTIVATION_L3 = [
+    "💪 #Shorts #Motivation #LifeLessons", "🌟 #Shorts #Success #Mindset #Trending", "✨ #Shorts #PositiveVibes #DailyMotivation", "💡 #Shorts #LifeChanging #Inspiration", "🔥 #Shorts #SelfImprovement #MindPower"
+]
+
+def generate_dynamic_unique_title(niche, existing_titles=None):
+    if existing_titles is None:
+        existing_titles = []
+    existing_set = {t.strip().lower() for t in existing_titles}
+
+    import random
+    if niche == "bhakti":
+        for _ in range(500):
+            w1 = random.choice(BHAKTI_L1)
+            w2 = random.choice(BHAKTI_L2)
+            w3 = random.choice(BHAKTI_L3)
+            w4 = random.choice(BHAKTI_L4)
+            w5 = random.choice(BHAKTI_L5)
+            cand = f"{w1} {w2} {w3} {w4} {w5}"
+            if cand.strip().lower() not in existing_set:
+                return cand
+        return f"{random.choice(BHAKTI_L1)} {random.choice(BHAKTI_L2)} {random.choice(BHAKTI_L3)} {random.choice(BHAKTI_L4)} {random.choice(BHAKTI_L5)}"
+    else:
+        for _ in range(500):
+            w1 = random.choice(MOTIVATION_L1)
+            w2 = random.choice(MOTIVATION_L2)
+            w3 = random.choice(MOTIVATION_L3)
+            cand = f"{w1} | {w2} {w3}"
+            if cand.strip().lower() not in existing_set:
+                return cand
+        return f"{random.choice(MOTIVATION_L1)} | {random.choice(MOTIVATION_L2)} {random.choice(MOTIVATION_L3)}"
 
 def generate_seo_package(raw_title, niche, existing_titles=None):
     if existing_titles is None:
         existing_titles = []
-        
+
     title_lower = raw_title.lower()
-    
-    if any(k in title_lower for k in ["khatu", "shyam", "khatushyam", "morpankh"]):
-        title = pick_unique_title(UNIQUE_TITLES_KHATU_SHYAM, existing_titles)
+
+    if any(k in title_lower for k in ["khatu", "shyam", "khatushyam", "morpankh"]) or niche == "bhakti":
+        title = generate_dynamic_unique_title("bhakti", existing_titles)
         desc = """🙏 जय श्री श्याम! खाटू धाम से बाबा श्री खाटू श्याम जी का अलौकिक शृंगार दर्शन 🌸
 
 👑 आज बाबा श्याम का भव्य स्वरूप:
@@ -188,21 +228,9 @@ def generate_seo_package(raw_title, niche, existing_titles=None):
 #KhatuShyam #BabaShyam #KhatuDham #JaiShreeShyam #ShyamDarshan #BhaktiShorts #Shorts #Viral #Trending #HareKeSahare #ShortsFeed #NandiniVinodSoni"""
         tags = VIRAL_TAGS_BHAKTI
         pin = "🙏 जय श्री श्याम! बाबा श्याम के सभी सच्चे भक्त कमेंट में एक बार 'जय श्री श्याम' ज़रूर लिखें! 🌸👑"
-        
-    elif any(k in title_lower for k in ["sanwariya", "seth", "sawariya", "mandaphiya"]):
-        title = pick_unique_title(UNIQUE_TITLES_SANWARIYA, existing_titles)
-        desc = """🙏 जय श्री साँवरिया सेठ! मण्डफिया धाम से साँवरिया सेठ जी के पावन प्रातः दर्शन 🌸
 
-✨ सेठों के सेठ साँवरिया सेठ का मनमोहक रूप!
-कमेंट में "जय साँवरिया सेठ" लिखकर अपनी हाजिरी लगाएं और आशीर्वाद पाएं! 🙏
-
-👉 SUBSCRIBE करें: https://www.youtube.com/@nandinitovinod
-#SanwariyaSeth #Mandaphiya #BhaktiShorts #Shorts #Viral #Trending #ShortsFeed #NandiniVinodSoni"""
-        tags = ["sanwariya seth", "sanwariya seth live", "mandaphiya mandir", "sanwariya seth darshan"] + VIRAL_TAGS_BHAKTI[:15]
-        pin = "🙏 जय साँवरिया सेठ! सेठों के सेठ साँवरिया सेठ के भक्त कमेंट में 'जय श्री साँवरिया सेठ' ज़रूर लिखें! 🌸💰"
-        
-    elif niche == "motivation" or any(k in title_lower for k in ["motivation", "story", "kahani", "lesson", "geeta", "dhyan"]):
-        title = pick_unique_title(UNIQUE_TITLES_MOTIVATION, existing_titles)
+    else:
+        title = generate_dynamic_unique_title("motivation", existing_titles)
         desc = """✨ जीवन में कभी हार मत मानो! हर मुश्किल समय में एक नई सीख छिपी होती है। 🌟
 
 इस वीडियो को पूरा देखें और अपने दोस्तों के साथ शेयर करें! 💪
@@ -211,17 +239,7 @@ def generate_seo_package(raw_title, niche, existing_titles=None):
 #Motivation #LifeLessons #Success #Mindset #PositiveVibes #Shorts #Viral #Trending #ShortsFeed #LearningOfLife"""
         tags = VIRAL_TAGS_MOTIVATION
         pin = "✨ जीवन में कभी हार मत मानो, ईश्वर हर पल आपके साथ हैं! 🌟 कमेंट में 'Yes' लिखें! 💫"
-        
-    else:
-        title = "ईश्वर के पावन दर्शन 🌸 आपका दिन मंगलमय हो 🙏 #Shorts #Bhakti #Viral"
-        desc = """🙏 प्रभु के पावन दर्शन करके अपने दिन की शुभ शुरुआत करें! 🌸
 
-कमेंट में भगवान का नाम लिखें और परिवार के साथ शेयर करें! 🙏
-👉 SUBSCRIBE: https://www.youtube.com/@nandinitovinod
-#Bhakti #Shorts #Viral #Trending #ShortsFeed"""
-        tags = VIRAL_TAGS_BHAKTI if niche == "bhakti" else VIRAL_TAGS_MOTIVATION
-        pin = "🙏 भगवान का आशीर्वाद आप और आपके पूरे परिवार पर बना रहे! 🌸✨"
-        
     return title, desc, tags, pin
 
 def run_cloud_cycle():
