@@ -116,11 +116,62 @@ def get_next_available_slot(existing_scheduled_utc):
     fallback_utc = now_utc + timedelta(hours=3)
     return fallback_utc.strftime("%Y-%m-%dT%H:%M:%S.000Z"), "3 Hours from now"
 
-def generate_seo_package(raw_title, niche):
+UNIQUE_TITLES_KHATU_SHYAM = [
+    "बाबा श्याम का दिव्य अलौकिक शृंगार दर्शन 🌸 जय श्री श्याम 🙏 #Shorts #KhatuShyam #Viral",
+    "खाटू श्याम जी का भव्य मोरपंखी शृंगार दर्शन 🌸 देखते ही दिन बन जाए 🙏 #Shorts #KhatuShyam",
+    "नीले के सवार बाबा श्याम का चमत्कारी रूप 🌸 हारे के सहारे की जय 🙏 #Shorts #KhatuShyam",
+    "जिसने भी सच्चे मन से दर्शन किए उसकी हर मनोकामना पूरी हुई 🌸 जय श्री श्याम 🙏 #KhatuDham #Shorts",
+    "हारे के सहारे बाबा श्याम हमारे 🌸 1 सेकंड निकालकर दर्शन ज़रूर करें 🙏 #Shorts #ViralShorts",
+    "बाबा श्याम का मनमोहक गुलाब शृंगार दर्शन 🌸 1 लाइक श्याम प्यारे के नाम 🙏 #Shorts #Trending",
+    "खाटू धाम से बाबा श्याम का प्रातः दिव्य दर्शन 🌸 आपका दिन मंगलमय हो 🙏 #Shorts #Bhakti",
+    "सांवरे के दर्शन से संवर जाएगी जिंदगी 🌸 जय श्री खाटू नरेश 🙏 #Shorts #KhatuShyam",
+    "लाखदातार बाबा श्याम का चमत्कारी दरबार 🌸 1 लाइक हारे के सहारे के नाम 🙏 #Shorts #Viral",
+    "मोरपंखी मुकुट में बाबा श्याम का मनभावन रूप 🌸 कमेंट में जय श्री श्याम लिखें 🙏 #Shorts",
+    "खाटू वाले श्याम बिहारी की पावन आरती व दर्शन 🌸 जय श्री श्याम 🙏 #Shorts #KhatuDham",
+    "कलयुग के देव बाबा श्री खाटू श्याम जी का अलौकिक रूप 🌸 1 लाइक श्याम के नाम 🙏 #Shorts",
+    "बाबा श्याम के चरणों में जिसके शीश झुके उसके संकट दूर हुए 🌸 जय श्री श्याम 🙏 #Shorts",
+    "खाटू नरेश का ऐसा भव्य शृंगार दर्शन पहले कभी नहीं देखा 🌸 #Shorts #KhatuShyam #Viral",
+    "श्याम नाम की महिमा अपरंपार 🌸 बाबा श्याम का पावन शृंगार दर्शन 🙏 #Shorts #BhaktiShorts"
+]
+
+UNIQUE_TITLES_SANWARIYA = [
+    "साँवरिया सेठ के प्रातः दिव्य दर्शन 🌸 सेठों के सेठ साँवरिया सेठ 🙏 #Shorts #SanwariyaSeth #Viral",
+    "मण्डफिया धाम से साँवरिया सेठ जी का पावन दरबार 🌸 1 लाइक सेठ के नाम 🙏 #Shorts #Bhakti",
+    "सेठों के सेठ साँवरिया सेठ का मनमोहक रूप 🌸 आपकी हर मनोकामना पूरी हो 🙏 #Shorts",
+    "सांवरिया सेठ के चमत्कारी दर्शन 🌸 जिसके साथ सांवरिया उसका कोई क्या बिगाड़े 🙏 #Shorts",
+    "सांवरिया सेठ जी की प्रातः आरती व दिव्य शृंगार दर्शन 🌸 जय श्री सांवरिया सेठ 🙏 #Shorts",
+    "साँवरिया सेठ का खज़ाना 🌸 1 लाइक साँवरिया प्यारे के नाम 🙏 #Shorts #SanwariyaSeth",
+    "सेठों के सेठ का पावन दरबार 🌸 देखते ही मन को शांति मिले 🙏 #Shorts #Viral",
+    "चित्तौड़गढ़ मण्डफिया धाम साँवरिया सेठ के चमत्कारी दर्शन 🌸 जय साँवरिया सेठ 🙏 #Shorts"
+]
+
+UNIQUE_TITLES_MOTIVATION = [
+    "यह 10 सेकंड आपकी पूरी जिंदगी बदल देंगे 🌟 कभी हार मत मानो 💪 #Shorts #Motivation #LifeLessons",
+    "ईश्वर का यह गुप्त संकेत कभी अनदेखा मत करना ✨ गीता सार 🌟 #Shorts #Motivation #PositiveVibes",
+    "जब चारों तरफ अंधेरा दिखे तो यह बात हमेशा याद रखना 🌟 #Shorts #Success #Mindset #Trending",
+    "काले पत्थर का सच्चा हीरा 😭 इस कहानी को सुनकर आपकी आँखें भर आएंगी 🌟 #Shorts #LifeChanging",
+    "मन को शांत और मजबूत बनाने के 3 गुप्त नियम 🌟 #Shorts #PeaceOfMind #DailyMotivation",
+    "किस्मत को दोष देना छोड़ो और आज से यह शुरू करो 💪 #Shorts #Motivation #Success",
+    "जिंदगी में अगर बड़ा मुकाम पाना है तो यह सीख हमेशा याद रखना 🌟 #Shorts #LifeLessons",
+    "सकारात्मक सोच की असीम शक्ति ✨ आपकी जिंदगी कैसे बदल सकती है #Shorts #PositiveThinking"
+]
+
+def pick_unique_title(pool, existing_titles):
+    existing_lower = {t.strip().lower() for t in existing_titles}
+    for cand in pool:
+        if cand.strip().lower() not in existing_lower:
+            return cand
+    ts = datetime.now().strftime("%d %b")
+    return f"{pool[0]} | {ts}"
+
+def generate_seo_package(raw_title, niche, existing_titles=None):
+    if existing_titles is None:
+        existing_titles = []
+        
     title_lower = raw_title.lower()
     
     if any(k in title_lower for k in ["khatu", "shyam", "khatushyam", "morpankh"]):
-        title = "बाबा श्याम का दिव्य अलौकिक शृंगार दर्शन 🌸 जय श्री श्याम 🙏 #Shorts #KhatuShyam #Viral"
+        title = pick_unique_title(UNIQUE_TITLES_KHATU_SHYAM, existing_titles)
         desc = """🙏 जय श्री श्याम! खाटू धाम से बाबा श्री खाटू श्याम जी का अलौकिक शृंगार दर्शन 🌸
 
 👑 आज बाबा श्याम का भव्य स्वरूप:
@@ -139,7 +190,7 @@ def generate_seo_package(raw_title, niche):
         pin = "🙏 जय श्री श्याम! बाबा श्याम के सभी सच्चे भक्त कमेंट में एक बार 'जय श्री श्याम' ज़रूर लिखें! 🌸👑"
         
     elif any(k in title_lower for k in ["sanwariya", "seth", "sawariya", "mandaphiya"]):
-        title = "साँवरिया सेठ के प्रातः दिव्य दर्शन 🌸 सेठों के सेठ साँवरिया सेठ 🙏 #Shorts #SanwariyaSeth #Viral"
+        title = pick_unique_title(UNIQUE_TITLES_SANWARIYA, existing_titles)
         desc = """🙏 जय श्री साँवरिया सेठ! मण्डफिया धाम से साँवरिया सेठ जी के पावन प्रातः दर्शन 🌸
 
 ✨ सेठों के सेठ साँवरिया सेठ का मनमोहक रूप!
@@ -151,7 +202,7 @@ def generate_seo_package(raw_title, niche):
         pin = "🙏 जय साँवरिया सेठ! सेठों के सेठ साँवरिया सेठ के भक्त कमेंट में 'जय श्री साँवरिया सेठ' ज़रूर लिखें! 🌸💰"
         
     elif niche == "motivation" or any(k in title_lower for k in ["motivation", "story", "kahani", "lesson", "geeta", "dhyan"]):
-        title = "यह 10 सेकंड आपकी पूरी जिंदगी बदल देंगे 🌟 कभी हार मत मानो 💪 #Shorts #Motivation #LifeLessons"
+        title = pick_unique_title(UNIQUE_TITLES_MOTIVATION, existing_titles)
         desc = """✨ जीवन में कभी हार मत मानो! हर मुश्किल समय में एक नई सीख छिपी होती है। 🌟
 
 इस वीडियो को पूरा देखें और अपने दोस्तों के साथ शेयर करें! 💪
@@ -211,6 +262,7 @@ def run_cloud_cycle():
                 id=",".join(v_ids)
             ).execute()
 
+            existing_channel_titles = [v["snippet"].get("title", "") for v in v_resp.get("items", [])]
             existing_scheduled_utc = [
                 v["status"].get("publishAt") for v in v_resp.get("items", [])
                 if v["status"].get("privacyStatus") == "private" and v["status"].get("publishAt")
@@ -226,7 +278,8 @@ def run_cloud_cycle():
                 # TRIGGER CHECK
                 if re.search(r'\bseo\s*(kr\s*do|kardo|kar\s*do|krdo)\b', title_curr, re.IGNORECASE):
                     print(f"\n🚨 [CLOUD TRIGGER DETECTED] Video {vid}: '{title_curr}'!")
-                    new_title, new_desc, new_tags, pin_comment = generate_seo_package(title_curr, niche)
+                    new_title, new_desc, new_tags, pin_comment = generate_seo_package(title_curr, niche, existing_channel_titles)
+                    existing_channel_titles.append(new_title)
                     slot_utc_str, slot_ist_str = get_next_available_slot(existing_scheduled_utc)
                     existing_scheduled_utc.append(slot_utc_str)
 
