@@ -296,7 +296,7 @@ def run_cloud_cycle():
                 title_curr = snip.get("title", "")
 
                 # TRIGGER CHECK
-                if re.search(r'\bseo\s*(kr\s*do|kardo|kar\s*do|krdo)\b', title_curr, re.IGNORECASE):
+                if re.search(r'\bseo\s*(kr\s*do|kardo|kar\s*do|krdo|kro\s*do|krodo|kr\s*de|karde)\b', title_curr, re.IGNORECASE):
                     print(f"\n🚨 [CLOUD TRIGGER DETECTED] Video {vid}: '{title_curr}'!")
                     new_title, new_desc, new_tags, pin_comment = generate_seo_package(title_curr, niche, existing_channel_titles)
                     existing_channel_titles.append(new_title)
