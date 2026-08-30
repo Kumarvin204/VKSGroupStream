@@ -268,6 +268,12 @@ def generate_seo_package(raw_title, niche="bhakti", existing_titles=None):
 👉 रोज़ाना सुबह-शाम ताज़ा दर्शन के लिए SUBSCRIBE करें: https://www.youtube.com/@nandinitovinod
 🔔 Bell Icon दबाएं!
 
+==================================================
+🛡️ Content Notice & Transformative Value:
+All devotional footage & darshan visuals are creatively curated, color-graded, and edited with original spiritual commentary, structured prayers, and devotional context by Nandini & Vinod Soni Official to spread peace and positivity.
+📧 Contact for business & inquiries: vsoni9060@gmail.com
+==================================================
+
 #KhatuShyam #BabaShyam #KhatuDham #JaiShreeShyam #ShyamDarshan #BhaktiShorts #Shorts #Viral #Trending #HareKeSahare #ShortsFeed #NandiniVinodSoni"""
         tags = VIRAL_TAGS_BHAKTI + extra_tags
         # 200%+ Loop APV Faith Comment Prompt (Forces 12-15s typing time -> 2-3x video loop)
@@ -281,6 +287,12 @@ def generate_seo_package(raw_title, niche="bhakti", existing_titles=None):
 अगर यह सीख पसंद आई हो तो Like करें और Channel SUBSCRIBE करें! 🔔
 
 🎬 मन को शांत करने और तनाव दूर करने के 5 अचूक नियम यहाँ देखें: https://www.youtube.com/watch?v=FvM23bYgeWI
+
+==================================================
+🛡️ Content Notice & Transformative Value:
+This motivational content is uniquely written, curated, and produced by Learning of Life with positive philosophical commentary for education and inspiration.
+📧 Contact: vsoni9060@gmail.com
+==================================================
 
 #Motivation #LifeLessons #Success #Mindset #PositiveVibes #Shorts #Viral #Trending #ShortsFeed #LearningOfLife"""
         tags = VIRAL_TAGS_MOTIVATION
