@@ -206,15 +206,26 @@ def generate_dynamic_unique_title(niche, existing_titles=None):
 
 def get_panchang_festival_boost():
     """
-    🌸 FEATURE 2: Hindu Panchang, Tithi & Special Day Auto-Detector
-    Detects special days (Shanivar, Ravivar, Ekadashi / Gyas) and returns festive hooks and high-volume tags.
+    🌸 FEATURE 2 & 3: Hindu Panchang, Tithi & Multi-State Regional Devotee Expansion
+    Detects special days (Shanivar, Ravivar, Ekadashi / Gyas) and returns festive hooks and regional high-volume tags.
     """
     now_dt = datetime.now()
     weekday = now_dt.weekday()
     day_num = now_dt.day
 
     fest_title_prefix = ""
-    extra_tags = []
+    extra_tags = [
+        # Regional Multi-State Devotee Tags (Gujarat, Rajasthan, Maharashtra, Delhi NCR)
+        "khatu shyam live darshan", "khatu naresh na darshan", "sanwariya seth mandir gujarat",
+        "shyam baba status hindi", "khatu dham live today"
+    ]
+
+    # Real-Time Search Trends Hijacker (Time-of-day surge keywords)
+    hour = now_dt.hour
+    if 4 <= hour <= 11:
+        extra_tags.extend(["khatu shyam mangla aarti", "pratah darshan khatu shyam"])
+    elif 17 <= hour <= 23:
+        extra_tags.extend(["khatu shyam sandhya aarti", "shyam darshan today live 2026"])
 
     if day_num in [11, 12, 26, 27]:
         fest_title_prefix = "एकादशी विशेष 🌸 "
@@ -259,7 +270,8 @@ def generate_seo_package(raw_title, niche="bhakti", existing_titles=None):
 
 #KhatuShyam #BabaShyam #KhatuDham #JaiShreeShyam #ShyamDarshan #BhaktiShorts #Shorts #Viral #Trending #HareKeSahare #ShortsFeed #NandiniVinodSoni"""
         tags = VIRAL_TAGS_BHAKTI + extra_tags
-        pin = "🙏 जय श्री श्याम! बाबा श्याम के सभी सच्चे भक्त कमेंट में एक बार 'जय श्री श्याम' ज़रूर लिखें! 🌸👑"
+        # 200%+ Loop APV Faith Comment Prompt (Forces 12-15s typing time -> 2-3x video loop)
+        pin = "👑 बाबा श्याम के पावन स्वरूप: 1. लखदातार 2. शीश के दानी 3. हारे के सहारे — अपनी मनोकामना कमेंट में लिखकर 'जय श्री श्याम' ज़रूर बोलें! 🌸🙏"
 
     else:
         title = generate_dynamic_unique_title("motivation", existing_titles)
@@ -272,7 +284,7 @@ def generate_seo_package(raw_title, niche="bhakti", existing_titles=None):
 
 #Motivation #LifeLessons #Success #Mindset #PositiveVibes #Shorts #Viral #Trending #ShortsFeed #LearningOfLife"""
         tags = VIRAL_TAGS_MOTIVATION
-        pin = "✨ जीवन में कभी हार मत मानो, ईश्वर हर पल आपके साथ हैं! 🌟 कमेंट में 'Yes' लिखें! 💫"
+        pin = "🌟 जिंदगी में आगे बढ़ने का आपका #1 नियम क्या है: 1. कभी हार न मानना 2. खुद पर भरोसा 3. ईश्वर का साथ? कमेंट में लिखें! 💫"
 
     return title, desc, tags, pin
 
