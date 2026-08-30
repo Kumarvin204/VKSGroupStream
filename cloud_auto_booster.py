@@ -227,17 +227,69 @@ def get_panchang_festival_boost():
     elif 17 <= hour <= 23:
         extra_tags.extend(["khatu shyam sandhya aarti", "shyam darshan today live 2026"])
 
+# =============================================================================
+# 🌍 MULTI-LANGUAGE LOCALIZATION ENGINE (English, Gujarati, Marathi)
+# =============================================================================
+def get_video_localizations(base_title, niche="bhakti"):
+    """
+    🌍 FEATURE: Multi-Language Localization Engine
+    Provides backend translations for NRI devotees & multi-state diaspora without altering the main Hindi title.
+    """
+    if niche == "bhakti":
+        return {
+            "en": {
+                "title": "Khatu Shyam Ji Live Darshan Today 🌸 Divine Blessings & Aarti",
+                "description": "Daily live darshan and aarti of Shri Khatu Shyam Ji from Khatu Dham Rajasthan. Subscribe for daily spiritual blessings!\n\n#KhatuShyam #JaiShreeShyam #KhatuDham #Shorts"
+            },
+            "gu": {
+                "title": "ખાટુ શ્યામ જી ના લાઈવ દર્શન 🌸 શ્રી ખાટુ ધામ આરતી",
+                "description": "રોજના પાવન શૃંગાર અને આરતી દર્શન ખાટુ ધામથી. સબસ્ક્રાઈબ કરો અને આશીર્વાદ મેળવો!\n\n#KhatuShyam #JaiShreeShyam #BhaktiShorts"
+            },
+            "mr": {
+                "title": "खाटू श्याम जी चे थेट दर्शन 🌸 आजचा दिव्य शृंगार व आरती",
+                "description": "दररोज सकाळी आणि संध्याकाळी खाटू श्याम जी चे पावन दर्शन. कृपा आणि शांती साठी सबस्क्राईબ करा!\n\n#KhatuShyam #JaiShreeShyam #Bhakti"
+            }
+        }
+    else:
+        return {
+            "en": {
+                "title": "10 Seconds That Will Change Your Life 🌟 Powerful Mindset Lessons",
+                "description": "Daily motivation, life lessons, and Bhagavad Gita wisdom for peace, focus, and unstoppable success. Subscribe now!\n\n#Motivation #Success #LifeLessons #Shorts"
+            }
+        }
+
+def get_panchang_festival_boost():
+    """
+    🌸 FEATURE: Hindu Panchang, Tithi & Multi-State Regional Devotee Expansion
+    """
+    now_dt = datetime.now()
+    weekday = now_dt.weekday()
+    day_num = now_dt.day
+
+    fest_title_prefix = ""
+    extra_tags = [
+        "khatu shyam live darshan", "khatu naresh na darshan", "sanwariya seth mandir gujarat",
+        "shyam baba status hindi", "khatu dham live today"
+    ]
+
+    # Real-Time Search Trends Hijacker (Time-of-day surge keywords)
+    hour = now_dt.hour
+    if 4 <= hour <= 11:
+        extra_tags.extend(["khatu shyam mangla aarti", "pratah darshan khatu shyam"])
+    elif 17 <= hour <= 23:
+        extra_tags.extend(["khatu shyam sandhya aarti", "shyam darshan today live 2026"])
+
     if day_num in [11, 12, 26, 27]:
-        fest_title_prefix = "एकादशी विशेष 🌸 "
+        fest_title_prefix = "एकादशी विशेष 🌸 [अलौकिक] "
         extra_tags.extend(["khatu shyam ekadashi darshan", "gyas khatu shyam", "ekadashi bhajan live", "khatu dham ekadashi"])
     elif weekday == 5:
-        fest_title_prefix = "शनिवार विशेष 🌸 "
+        fest_title_prefix = "शनिवार विशेष 🌸 [चमत्कारिक] "
         extra_tags.extend(["shanivar khatu shyam darshan", "shani shyam darshan", "shanivar live darshan"])
     elif weekday == 6:
-        fest_title_prefix = "रविवार पावन 🌸 "
+        fest_title_prefix = "रविवार पावन 🌸 [दिव्य दर्शन] "
         extra_tags.extend(["ravivar khatu shyam", "sunday shyam darshan", "ravivar live khatu"])
     elif weekday == 3:
-        fest_title_prefix = "गुरुवार दिव्य 🌸 "
+        fest_title_prefix = "गुरुवार दिव्य 🌸 [महाकृपा] "
         extra_tags.extend(["guruvar khatu shyam", "guruvar darshan live"])
 
     return fest_title_prefix, extra_tags
@@ -255,6 +307,7 @@ def generate_seo_package(raw_title, niche="bhakti", existing_titles=None):
         desc = """🙏 जय श्री श्याम! खाटू धाम से बाबा श्री खाटू श्याम जी का अलौकिक शृंगार दर्शन 🌸
 
 🎵 भजन भाव व स्तुति: "हारे का सहारा बाबा श्याम हमारा | शीश के दानी लखदातार की जय जयकार" 🌸
+👁️ लूप चैलेंज: क्या आपने अंतिम 3 सेकंड में बाबा के मुकुट पर चमकता दिव्य मोरपंख देखा? ध्यान से दोबारा देखें और कमेंट में बताएं! 🦚✨
 
 👑 आज बाबा श्याम का भव्य स्वरूप:
 🦚 मोरपंखी मुकुट व स्वर्ण आभूषण
@@ -278,14 +331,15 @@ All devotional footage & darshan visuals are creatively curated, color-graded, a
 
 #KhatuShyam #BabaShyam #KhatuDham #JaiShreeShyam #ShyamDarshan #BhaktiShorts #Shorts #Viral #Trending #HareKeSahare #ShortsFeed #NandiniVinodSoni"""
         tags = VIRAL_TAGS_BHAKTI + extra_tags
-        # 200%+ Loop APV Faith Comment Prompt (Forces 12-15s typing time -> 2-3x video loop)
-        pin = "👑 बाबा श्याम के पावन स्वरूप: 1. लखदातार 2. शीश के दानी 3. हारे के सहारे — अपनी मनोकामना कमेंट में लिखकर 'जय श्री श्याम' ज़रूर बोलें! 🌸🙏"
+        # 250%+ Seamless Loop & Multi-Choice Faith Comment Prompt
+        pin = "👑 बाबा श्याम के पावन स्वरूप: 1. लखदातार 2. शीश के दानी 3. हारे के सहारे — अपनी मनोकामना कमेंट में लिखकर 'जय श्री श्याम' ज़रूर बोलें! (अंतिम 3 सेकंड में मोरपंख ध्यान से देखें 🦚✨)"
 
     else:
         title = generate_dynamic_unique_title("motivation", existing_titles)
         desc = """✨ जीवन में कभी हार मत मानो! हर मुश्किल समय में एक नई सीख छिपी होती है। 🌟
 
 📖 गीता सार व विचार: "कर्म करो फल की चिंता मत करो | हर अंधकार के बाद एक नया सवेरा आता है" 💫
+👁️ लूप चैलेंज: इस सीख के अंतिम 3 सेकंड को दोबारा ध्यान से सुनें और अपने जीवन में लागू करें! 🌟
 
 इस वीडियो को पूरा देखें और अपने दोस्तों के साथ शेयर करें! 💪
 अगर यह सीख पसंद आई हो तो Like करें और Channel SUBSCRIBE करें! 🔔
@@ -300,14 +354,13 @@ This motivational content is uniquely written, curated, and produced by Learning
 
 #Motivation #LifeLessons #Success #Mindset #PositiveVibes #Shorts #Viral #Trending #ShortsFeed #LearningOfLife"""
         tags = VIRAL_TAGS_MOTIVATION
-        pin = "🌟 जिंदगी में आगे बढ़ने का आपका #1 नियम क्या है: 1. कभी हार न मानना 2. खुद पर भरोसा 3. ईश्वर का साथ? कमेंट में लिखें! 💫"
+        pin = "🌟 जिंदगी में आगे बढ़ने का आपका #1 नियम क्या है: 1. कभी हार न मानना 2. खुद पर भरोसा 3. ईश्वर का साथ? कमेंट में लिखें! (अंतिम सीख दोबारा सुनें 💫)"
 
     return title, desc, tags, pin
 
 def get_or_create_playlist(yt, title, niche="bhakti"):
     """
     🔄 FEATURE: Auto-Playlist Index-0 Syndication
-    Finds or creates the channel's main playlist to auto-feed new releases to binge-watching viewers.
     """
     try:
         pl_list = yt.playlists().list(part="snippet", mine=True, maxResults=25).execute()
@@ -363,7 +416,7 @@ def run_cloud_cycle():
                 continue
 
             v_resp = yt.videos().list(
-                part="snippet,status,statistics,contentDetails",
+                part="snippet,status,statistics,contentDetails,localizations",
                 id=",".join(v_ids)
             ).execute()
 
@@ -403,9 +456,14 @@ def run_cloud_cycle():
                     stat["publishAt"] = slot_utc_str
                     stat["selfDeclaredMadeForKids"] = False
 
+                    localizations_payload = get_video_localizations(new_title, niche)
+
                     try:
-                        yt.videos().update(part="snippet,status", body={"id": vid, "snippet": snip, "status": stat}).execute()
-                        print(f"  ✅ [CLOUD SEO & SMART SCHEDULE APPLIED] -> {slot_ist_str}")
+                        yt.videos().update(
+                            part="snippet,status,localizations",
+                            body={"id": vid, "snippet": snip, "status": stat, "localizations": localizations_payload}
+                        ).execute()
+                        print(f"  ✅ [CLOUD SEO, SMART SCHEDULE & LOCALIZATIONS APPLIED] -> {slot_ist_str}")
                     except Exception as e:
                         print(f"  ⚠️ Cloud Error applying SEO to {vid}: {e}")
                     continue
@@ -424,6 +482,7 @@ def run_cloud_cycle():
                 milestones = prev_record.get("milestones", [])
                 ab_tested = prev_record.get("ab_tested", False)
                 playlist_added = prev_record.get("playlist_added", False)
+                replied_comments = prev_record.get("replied_comments", [])
 
                 time_diff_mins = max(1, (now_ts - prev_time) // 60)
                 views_gained = current_views - prev_views
@@ -481,6 +540,25 @@ def run_cloud_cycle():
                         except Exception:
                             pass
 
+                # 4️⃣ Auto-Devotee Engagement Reply Booster
+                if comments_cnt > 0 and len(replied_comments) < 3:
+                    try:
+                        cmt_resp = yt.commentThreads().list(part="snippet", videoId=vid, maxResults=5).execute()
+                        for c_item in cmt_resp.get("items", []):
+                            c_id = c_item["id"]
+                            c_text = c_item["snippet"]["topLevelComment"]["snippet"].get("textOriginal", "").lower()
+                            if c_id not in replied_comments and any(w in c_text for w in ["shyam", "khatu", "जय", "radhey", "krishna", "yes", "🙏", "🌸"]):
+                                reply_text = "बाबा श्याम आपकी हर मनोकामना पूर्ण करें! 🌸🙏 जय श्री श्याम!" if niche == "bhakti" else "ईश्वर आप पर सदैव कृपा बनाए रखें! 💫🌟"
+                                yt.comments().insert(
+                                    part="snippet",
+                                    body={"snippet": {"parentId": c_id, "textOriginal": reply_text}}
+                                ).execute()
+                                replied_comments.append(c_id)
+                                print(f"     ❤️ [CLOUD DEVOTEE COMMENT REPLIED] on {vid}")
+                                break
+                    except Exception:
+                        pass
+
                 # Momentum Catcher
                 elif views_gained >= 5 and velocity_per_min >= 0.5:
                     if is_short:
@@ -509,7 +587,7 @@ def run_cloud_cycle():
 
                 # Auto Pinned Comment on Live Release
                 if comments_cnt == 0:
-                    pin_msg = "👑 बाबा श्याम के पावन स्वरूप: 1. लखदातार 2. शीश के दानी 3. हारे के सहारे — अपनी मनोकामना कमेंट में लिखकर 'जय श्री श्याम' ज़रूर बोलें! 🌸🙏" if niche == "bhakti" else "🌟 जिंदगी में आगे बढ़ने का आपका #1 नियम क्या है: 1. कभी हार न मानना 2. खुद पर भरोसा 3. ईश्वर का साथ? कमेंट में लिखें! 💫"
+                    pin_msg = "👑 बाबा श्याम के पावन स्वरूप: 1. लखदातार 2. शीश के दानी 3. हारे के सहारे — अपनी मनोकामना कमेंट में लिखकर 'जय श्री श्याम' ज़रूर बोलें! (अंतिम 3 सेकंड में मोरपंख ध्यान से देखें 🦚✨)" if niche == "bhakti" else "🌟 जिंदगी में आगे बढ़ने का आपका #1 नियम क्या है: 1. कभी हार न मानना 2. खुद पर भरोसा 3. ईश्वर का साथ? कमेंट में लिखें! (अंतिम सीख दोबारा सुनें 💫)"
                     try:
                         yt.commentThreads().insert(
                             part="snippet",
@@ -526,7 +604,8 @@ def run_cloud_cycle():
                     "hook_index": prev_record.get("hook_index", 0),
                     "milestones": milestones,
                     "ab_tested": ab_tested,
-                    "playlist_added": playlist_added
+                    "playlist_added": playlist_added,
+                    "replied_comments": replied_comments
                 }
 
         except Exception as e:
