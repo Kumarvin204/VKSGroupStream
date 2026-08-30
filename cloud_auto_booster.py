@@ -254,6 +254,8 @@ def generate_seo_package(raw_title, niche="bhakti", existing_titles=None):
         title = f"{fest_prefix}{base_title}" if fest_prefix and len(fest_prefix + base_title) <= 100 else base_title
         desc = """🙏 जय श्री श्याम! खाटू धाम से बाबा श्री खाटू श्याम जी का अलौकिक शृंगार दर्शन 🌸
 
+🎵 भजन भाव व स्तुति: "हारे का सहारा बाबा श्याम हमारा | शीश के दानी लखदातार की जय जयकार" 🌸
+
 👑 आज बाबा श्याम का भव्य स्वरूप:
 🦚 मोरपंखी मुकुट व स्वर्ण आभूषण
 🌺 ताज़ा गुलाब, गेंदे व चमेली के फूलों का शृंगार
@@ -283,6 +285,8 @@ All devotional footage & darshan visuals are creatively curated, color-graded, a
         title = generate_dynamic_unique_title("motivation", existing_titles)
         desc = """✨ जीवन में कभी हार मत मानो! हर मुश्किल समय में एक नई सीख छिपी होती है। 🌟
 
+📖 गीता सार व विचार: "कर्म करो फल की चिंता मत करो | हर अंधकार के बाद एक नया सवेरा आता है" 💫
+
 इस वीडियो को पूरा देखें और अपने दोस्तों के साथ शेयर करें! 💪
 अगर यह सीख पसंद आई हो तो Like करें और Channel SUBSCRIBE करें! 🔔
 
@@ -299,6 +303,31 @@ This motivational content is uniquely written, curated, and produced by Learning
         pin = "🌟 जिंदगी में आगे बढ़ने का आपका #1 नियम क्या है: 1. कभी हार न मानना 2. खुद पर भरोसा 3. ईश्वर का साथ? कमेंट में लिखें! 💫"
 
     return title, desc, tags, pin
+
+def get_or_create_playlist(yt, title, niche="bhakti"):
+    """
+    🔄 FEATURE: Auto-Playlist Index-0 Syndication
+    Finds or creates the channel's main playlist to auto-feed new releases to binge-watching viewers.
+    """
+    try:
+        pl_list = yt.playlists().list(part="snippet", mine=True, maxResults=25).execute()
+        for item in pl_list.get("items", []):
+            if title.lower() in item["snippet"]["title"].lower():
+                return item["id"]
+        
+        new_pl = yt.playlists().insert(
+            part="snippet,status",
+            body={
+                "snippet": {
+                    "title": title,
+                    "description": f"Daily updated playlist for {niche} videos — watch continuously!"
+                },
+                "status": {"privacyStatus": "public"}
+            }
+        ).execute()
+        return new_pl["id"]
+    except Exception:
+        return None
 
 def run_cloud_cycle():
     now_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')
@@ -343,6 +372,9 @@ def run_cloud_cycle():
                 v["status"].get("publishAt") for v in v_resp.get("items", [])
                 if v["status"].get("privacyStatus") == "private" and v["status"].get("publishAt")
             ]
+
+            main_playlist_title = "श्री खाटू श्याम जी नित्य दर्शन 2026 🌸" if niche == "bhakti" else "Life Changing Motivation & Lessons 🌟"
+            main_pl_id = get_or_create_playlist(yt, main_playlist_title, niche)
 
             for v in v_resp.get("items", []):
                 vid = v["id"]
@@ -389,13 +421,68 @@ def run_cloud_cycle():
                 prev_record = state.get(vid, {})
                 prev_views = prev_record.get("views", current_views)
                 prev_time = prev_record.get("timestamp", now_ts)
+                milestones = prev_record.get("milestones", [])
+                ab_tested = prev_record.get("ab_tested", False)
+                playlist_added = prev_record.get("playlist_added", False)
 
                 time_diff_mins = max(1, (now_ts - prev_time) // 60)
                 views_gained = current_views - prev_views
                 velocity_per_min = views_gained / time_diff_mins
 
-                # Momentum
-                if views_gained >= 5 and velocity_per_min >= 0.5:
+                # 1️⃣ Auto-Playlist Index-0 Syndication Loop
+                if main_pl_id and not playlist_added:
+                    try:
+                        yt.playlistItems().insert(
+                            part="snippet",
+                            body={
+                                "snippet": {
+                                    "playlistId": main_pl_id,
+                                    "position": 0,
+                                    "resourceId": {"kind": "youtube#video", "videoId": vid}
+                                }
+                            }
+                        ).execute()
+                        playlist_added = True
+                        print(f"     🔄 [CLOUD PLAYLIST INDEX-0] Pinned {vid} to top of playlist!")
+                    except Exception:
+                        playlist_added = True
+
+                # 2️⃣ Viral Milestone Momentum Booster (500, 1K, 2K Views)
+                for ms in [250, 500, 1000, 2000, 5000]:
+                    if current_views >= ms and ms not in milestones:
+                        milestones.append(ms)
+                        print(f"     🏆 [CLOUD MILESTONE {ms}+ VIEWS REACHED] Upgrading tags on {vid}...")
+                        broad_tags = ["khatu shyam status 2026", "viral shorts today", "trending reels hindi", "bhakti live", "khatu dham"]
+                        snip["tags"] = list(set((snip.get("tags") or []) + broad_tags))
+                        try:
+                            yt.videos().update(part="snippet,status", body={"id": vid, "snippet": snip, "status": stat}).execute()
+                            celebration_msg = f"🎉 आज {current_views}+ श्याम भक्तों ने पावन दर्शन किए! अपनी मनोकामना कमेंट में लिखकर 'जय श्री श्याम' ज़रूर बोलें! 🌸🙏" if niche == "bhakti" else f"🔥 {current_views}+ लोगों ने यह सीख देखी! आप भी कमेंट में अपना विचार ज़रूर साझा करें! 💫"
+                            yt.commentThreads().insert(
+                                part="snippet",
+                                body={"snippet": {"videoId": vid, "topLevelComment": {"snippet": {"textOriginal": celebration_msg}}}}
+                            ).execute()
+                        except Exception:
+                            pass
+
+                # 3️⃣ Auto A/B Dynamic Title Switcher (CTR Boost)
+                if is_short and not ab_tested and time_diff_mins >= 15 and current_views < 40:
+                    new_unique_title = generate_dynamic_unique_title(niche, existing_channel_titles)
+                    if new_unique_title and new_unique_title != title_curr:
+                        snip["title"] = new_unique_title
+                        snip["tags"] = tags
+                        snip["categoryId"] = "22"
+                        try:
+                            yt.videos().update(part="snippet,status", body={"id": vid, "snippet": snip, "status": stat}).execute()
+                            print(f"     🎯 [CLOUD A/B TITLE SWITCHED] -> {new_unique_title[:45]}...")
+                            if title_curr in existing_channel_titles:
+                                existing_channel_titles.remove(title_curr)
+                            existing_channel_titles.append(new_unique_title)
+                            ab_tested = True
+                        except Exception:
+                            pass
+
+                # Momentum Catcher
+                elif views_gained >= 5 and velocity_per_min >= 0.5:
                     if is_short:
                         snip["tags"] = tags
                     snip["categoryId"] = "22"
@@ -404,10 +491,9 @@ def run_cloud_cycle():
                     except Exception:
                         pass
 
-                # Slowdown Revival (ONLY FOR SHORTS <60s, never corrupt long movies/katha)
-                elif is_short and ((time_diff_mins >= 10 and views_gained < 5) or (current_views < 50 and time_diff_mins >= 8)):
+                # Slowdown Revival
+                elif is_short and ((time_diff_mins >= 25 and views_gained < 5) or (current_views < 50 and time_diff_mins >= 20)):
                     new_unique_title = generate_dynamic_unique_title(niche, existing_channel_titles)
-
                     if new_unique_title and new_unique_title != title_curr:
                         snip["title"] = new_unique_title
                         snip["tags"] = tags
@@ -423,13 +509,7 @@ def run_cloud_cycle():
 
                 # Auto Pinned Comment on Live Release
                 if comments_cnt == 0:
-                    if vid == "rRVGvqYh4R8":
-                        pin_msg = "🙏 जय श्री श्याम! नीले के सवार, खाटू नरेश बाबा श्याम के सभी सच्चे भक्त कमेंट में 'खाटू नरेश की जय' ज़रूर लिखें! 🌸👑"
-                    elif niche == "bhakti":
-                        pin_msg = "🙏 जय श्री श्याम! बाबा श्याम के सभी सच्चे भक्त कमेंट में एक बार 'जय श्री श्याम' ज़रूर लिखें! 🌸👑"
-                    else:
-                        pin_msg = "✨ जीवन में कभी हार मत मानो, ईश्वर हर पल आपके साथ हैं! 🌟 कमेंट में 'Yes' लिखें! 💫"
-
+                    pin_msg = "👑 बाबा श्याम के पावन स्वरूप: 1. लखदातार 2. शीश के दानी 3. हारे के सहारे — अपनी मनोकामना कमेंट में लिखकर 'जय श्री श्याम' ज़रूर बोलें! 🌸🙏" if niche == "bhakti" else "🌟 जिंदगी में आगे बढ़ने का आपका #1 नियम क्या है: 1. कभी हार न मानना 2. खुद पर भरोसा 3. ईश्वर का साथ? कमेंट में लिखें! 💫"
                     try:
                         yt.commentThreads().insert(
                             part="snippet",
@@ -443,7 +523,10 @@ def run_cloud_cycle():
                     "views": current_views,
                     "likes": current_likes,
                     "timestamp": now_ts,
-                    "hook_index": prev_record.get("hook_index", 0)
+                    "hook_index": prev_record.get("hook_index", 0),
+                    "milestones": milestones,
+                    "ab_tested": ab_tested,
+                    "playlist_added": playlist_added
                 }
 
         except Exception as e:
