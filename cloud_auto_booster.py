@@ -204,14 +204,43 @@ def generate_dynamic_unique_title(niche, existing_titles=None):
                 return cand
         return f"{random.choice(MOTIVATION_L1)} | {random.choice(MOTIVATION_L2)} {random.choice(MOTIVATION_L3)}"
 
-def generate_seo_package(raw_title, niche, existing_titles=None):
+def get_panchang_festival_boost():
+    """
+    🌸 FEATURE 2: Hindu Panchang, Tithi & Special Day Auto-Detector
+    Detects special days (Shanivar, Ravivar, Ekadashi / Gyas) and returns festive hooks and high-volume tags.
+    """
+    now_dt = datetime.now()
+    weekday = now_dt.weekday()
+    day_num = now_dt.day
+
+    fest_title_prefix = ""
+    extra_tags = []
+
+    if day_num in [11, 12, 26, 27]:
+        fest_title_prefix = "एकादशी विशेष 🌸 "
+        extra_tags.extend(["khatu shyam ekadashi darshan", "gyas khatu shyam", "ekadashi bhajan live", "khatu dham ekadashi"])
+    elif weekday == 5:
+        fest_title_prefix = "शनिवार विशेष 🌸 "
+        extra_tags.extend(["shanivar khatu shyam darshan", "shani shyam darshan", "shanivar live darshan"])
+    elif weekday == 6:
+        fest_title_prefix = "रविवार पावन 🌸 "
+        extra_tags.extend(["ravivar khatu shyam", "sunday shyam darshan", "ravivar live khatu"])
+    elif weekday == 3:
+        fest_title_prefix = "गुरुवार दिव्य 🌸 "
+        extra_tags.extend(["guruvar khatu shyam", "guruvar darshan live"])
+
+    return fest_title_prefix, extra_tags
+
+def generate_seo_package(raw_title, niche="bhakti", existing_titles=None):
     if existing_titles is None:
         existing_titles = []
 
     title_lower = raw_title.lower()
+    fest_prefix, extra_tags = get_panchang_festival_boost()
 
-    if any(k in title_lower for k in ["khatu", "shyam", "khatushyam", "morpankh"]) or niche == "bhakti":
-        title = generate_dynamic_unique_title("bhakti", existing_titles)
+    if any(k in title_lower for k in ["khatu", "shyam", "khatushyam", "morpankh", "sanwariya"]) or niche == "bhakti":
+        base_title = generate_dynamic_unique_title("bhakti", existing_titles)
+        title = f"{fest_prefix}{base_title}" if fest_prefix and len(fest_prefix + base_title) <= 100 else base_title
         desc = """🙏 जय श्री श्याम! खाटू धाम से बाबा श्री खाटू श्याम जी का अलौकिक शृंगार दर्शन 🌸
 
 👑 आज बाबा श्याम का भव्य स्वरूप:
@@ -222,11 +251,14 @@ def generate_seo_package(raw_title, niche, existing_titles=None):
 बाबा श्याम की कृपा से आपके घर में सुख-समृद्धि आए! 🙏
 कमेंट में "जय श्री श्याम" या "हारे के सहारे की जय" ज़रूर लिखें! 🌸
 
+🎬 1-घंटे की खाटू श्याम सम्पूर्ण अमर कथा यहाँ देखें: https://www.youtube.com/watch?v=M2cMgrvelqk
+🎬 श्री कृष्ण बाल लीला सम्पूर्ण 20 चमत्कार यहाँ देखें: https://www.youtube.com/watch?v=WbQXodCN-S8
+
 👉 रोज़ाना सुबह-शाम ताज़ा दर्शन के लिए SUBSCRIBE करें: https://www.youtube.com/@nandinitovinod
 🔔 Bell Icon दबाएं!
 
 #KhatuShyam #BabaShyam #KhatuDham #JaiShreeShyam #ShyamDarshan #BhaktiShorts #Shorts #Viral #Trending #HareKeSahare #ShortsFeed #NandiniVinodSoni"""
-        tags = VIRAL_TAGS_BHAKTI
+        tags = VIRAL_TAGS_BHAKTI + extra_tags
         pin = "🙏 जय श्री श्याम! बाबा श्याम के सभी सच्चे भक्त कमेंट में एक बार 'जय श्री श्याम' ज़रूर लिखें! 🌸👑"
 
     else:
@@ -235,6 +267,8 @@ def generate_seo_package(raw_title, niche, existing_titles=None):
 
 इस वीडियो को पूरा देखें और अपने दोस्तों के साथ शेयर करें! 💪
 अगर यह सीख पसंद आई हो तो Like करें और Channel SUBSCRIBE करें! 🔔
+
+🎬 मन को शांत करने और तनाव दूर करने के 5 अचूक नियम यहाँ देखें: https://www.youtube.com/watch?v=FvM23bYgeWI
 
 #Motivation #LifeLessons #Success #Mindset #PositiveVibes #Shorts #Viral #Trending #ShortsFeed #LearningOfLife"""
         tags = VIRAL_TAGS_MOTIVATION
