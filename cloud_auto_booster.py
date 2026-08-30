@@ -404,13 +404,13 @@ def main():
     cycle_count = 0
     while time.time() - start_time < max_duration_secs:
         cycle_count += 1
-        print(f"\n--- [CYCLE #{cycle_count}] Running 2-Min Interval ---")
+        print(f"\n--- [CYCLE #{cycle_count}] Running 5-Min Super Best Interval ---")
         try:
             run_cloud_cycle()
         except Exception as e:
             print(f"⚠️ Top-level cycle error: {e}")
 
-        time.sleep(120)
+        time.sleep(300)
 
     print("\n✅ Runner completed 5.5 hours. Handing over to next relay...")
 
