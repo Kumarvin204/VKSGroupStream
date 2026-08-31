@@ -260,12 +260,22 @@ def get_video_localizations(base_title, niche="bhakti"):
 
 def get_panchang_festival_boost():
     """
-    🌸 FEATURE: Hindu Panchang, Tithi, Day/Night Dynamic Theme & Audio Sound Booster
+    🌸 FEATURE: Hindu Panchang, Tithi, Day/Night Dynamic Theme, Geo-Clusters & Audio Sound Booster
     """
     now_dt = datetime.now()
     weekday = now_dt.weekday()
     day_num = now_dt.day
     hour = now_dt.hour
+    month_num = now_dt.month
+
+    hindi_months = {
+        1: "जनवरी", 2: "फ़रवरी", 3: "मार्च", 4: "अप्रैल", 5: "मई", 6: "जून",
+        7: "जुलाई", 8: "अगस्त", 9: "सितंबर", 10: "अक्टूबर", 11: "नवंबर", 12: "दिसंबर"
+    }
+    hindi_weekdays = {
+        0: "सोमवार", 1: "मंगलवार", 2: "बुधवार", 3: "गुरुवार", 4: "शुक्रवार", 5: "शनिवार", 6: "रविवार"
+    }
+    date_header_hi = f"📅 आज {day_num} {hindi_months.get(month_num, '')} {hindi_weekdays.get(weekday, '')}: खाटू धाम से अभी-अभी का ताज़ा व अलौकिक शृंगार दर्शन 🌸"
 
     fest_title_prefix = ""
     extra_tags = [
@@ -273,7 +283,10 @@ def get_panchang_festival_boost():
         "shyam baba status hindi", "khatu dham live today",
         # 🎵 FEATURE: Trending Sound & Audio Search Carousel Booster
         "khatu shyam bhajan original sound", "trending bhajan audio", "shyam status audio reels",
-        "jai shree shyam music sound"
+        "jai shree shyam music sound",
+        # 🕌 FEATURE: Khatu Dham LSI Geo-Search Cluster Engine
+        "toran dwar khatu", "shyam kund snan", "morchhari jhada khatu", "ringas to khatu nishan yatra",
+        "aaj ka khatu shyam live shringar", "baba shyam aarti live 2026"
     ]
 
     # 🌓 FEATURE: Day/Night 24-Hour Live Dynamic Theme Switcher
@@ -300,14 +313,14 @@ def get_panchang_festival_boost():
         fest_title_prefix = "गुरुवार दिव्य 🌸 [महाकृपा] "
         extra_tags.extend(["guruvar khatu shyam", "guruvar darshan live"])
 
-    return fest_title_prefix, extra_tags, time_theme_desc
+    return fest_title_prefix, extra_tags, time_theme_desc, date_header_hi
 
 def generate_seo_package(raw_title, niche="bhakti", existing_titles=None):
     if existing_titles is None:
         existing_titles = []
 
     title_lower = raw_title.lower()
-    fest_prefix, extra_tags, time_theme_desc = get_panchang_festival_boost()
+    fest_prefix, extra_tags, time_theme_desc, date_header_hi = get_panchang_festival_boost()
 
     # 🎯 FEATURE: High-Conversion Devotional CTA Switcher
     devotional_ctas = [
@@ -320,7 +333,8 @@ def generate_seo_package(raw_title, niche="bhakti", existing_titles=None):
     if any(k in title_lower for k in ["khatu", "shyam", "khatushyam", "morpankh", "sanwariya"]) or niche == "bhakti":
         base_title = generate_dynamic_unique_title("bhakti", existing_titles)
         title = f"{fest_prefix}{base_title}" if fest_prefix and len(fest_prefix + base_title) <= 100 else base_title
-        desc = f"""🙏 जय श्री श्याम! खाटू धाम से बाबा श्री खाटू श्याम जी का अलौकिक शृंगार दर्शन 🌸
+        desc = f"""{date_header_hi}
+🙏 जय श्री श्याम! खाटू धाम से बाबा श्री खाटू श्याम जी का अलौकिक शृंगार दर्शन 🌸
 
 🎵 भजन भाव व स्तुति: "हारे का सहारा बाबा श्याम हमारा | शीश के दानी लखदातार की जय जयकार" 🌸
 👁️ लूप चैलेंज: क्या आपने अंतिम 3 सेकंड में बाबा के मुकुट पर चमकता दिव्य मोरपंख देखा? ध्यान से दोबारा देखें और कमेंट में बताएं! 🦚✨
@@ -348,8 +362,8 @@ All devotional footage & darshan visuals are creatively curated, color-graded, a
 
 #KhatuShyam #BabaShyam #KhatuDham #JaiShreeShyam #ShyamDarshan #BhaktiShorts #Shorts #Viral #Trending #HareKeSahare #ShortsFeed #NandiniVinodSoni"""
         tags = VIRAL_TAGS_BHAKTI + extra_tags
-        # 250%+ Seamless Loop & Multi-Choice Faith Comment Prompt
-        pin = "👑 बाबा श्याम के पावन स्वरूप: 1. लखदातार 2. शीश के दानी 3. हारे के सहारे — अपनी मनोकामना कमेंट में लिखकर 'जय श्री श्याम' ज़रूर बोलें! (अंतिम 3 सेकंड में मोरपंख ध्यान से देखें 🦚✨)"
+        # 📿 FEATURE: Mano-Kamna Sankalp 300%+ Pinned Loop Prompt
+        pin = "🌸 आज बाबा श्याम के दरबार में अपनी अर्जी लगाने के लिए 'श्री श्याम देवाय नमः' का 11 बार मन में स्मरण करें और कमेंट में 'हाजिरी' लगाएं! (अंतिम 3 सेकंड में मोरपंख ध्यान से देखें 🦚✨) 🙏"
 
     else:
         title = generate_dynamic_unique_title("motivation", existing_titles)
