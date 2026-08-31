@@ -8,6 +8,7 @@ import os
 import json
 import time
 import re
+import random
 from datetime import datetime, timezone, timedelta
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
@@ -182,27 +183,31 @@ def generate_dynamic_unique_title(niche, existing_titles=None):
         existing_titles = []
     existing_set = {t.strip().lower() for t in existing_titles}
 
-    import random
     if niche == "bhakti":
         for _ in range(500):
             w1 = random.choice(BHAKTI_L1)
             w2 = random.choice(BHAKTI_L2)
-            w3 = random.choice(BHAKTI_L3)
             w4 = random.choice(BHAKTI_L4)
             w5 = random.choice(BHAKTI_L5)
-            cand = f"{w1} {w2} {w3} {w4} {w5}"
-            if cand.strip().lower() not in existing_set:
+            cand = f"{w1} {w2} {w4} {w5}"
+            if len(cand) > 95:
+                cand = f"{w1} {w4} {w5}"
+            if len(cand) <= 95 and cand.strip().lower() not in existing_set:
                 return cand
-        return f"{random.choice(BHAKTI_L1)} {random.choice(BHAKTI_L2)} {random.choice(BHAKTI_L3)} {random.choice(BHAKTI_L4)} {random.choice(BHAKTI_L5)}"
+        cand = f"{random.choice(BHAKTI_L1)} {random.choice(BHAKTI_L4)} {random.choice(BHAKTI_L5)}"
+        return cand[:95]
     else:
         for _ in range(500):
             w1 = random.choice(MOTIVATION_L1)
             w2 = random.choice(MOTIVATION_L2)
             w3 = random.choice(MOTIVATION_L3)
             cand = f"{w1} | {w2} {w3}"
-            if cand.strip().lower() not in existing_set:
+            if len(cand) > 95:
+                cand = f"{w1} {w3}"
+            if len(cand) <= 95 and cand.strip().lower() not in existing_set:
                 return cand
-        return f"{random.choice(MOTIVATION_L1)} | {random.choice(MOTIVATION_L2)} {random.choice(MOTIVATION_L3)}"
+        cand = f"{random.choice(MOTIVATION_L1)} {random.choice(MOTIVATION_L3)}"
+        return cand[:95]
 
 def get_panchang_festival_boost():
     """
@@ -315,6 +320,22 @@ def get_panchang_festival_boost():
 
     return fest_title_prefix, extra_tags, time_theme_desc, date_header_hi
 
+def sanitize_tags(tag_list, max_total_chars=400):
+    """Sanitizes tags to strictly meet YouTube API character limits <= 500 chars (safe at <= 400)."""
+    unique_tags = []
+    seen = set()
+    total_len = 0
+    for t in tag_list:
+        clean_t = t.strip().replace("<", "").replace(">", "").replace(",", "")
+        if not clean_t or clean_t.lower() in seen:
+            continue
+        if total_len + len(clean_t) + 1 > max_total_chars:
+            break
+        unique_tags.append(clean_t)
+        seen.add(clean_t.lower())
+        total_len += len(clean_t) + 1
+    return unique_tags
+
 def generate_seo_package(raw_title, niche="bhakti", existing_titles=None):
     if existing_titles is None:
         existing_titles = []
@@ -332,7 +353,7 @@ def generate_seo_package(raw_title, niche="bhakti", existing_titles=None):
 
     if any(k in title_lower for k in ["khatu", "shyam", "khatushyam", "morpankh", "sanwariya"]) or niche == "bhakti":
         base_title = generate_dynamic_unique_title("bhakti", existing_titles)
-        title = f"{fest_prefix}{base_title}" if fest_prefix and len(fest_prefix + base_title) <= 100 else base_title
+        title = f"{fest_prefix}{base_title}" if fest_prefix and len(fest_prefix + base_title) <= 95 else base_title
         desc = f"""{date_header_hi}
 🙏 जय श्री श्याम! खाटू धाम से बाबा श्री खाटू श्याम जी का अलौकिक शृंगार दर्शन 🌸
 
@@ -361,7 +382,8 @@ All devotional footage & darshan visuals are creatively curated, color-graded, a
 ==================================================
 
 #KhatuShyam #BabaShyam #KhatuDham #JaiShreeShyam #ShyamDarshan #BhaktiShorts #Shorts #Viral #Trending #HareKeSahare #ShortsFeed #NandiniVinodSoni"""
-        tags = VIRAL_TAGS_BHAKTI + extra_tags
+        raw_tags = VIRAL_TAGS_BHAKTI + extra_tags
+        tags = sanitize_tags(raw_tags, max_total_chars=400)
         # 📿 FEATURE: Mano-Kamna Sankalp 300%+ Pinned Loop Prompt
         pin = "🌸 आज बाबा श्याम के दरबार में अपनी अर्जी लगाने के लिए 'श्री श्याम देवाय नमः' का 11 बार मन में स्मरण करें और कमेंट में 'हाजिरी' लगाएं! (अंतिम 3 सेकंड में मोरपंख ध्यान से देखें 🦚✨) 🙏"
 
@@ -386,7 +408,8 @@ This motivational content is uniquely written, curated, and produced by Learning
 ==================================================
 
 #Motivation #LifeLessons #Success #Mindset #PositiveVibes #Shorts #Viral #Trending #ShortsFeed #LearningOfLife"""
-        tags = VIRAL_TAGS_MOTIVATION
+        raw_tags = VIRAL_TAGS_MOTIVATION
+        tags = sanitize_tags(raw_tags, max_total_chars=400)
         pin = "🌟 जिंदगी में आगे बढ़ने का आपका #1 नियम क्या है: 1. कभी हार न मानना 2. खुद पर भरोसा 3. ईश्वर का साथ? कमेंट में लिखें! (अंतिम सीख दोबारा सुनें 💫)"
 
     return title, desc, tags, pin
