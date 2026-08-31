@@ -578,6 +578,18 @@ def run_cloud_cycle():
                     except Exception:
                         pass
 
+                # 5️⃣ FEATURE: Algorithmic Impression Re-Indexing Ping (Low Impressions Revival)
+                reindexed = prev_record.get("reindexed", False)
+                if is_short and not reindexed and time_diff_mins >= 90 and current_views < 30:
+                    try:
+                        snip["defaultAudioLanguage"] = "hi"
+                        snip["categoryId"] = "22"
+                        yt.videos().update(part="snippet,status", body={"id": vid, "snippet": snip, "status": stat}).execute()
+                        reindexed = True
+                        print(f"     🔄 [CLOUD ALGORITHMIC IMPRESSION RE-INDEX PING SENT] on {vid}")
+                    except Exception:
+                        reindexed = True
+
                 # Momentum Catcher
                 elif views_gained >= 5 and velocity_per_min >= 0.5:
                     if is_short:
@@ -624,7 +636,8 @@ def run_cloud_cycle():
                     "milestones": milestones,
                     "ab_tested": ab_tested,
                     "playlist_added": playlist_added,
-                    "replied_comments": replied_comments
+                    "replied_comments": replied_comments,
+                    "reindexed": reindexed
                 }
 
         except Exception as e:
