@@ -260,24 +260,32 @@ def get_video_localizations(base_title, niche="bhakti"):
 
 def get_panchang_festival_boost():
     """
-    🌸 FEATURE: Hindu Panchang, Tithi & Multi-State Regional Devotee Expansion
+    🌸 FEATURE: Hindu Panchang, Tithi, Day/Night Dynamic Theme & Audio Sound Booster
     """
     now_dt = datetime.now()
     weekday = now_dt.weekday()
     day_num = now_dt.day
+    hour = now_dt.hour
 
     fest_title_prefix = ""
     extra_tags = [
         "khatu shyam live darshan", "khatu naresh na darshan", "sanwariya seth mandir gujarat",
-        "shyam baba status hindi", "khatu dham live today"
+        "shyam baba status hindi", "khatu dham live today",
+        # 🎵 FEATURE: Trending Sound & Audio Search Carousel Booster
+        "khatu shyam bhajan original sound", "trending bhajan audio", "shyam status audio reels",
+        "jai shree shyam music sound"
     ]
 
-    # Real-Time Search Trends Hijacker (Time-of-day surge keywords)
-    hour = now_dt.hour
-    if 4 <= hour <= 11:
-        extra_tags.extend(["khatu shyam mangla aarti", "pratah darshan khatu shyam"])
-    elif 17 <= hour <= 23:
-        extra_tags.extend(["khatu shyam sandhya aarti", "shyam darshan today live 2026"])
+    # 🌓 FEATURE: Day/Night 24-Hour Live Dynamic Theme Switcher
+    if 4 <= hour < 12:
+        time_theme_desc = "✨ जगमगाती प्रातः मंगला आरती व अमृतमय दर्शन"
+        extra_tags.extend(["khatu shyam mangla aarti", "pratah darshan khatu shyam", "morning aarti khatu shyam"])
+    elif 12 <= hour < 17:
+        time_theme_desc = "✨ पावन दोपहर राजभोग आरती व मनमोहक दर्शन"
+        extra_tags.extend(["khatu shyam bhog aarti", "dopahar darshan khatu shyam"])
+    else:
+        time_theme_desc = "✨ जगमगाती संध्या व शयन आरती के पावन दर्शन"
+        extra_tags.extend(["khatu shyam sandhya aarti", "shyam darshan today live 2026", "shayan aarti khatu dham"])
 
     if day_num in [11, 12, 26, 27]:
         fest_title_prefix = "एकादशी विशेष 🌸 [अलौकिक] "
@@ -292,36 +300,45 @@ def get_panchang_festival_boost():
         fest_title_prefix = "गुरुवार दिव्य 🌸 [महाकृपा] "
         extra_tags.extend(["guruvar khatu shyam", "guruvar darshan live"])
 
-    return fest_title_prefix, extra_tags
+    return fest_title_prefix, extra_tags, time_theme_desc
 
 def generate_seo_package(raw_title, niche="bhakti", existing_titles=None):
     if existing_titles is None:
         existing_titles = []
 
     title_lower = raw_title.lower()
-    fest_prefix, extra_tags = get_panchang_festival_boost()
+    fest_prefix, extra_tags, time_theme_desc = get_panchang_festival_boost()
+
+    # 🎯 FEATURE: High-Conversion Devotional CTA Switcher
+    devotional_ctas = [
+        "👑 चैनल SUBSCRIBE करके पावन श्याम परिवार का हिस्सा बनें व 🔔 घंटी दबाएं ताकि प्रतिदिन सबसे पहले दर्शन मिलें!",
+        "🌸 1 शेयर करके पुण्य के भागी बनें और अपने परिवार के साथ यह पावन दर्शन साझा करें! 🔔 SUBSCRIBE अवश्य करें!",
+        "✨ बाबा श्याम के नित्य पावन दर्शन और कृपा पाने के लिए चैनल SUBSCRIBE करें और कमेंट में हाजिरी लगाएं! 🔔"
+    ]
+    chosen_cta = random.choice(devotional_ctas)
 
     if any(k in title_lower for k in ["khatu", "shyam", "khatushyam", "morpankh", "sanwariya"]) or niche == "bhakti":
         base_title = generate_dynamic_unique_title("bhakti", existing_titles)
         title = f"{fest_prefix}{base_title}" if fest_prefix and len(fest_prefix + base_title) <= 100 else base_title
-        desc = """🙏 जय श्री श्याम! खाटू धाम से बाबा श्री खाटू श्याम जी का अलौकिक शृंगार दर्शन 🌸
+        desc = f"""🙏 जय श्री श्याम! खाटू धाम से बाबा श्री खाटू श्याम जी का अलौकिक शृंगार दर्शन 🌸
 
 🎵 भजन भाव व स्तुति: "हारे का सहारा बाबा श्याम हमारा | शीश के दानी लखदातार की जय जयकार" 🌸
 👁️ लूप चैलेंज: क्या आपने अंतिम 3 सेकंड में बाबा के मुकुट पर चमकता दिव्य मोरपंख देखा? ध्यान से दोबारा देखें और कमेंट में बताएं! 🦚✨
+📊 कम्युनिटी पोल: आज का यह अलौकिक दर्शन अपने मित्रों के साथ शेयर करें!
 
 👑 आज बाबा श्याम का भव्य स्वरूप:
 🦚 मोरपंखी मुकुट व स्वर्ण आभूषण
 🌺 ताज़ा गुलाब, गेंदे व चमेली के फूलों का शृंगार
-✨ जगमगाती संध्या आरती के पावन दर्शन
+{time_theme_desc}
 
-बाबा श्याम की कृपा से आपके घर में सुख-समृद्धि आए! 🙏
+बाबा श्याम की कृपा से आपके घर में सुख-समृद्धि, शांति और खुशहाली आए! 🙏
 कमेंट में "जय श्री श्याम" या "हारे के सहारे की जय" ज़रूर लिखें! 🌸
 
 🎬 1-घंटे की खाटू श्याम सम्पूर्ण अमर कथा यहाँ देखें: https://www.youtube.com/watch?v=M2cMgrvelqk
 🎬 श्री कृष्ण बाल लीला सम्पूर्ण 20 चमत्कार यहाँ देखें: https://www.youtube.com/watch?v=WbQXodCN-S8
 
-👉 रोज़ाना सुबह-शाम ताज़ा दर्शन के लिए SUBSCRIBE करें: https://www.youtube.com/@nandinitovinod
-🔔 Bell Icon दबाएं!
+👉 {chosen_cta}
+🌐 Visit Website: https://radhekeshyamm.vercel.app/
 
 ==================================================
 🛡️ Content Notice & Transformative Value:
@@ -336,7 +353,7 @@ All devotional footage & darshan visuals are creatively curated, color-graded, a
 
     else:
         title = generate_dynamic_unique_title("motivation", existing_titles)
-        desc = """✨ जीवन में कभी हार मत मानो! हर मुश्किल समय में एक नई सीख छिपी होती है। 🌟
+        desc = f"""✨ जीवन में कभी हार मत मानो! हर मुश्किल समय में एक नई सीख छिपी होती है। 🌟
 
 📖 गीता सार व विचार: "कर्म करो फल की चिंता मत करो | हर अंधकार के बाद एक नया सवेरा आता है" 💫
 👁️ लूप चैलेंज: इस सीख के अंतिम 3 सेकंड को दोबारा ध्यान से सुनें और अपने जीवन में लागू करें! 🌟
@@ -345,6 +362,8 @@ All devotional footage & darshan visuals are creatively curated, color-graded, a
 अगर यह सीख पसंद आई हो तो Like करें और Channel SUBSCRIBE करें! 🔔
 
 🎬 मन को शांत करने और तनाव दूर करने के 5 अचूक नियम यहाँ देखें: https://www.youtube.com/watch?v=FvM23bYgeWI
+
+👉 {chosen_cta}
 
 ==================================================
 🛡️ Content Notice & Transformative Value:
