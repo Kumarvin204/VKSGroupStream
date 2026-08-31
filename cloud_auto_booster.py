@@ -31,11 +31,12 @@ CHANNELS_CONFIG = [
         "name": "Nandini & Vinod Soni Official",
         "niche": "bhakti"
     },
-    {
-        "env_var": "TOKEN_LEARNING_JSON",
-        "name": "Learning of life",
-        "niche": "motivation"
-    }
+    # ⏸️ TEMPORARILY DISABLED — Full focus on main Bhakti channel
+    # {
+    #     "env_var": "TOKEN_LEARNING_JSON",
+    #     "name": "Learning of life",
+    #     "niche": "motivation"
+    # }
 ]
 
 VIRAL_TAGS_BHAKTI = [
