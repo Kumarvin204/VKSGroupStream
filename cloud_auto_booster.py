@@ -1,5 +1,5 @@
 """
-24/7 GITHUB CLOUD REALTIME VELOCITY & "SEO KR DO" ENGINE (V4.0)
+24/7 GITHUB CLOUD REALTIME VELOCITY & "SEO KR DO" ENGINE (V5.0)
 --------------------------------------------------------------
 """
 import sys
@@ -635,7 +635,7 @@ def get_or_create_playlist(yt, title, niche="bhakti"):
 
 def run_cloud_cycle():
     now_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')
-    print(f"\n[{now_str}] ☁️ GITHUB CLOUD RUNNING V4.0 'SEO KR DO' & VELOCITY SENTINEL...")
+    print(f"\n[{now_str}] ☁️ GITHUB CLOUD RUNNING V5.0 'SEO KR DO' & VELOCITY SENTINEL...")
     state = load_state()
     now_ts = int(time.time())
 
@@ -935,7 +935,7 @@ def run_cloud_cycle():
 
 def main():
     print("=" * 80)
-    print("☁️ GITHUB CLOUD 24/7 ULTRA-VIRAL V4.0 STARTED (5.5 HOURS RUNNER)")
+    print("☁️ GITHUB CLOUD 24/7 ULTRA-VIRAL V5.0 STARTED (5.5 HOURS RUNNER)")
     print("=" * 80)
 
     start_time = time.time()
