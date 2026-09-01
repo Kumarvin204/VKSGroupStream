@@ -1,5 +1,5 @@
 """
-24/7 GITHUB CLOUD REALTIME VELOCITY & "SEO KR DO" ENGINE (V9.0)
+24/7 GITHUB CLOUD REALTIME VELOCITY & "SEO KR DO" ENGINE (V10.0)
 --------------------------------------------------------------
 """
 import sys
@@ -660,6 +660,69 @@ def live_chat_prayer_sentiment_responder(yt, live_chat_id):
     except Exception:
         pass
 
+
+def get_shorts_remix_bait_metadata(niche="bhakti"):
+    """🎵 FEATURE: Shorts Remix & Sound Sampling Bait Engine — Injects original sound tags for remix virality."""
+    if niche == "bhakti":
+        return ["use this audio", "shyam bhajan remix sound", "original audio khatu shyam", "viral bhakti audio track"]
+    return ["use this sound", "viral voiceover audio", "trending audio sound"]
+
+def negative_swipe_away_shield(yt, vid, snip, stat, current_views, state):
+    """🛡️ FEATURE: Negative Swipe-Away Shield — Swaps emergency curiosity hook on new releases with slow start."""
+    shield_key = f"swipe_shield_{vid}"
+    if state.get(shield_key) or current_views > 35 or current_views == 0:
+        return False
+    title_curr = snip.get("title", "")
+    emergency_hooks = [
+        "🌸 [100% मनोकामना पूर्ण होगी] ",
+        "😭 [देखते ही रोंगटे खड़े हो जाएंगे] ",
+        "🙏 [आज ही दर्शन का पुण्य लाभ उठाएं] "
+    ]
+    hook = random.choice(emergency_hooks)
+    if not any(h in title_curr for h in emergency_hooks) and len(title_curr) <= 70:
+        new_title = f"{hook}{title_curr}"[:95]
+        snip["title"] = new_title
+        try:
+            yt.videos().update(part="snippet,status", body={"id": vid, "snippet": snip, "status": stat}).execute()
+            state[shield_key] = True
+            print(f"     🛡️ [SWIPE-AWAY SHIELD ACTIVATED] Injected emergency hook on {vid} ({current_views} views) -> {new_title[:45]}...")
+            return True
+        except Exception:
+            pass
+    return False
+
+def get_geographic_devotee_surge_tags(niche="bhakti"):
+    """🗺️ FEATURE: Geographic Devotee Surge Pacer — Dynamically injects state-level peak prayer hour tags."""
+    if niche != "bhakti":
+        return []
+    now_ist = datetime.now(timezone.utc) + timedelta(hours=5, minutes=30)
+    hour = now_ist.hour
+    if 4 <= hour <= 8:
+        return ["khatu shyam mangla darshan rajasthan", "shyam baba gujarat darshan live"]
+    elif 11 <= hour <= 15:
+        return ["khatu dham rajbhog aarti live", "delhi ncr shyam darshan"]
+    elif 18 <= hour <= 21:
+        return ["sandhya aarti khatu shyam live", "up bihar shyam bhajan"]
+    else:
+        return ["khatu shyam darshan usa nri", "global devotee shyam live"]
+
+def get_golden_timestamp_deep_link(niche="bhakti"):
+    """⏱️ FEATURE: Golden Timestamp Deep-Link Magnet — Injects direct miracle time-anchor to 1-hour katha."""
+    if niche == "bhakti":
+        return "✨ पावन अमर कथा का सबसे चमत्कारी प्रसंग (14:20 मिनट से देखें): https://www.youtube.com/watch?v=M2cMgrvelqk&t=860s 🙏"
+    return "✨ Watch the Life Changing Climax (05:10 mins): https://www.youtube.com/watch?v=FvM23bYgeWI&t=310s 🌟"
+
+def generate_community_tab_viral_polls(niche="bhakti"):
+    """📊 FEATURE: Community Tab Viral Poll Engine — Prepares high-converting viral voting polls."""
+    if niche == "bhakti":
+        return [
+            {"question": "🌸 आज आपको बाबा श्याम का कौन-सा शृंगार सबसे अलौकिक लगा?", "options": ["1. मोरपंखी मुकुट 🦚", "2. स्वर्ण पीतांबर 🌟", "3. लाल गुलाब शृंगार 🌹", "4. सभी स्वरूप अलौकिक हैं 🙏"]},
+            {"question": "🙏 क्या आपने आज बाबा श्याम के पावन नाम का 11 बार स्मरण किया?", "options": ["1. हाँ, जय श्री श्याम 🌸", "2. अभी कर रहा हूँ 🦚", "3. सदा स्मरण रहता है 💫"]}
+        ]
+    return [
+        {"question": "🌟 जीवन में सबसे बड़ी ताकत क्या है?", "options": ["1. कभी हार न मानना 💪", "2. खुद पर अटूट विश्वास ✨", "3. ईश्वर का आशीर्वाद 🙏"]}
+    ]
+
 def generate_seo_package(raw_title, niche="bhakti", existing_titles=None):
 
     if existing_titles is None:
@@ -673,6 +736,7 @@ def generate_seo_package(raw_title, niche="bhakti", existing_titles=None):
     ai_faqs = generate_ai_conversational_faqs(niche)
     rabbit_hole = get_rabbit_hole_chain_banner(niche)
     vision_ai_tokens = get_vision_ai_frame_tokens(niche)
+    golden_katha = get_golden_timestamp_deep_link(niche)
 
     # 🎯 FEATURE: High-Conversion Devotional CTA Switcher
     devotional_ctas = [
@@ -709,6 +773,8 @@ def generate_seo_package(raw_title, niche="bhakti", existing_titles=None):
 
 {ai_faqs}
 
+{golden_katha}
+
 {rabbit_hole}
 
 👉 {chosen_cta}
@@ -744,6 +810,8 @@ All devotional footage & darshan visuals are creatively curated, color-graded, a
 अगर यह सीख पसंद आई हो तो Like करें और Channel SUBSCRIBE करें! 🔔
 
 {ai_faqs}
+
+{golden_katha}
 
 {rabbit_hole}
 
@@ -889,7 +957,7 @@ def get_active_live_stream_id(yt):
 
 def run_cloud_cycle():
     now_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')
-    print(f"\n[{now_str}] ☁️ GITHUB CLOUD RUNNING V9.0 'SEO KR DO' & VELOCITY SENTINEL...")
+    print(f"\n[{now_str}] ☁️ GITHUB CLOUD RUNNING V10.0 'SEO KR DO' & VELOCITY SENTINEL...")
     state = load_state()
     now_ts = int(time.time())
 
@@ -1246,7 +1314,7 @@ def run_cloud_cycle():
 
 def main():
     print("=" * 80)
-    print("☁️ GITHUB CLOUD 24/7 ULTRA-VIRAL V9.0 STARTED (5.5 HOURS RUNNER)")
+    print("☁️ GITHUB CLOUD 24/7 ULTRA-VIRAL V10.0 STARTED (5.5 HOURS RUNNER)")
     print("=" * 80)
 
     start_time = time.time()
