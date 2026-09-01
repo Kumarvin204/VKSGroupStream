@@ -1,5 +1,5 @@
 """
-24/7 GITHUB CLOUD REALTIME VELOCITY & "SEO KR DO" ENGINE (V7.0)
+24/7 GITHUB CLOUD REALTIME VELOCITY & "SEO KR DO" ENGINE (V8.0)
 --------------------------------------------------------------
 """
 import sys
@@ -705,6 +705,46 @@ def get_or_create_playlist(yt, title, niche="bhakti"):
     except Exception:
         return None
 
+def get_or_create_long_playlist(yt, niche="bhakti"):
+    title = "🔴 24/7 खाटू श्याम सम्पूर्ण भजन व अमर कथा संग्रह 🌸" if niche == "bhakti" else "🌟 Life Changing Motivational Masterclass 💫"
+    return get_or_create_playlist(yt, title, niche)
+
+def boost_stagnant_long_video_seo(yt, vid, snip, stat, current_views, niche="bhakti"):
+    """🚀 FEATURE: Long & Live Replay Search SEO Re-Indexer — Revives stuck long videos and live replays."""
+    if current_views > 500:
+        return False
+    
+    title_curr = snip.get("title", "")
+    if "🔴" not in title_curr and "[सुनकर रो पड़ेंगे]" not in title_curr and "[चमत्कारिक]" not in title_curr:
+        if len(title_curr) <= 75:
+            new_title = f"🔴 {title_curr} | [सुनकर रो पड़ेंगे 😭] #KhatuShyam"
+            if len(new_title) <= 95:
+                snip["title"] = new_title
+    
+    long_search_tags = [
+        "khatu shyam live", "khatu shyam bhajan nonstop", "khatu shyam katha full",
+        "khatu shyam live stream 2026", "shyam bhajan full", "khatu shyam aarti",
+        "jai shree shyam live", "shyam baba ke bhajan", "khatu dham live today",
+        "sanwariya seth bhajan", "non stop shyam bhajan", "khatu shyam chamatkar"
+    ]
+    current_tags = snip.get("tags", [])
+    merged_tags = sanitize_tags(current_tags + long_search_tags, max_total_chars=400)
+    snip["tags"] = merged_tags
+    snip["categoryId"] = "22"
+    snip["defaultLanguage"] = "hi"
+    snip["defaultAudioLanguage"] = "hi"
+    
+    if "00:00" not in snip.get("description", ""):
+        key_moments = generate_key_moments_chapters(is_live=True, niche=niche)
+        snip["description"] = f"{snip.get('description', '')}\n\n{key_moments}"
+        
+    try:
+        yt.videos().update(part="snippet,status", body={"id": vid, "snippet": snip, "status": stat}).execute()
+        print(f"     🚀 [LONG/LIVE VIDEO REVIVAL ENGINE] Boosted SEO & Search Tags on {vid} ({current_views} views)")
+        return True
+    except Exception:
+        return False
+
 def get_live_suggest_keywords(seed_query="khatu shyam"):
     """🔍 FEATURE: YouTube Live Suggest Autocomplete Harvester — Fetches real-time search queries."""
     suggested = []
@@ -768,7 +808,7 @@ def get_active_live_stream_id(yt):
 
 def run_cloud_cycle():
     now_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')
-    print(f"\n[{now_str}] ☁️ GITHUB CLOUD RUNNING V7.0 'SEO KR DO' & VELOCITY SENTINEL...")
+    print(f"\n[{now_str}] ☁️ GITHUB CLOUD RUNNING V8.0 'SEO KR DO' & VELOCITY SENTINEL...")
     state = load_state()
     now_ts = int(time.time())
 
@@ -823,7 +863,7 @@ def run_cloud_cycle():
             pl_resp = yt.playlistItems().list(
                 part="snippet,contentDetails",
                 playlistId=uploads_id,
-                maxResults=10
+                maxResults=50
             ).execute()
 
             v_ids = [it["contentDetails"]["videoId"] for it in pl_resp.get("items", [])]
@@ -1064,6 +1104,33 @@ def run_cloud_cycle():
                 # 8️⃣ Smart Comment Traffic Funnel
                 smart_comment_traffic_funnel(yt, vid, current_views, niche, state)
 
+                # 🟢 FEATURE: Long Form & Live Stream Replay Supercharger
+                long_pl_added = prev_record.get("long_pl_added", False)
+                long_seo_boosted = prev_record.get("long_seo_boosted", False)
+                if not is_short:
+                    long_pl_id = get_or_create_long_playlist(yt, niche)
+                    if long_pl_id and not long_pl_added:
+                        try:
+                            yt.playlistItems().insert(
+                                part="snippet",
+                                body={
+                                    "snippet": {
+                                        "playlistId": long_pl_id,
+                                        "position": 0,
+                                        "resourceId": {"kind": "youtube#video", "videoId": vid}
+                                    }
+                                }
+                            ).execute()
+                            print(f"     📻 [LONG/LIVE BINGE PLAYLIST] Video {vid} chained to Long Video Master Playlist!")
+                            long_pl_added = True
+                        except Exception:
+                            pass
+                    
+                    if not long_seo_boosted and current_views < 500:
+                        boosted = boost_stagnant_long_video_seo(yt, vid, snip, stat, current_views, niche)
+                        if boosted:
+                            long_seo_boosted = True
+
                 state[vid] = {
                     "views": current_views,
                     "likes": current_likes,
@@ -1074,7 +1141,9 @@ def run_cloud_cycle():
                     "playlist_added": playlist_added,
                     "replied_comments": replied_comments,
                     "reindexed": reindexed,
-                    "session_chained": session_done
+                    "session_chained": session_done,
+                    "long_pl_added": long_pl_added,
+                    "long_seo_boosted": long_seo_boosted
                 }
 
         except Exception as e:
@@ -1084,7 +1153,7 @@ def run_cloud_cycle():
 
 def main():
     print("=" * 80)
-    print("☁️ GITHUB CLOUD 24/7 ULTRA-VIRAL V7.0 STARTED (5.5 HOURS RUNNER)")
+    print("☁️ GITHUB CLOUD 24/7 ULTRA-VIRAL V8.0 STARTED (5.5 HOURS RUNNER)")
     print("=" * 80)
 
     start_time = time.time()
