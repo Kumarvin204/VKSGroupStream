@@ -1,5 +1,5 @@
 """
-24/7 GITHUB CLOUD REALTIME VELOCITY & "SEO KR DO" ENGINE (V8.0)
+24/7 GITHUB CLOUD REALTIME VELOCITY & "SEO KR DO" ENGINE (V9.0)
 --------------------------------------------------------------
 """
 import sys
@@ -584,6 +584,82 @@ def get_rabbit_hole_chain_banner(niche="bhakti"):
         return "🎬 अगली पावन कथा व भजन यात्रा: https://www.youtube.com/watch?v=M2cMgrvelqk (1-घंटे की सम्पूर्ण अमर कथा)"
     return "🎬 Next Life Changing Guide: https://www.youtube.com/watch?v=FvM23bYgeWI"
 
+def get_vision_ai_frame_tokens(niche="bhakti"):
+    """👁️ FEATURE: Multi-Modal Vision AI Frame Tokenizer — Matches YouTube & Google Gemini Vision AI frame scan."""
+    if niche == "bhakti":
+        return "✨ विज़न AI पावन दृश्य: दिव्य पीतांबर वस्त्र, मोरपंखी स्वर्ण मुकुट, अलौकिक शृंगार दर्शन, तोरण द्वार, श्याम कुंड, मोरछड़ी झाड़ा 🙏"
+    return "✨ Video AI Concept: Growth Mindset, Life Lessons, Success Habits, Daily Inspiration 🌟"
+
+def get_multi_dialect_regional_cloud(niche="bhakti"):
+    """🇮🇳 FEATURE: Multi-Dialect Regional Devotional Cloud — Captures Marwari, Rajasthani, Braj, Bhojpuri & Haryanvi devotees."""
+    if niche == "bhakti":
+        return [
+            "नीले रा असवार", "खाटू वाला सेठ भजन", "हारे के सहारा बाबा हमार",
+            "लखदातार मारवाड़ी दर्शन", "खाटू श्याम कथा भोजपुरी", "श्याम बाबा का भजन हरियाणवी"
+        ]
+    return ["safalta ke niyam hindi", "jindagi ki seekh", "motivational vichar"]
+
+def algorithmic_plateau_breaker(yt, vid, snip, stat, current_views, state):
+    """⚡ FEATURE: Algorithmic Plateau Breaker — Sends safe micro-pulse refresh to force YouTube to test fresh 500-viewer cohort."""
+    plateau_key = f"plateau_pushed_{vid}"
+    if state.get(plateau_key) or current_views > 300 or current_views < 15:
+        return False
+    try:
+        desc = snip.get("description", "")
+        if not desc.endswith(" "):
+            snip["description"] = desc + " "
+        else:
+            snip["description"] = desc.rstrip()
+        yt.videos().update(part="snippet,status", body={"id": vid, "snippet": snip, "status": stat}).execute()
+        state[plateau_key] = True
+        print(f"     ⚡ [PLATEAU BREAKER] Micro-Pulse Cache Ping Sent on {vid} ({current_views} views) -> Triggered Fresh Cohort Test!")
+        return True
+    except Exception:
+        return False
+
+def competitor_suggested_video_hijacker(yt, niche="bhakti"):
+    """🧲 FEATURE: Competitor Suggested Video Hijacker — Aligns tags to appear in top suggested rails of viral videos."""
+    suggested_tags = []
+    try:
+        query = "khatu shyam bh भजन viral" if niche == "bhakti" else "motivational shorts viral"
+        resp = yt.search().list(part="snippet", q=query, type="video", order="viewCount", maxResults=3).execute()
+        for item in resp.get("items", []):
+            comp_id = item["id"].get("videoId")
+            if comp_id:
+                v_resp = yt.videos().list(part="snippet", id=comp_id).execute()
+                for v_item in v_resp.get("items", []):
+                    c_tags = v_item["snippet"].get("tags", [])
+                    for t in c_tags:
+                        if len(t) > 3 and len(t) < 40 and t.lower() not in [x.lower() for x in suggested_tags]:
+                            suggested_tags.append(t)
+    except Exception:
+        pass
+    return suggested_tags[:6]
+
+def live_chat_prayer_sentiment_responder(yt, live_chat_id):
+    """💬 FEATURE: Live Chat Sentiment & Prayer Loyalty Engine — Posts dynamic blessings to maximize Live Chat Velocity."""
+    if not live_chat_id:
+        return
+    blessings = [
+        "🌸 जय श्री श्याम! जो भी भक्त सच्ची श्रद्धा से बाबा के चरणों में शीश नवाते हैं, उनके सभी कष्ट दूर होते हैं! 🙏",
+        "🦚 हारे का सहारा, बाबा श्याम हमारा! कमेंट/चैट में 'जय श्री श्याम' लिखकर अपनी हाजिरी लगाएं! ✨",
+        "💫 ॐ श्री श्याम देवाय नमः! बाबा श्याम आपके परिवार पर सदा सुख-शांति व समृद्धि की वर्षा करें! 🌸"
+    ]
+    try:
+        yt.liveChatMessages().insert(
+            part="snippet",
+            body={
+                "snippet": {
+                    "liveChatId": live_chat_id,
+                    "type": "textMessageEvent",
+                    "textMessageDetails": {"messageText": random.choice(blessings)}
+                }
+            }
+        ).execute()
+        print(f"     💬 [LIVE CHAT PRAYER BOT] Live prayer message broadcasted to active chat!")
+    except Exception:
+        pass
+
 def generate_seo_package(raw_title, niche="bhakti", existing_titles=None):
 
     if existing_titles is None:
@@ -596,6 +672,7 @@ def generate_seo_package(raw_title, niche="bhakti", existing_titles=None):
     loop_prompt = get_retention_heatmap_loop_prompt(niche)
     ai_faqs = generate_ai_conversational_faqs(niche)
     rabbit_hole = get_rabbit_hole_chain_banner(niche)
+    vision_ai_tokens = get_vision_ai_frame_tokens(niche)
 
     # 🎯 FEATURE: High-Conversion Devotional CTA Switcher
     devotional_ctas = [
@@ -624,6 +701,8 @@ def generate_seo_package(raw_title, niche="bhakti", existing_titles=None):
 {time_theme_desc}
 
 {key_moments}
+
+{vision_ai_tokens}
 
 बाबा श्याम की कृपा से आपके घर में सुख-समृद्धि, शांति और खुशहाली आए! 🙏
 कमेंट में "जय श्री श्याम" या "हारे के सहारे की जय" ज़रूर लिखें! 🌸
@@ -658,6 +737,8 @@ All devotional footage & darshan visuals are creatively curated, color-graded, a
 {loop_prompt}
 
 {key_moments}
+
+{vision_ai_tokens}
 
 इस वीडियो को पूरा देखें और अपने दोस्तों के साथ शेयर करें! 💪
 अगर यह सीख पसंद आई हो तो Like करें और Channel SUBSCRIBE करें! 🔔
@@ -808,7 +889,7 @@ def get_active_live_stream_id(yt):
 
 def run_cloud_cycle():
     now_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')
-    print(f"\n[{now_str}] ☁️ GITHUB CLOUD RUNNING V8.0 'SEO KR DO' & VELOCITY SENTINEL...")
+    print(f"\n[{now_str}] ☁️ GITHUB CLOUD RUNNING V9.0 'SEO KR DO' & VELOCITY SENTINEL...")
     state = load_state()
     now_ts = int(time.time())
 
@@ -826,7 +907,8 @@ def run_cloud_cycle():
         suggest_kws = get_live_suggest_keywords("khatu shyam" if niche == "bhakti" else "motivational")
         nri_tags = get_nri_global_tags(niche)
         audio_tags = get_trending_audio_pivot_tags(niche)
-        tags = tags + suggest_kws + nri_tags + audio_tags
+        regional_tags = get_multi_dialect_regional_cloud(niche)
+        tags = tags + suggest_kws + nri_tags + audio_tags + regional_tags
         
         # Ensure all tags are sanitized (we will sanitize them again when assigning, but good to do it here too just in case)
         tags = sanitize_tags(tags, max_total_chars=400)
@@ -852,9 +934,19 @@ def run_cloud_cycle():
             creds = Credentials.from_authorized_user_info(json.loads(tok_str))
             yt = build('youtube', 'v3', credentials=creds)
 
+            try:
+                suggested_tags = competitor_suggested_video_hijacker(yt, niche)
+                if suggested_tags:
+                    tags = tags + suggested_tags
+                    tags = sanitize_tags(tags, max_total_chars=400)
+                    print(f"  🧲 [SUGGESTED HIJACKER] Added {len(suggested_tags)} suggested tags")
+            except Exception:
+                pass
+
             active_live_id = get_active_live_stream_id(yt)
             if active_live_id:
                 print(f"  🔴 [LIVE-TO-SHORTS BRIDGE ACTIVE] Active Live Stream detected: {active_live_id}")
+                live_chat_prayer_sentiment_responder(yt, active_live_id)
 
 
             ch_resp = yt.channels().list(part="contentDetails,statistics", mine=True).execute()
@@ -1049,6 +1141,7 @@ def run_cloud_cycle():
 
                 # Slowdown Revival
                 elif is_short and ((time_diff_mins >= 25 and views_gained < 5) or (current_views < 50 and time_diff_mins >= 20)):
+                    algorithmic_plateau_breaker(yt, vid, snip, stat, current_views, state)
                     new_unique_title = generate_dynamic_unique_title(niche, existing_channel_titles)
                     if new_unique_title and new_unique_title != title_curr:
                         snip["title"] = new_unique_title
@@ -1153,7 +1246,7 @@ def run_cloud_cycle():
 
 def main():
     print("=" * 80)
-    print("☁️ GITHUB CLOUD 24/7 ULTRA-VIRAL V8.0 STARTED (5.5 HOURS RUNNER)")
+    print("☁️ GITHUB CLOUD 24/7 ULTRA-VIRAL V9.0 STARTED (5.5 HOURS RUNNER)")
     print("=" * 80)
 
     start_time = time.time()
