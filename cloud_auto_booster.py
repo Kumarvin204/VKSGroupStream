@@ -12,6 +12,8 @@ import random
 from datetime import datetime, timezone, timedelta
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
+import urllib.request
+import urllib.parse
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
@@ -85,6 +87,198 @@ def save_state(state):
             json.dump(state, f, indent=2, ensure_ascii=False)
     except Exception:
         pass
+
+def get_analytics_data(yt, vid):
+    """🧠 FEATURE: Analytics API Brain — Fetches CTR, AVD, Traffic Sources for data-driven decisions."""
+    try:
+        analytics = build("youtubeAnalytics", "v2", credentials=yt._http.credentials if hasattr(yt, '_http') else None)
+        now_ist = datetime.now(timezone.utc) + timedelta(hours=5, minutes=30)
+        end_date = now_ist.strftime("%Y-%m-%d")
+        start_date = (now_ist - timedelta(days=7)).strftime("%Y-%m-%d")
+        
+        resp = analytics.reports().query(
+            ids="channel==MINE",
+            startDate=start_date,
+            endDate=end_date,
+            metrics="views,estimatedMinutesWatched,averageViewDuration,averageViewPercentage",
+            filters=f"video=={vid}",
+            dimensions=""
+        ).execute()
+        
+        rows = resp.get("rows", [])
+        if rows and len(rows[0]) >= 4:
+            return {
+                "views": rows[0][0],
+                "watch_mins": rows[0][1],
+                "avg_view_duration": rows[0][2],
+                "avg_view_pct": rows[0][3]
+            }
+    except Exception:
+        pass
+    return None
+
+def get_trending_bhakti_keywords():
+    """🌊 FEATURE: Trending Wave Rider — Fetches live trending bhakti keywords."""
+    trending_keywords = []
+    try:
+        now_ist = datetime.now(timezone.utc) + timedelta(hours=5, minutes=30)
+        month = now_ist.month
+        day = now_ist.day
+        
+        festival_map = {
+            (1, 14): ["makar sankranti khatu shyam", "uttarayan darshan"],
+            (1, 26): ["republic day bhakti", "desh bhakti shyam"],
+            (3, 0): ["holi khatu shyam", "fag mahotsav khatu", "khatu shyam holi celebration"],
+            (8, 0): ["janmashtami khatu shyam", "krishna janmashtami live", "janmashtami darshan 2026", "shyam janmotsav"],
+            (9, 0): ["navratri khatu shyam", "navratri darshan live", "shardiya navratri 2026"],
+            (10, 0): ["dussehra khatu shyam", "vijayadashami darshan"],
+            (11, 0): ["diwali khatu shyam", "deepawali darshan live", "kartik purnima khatu"],
+            (2, 0): ["mahashivratri khatu shyam", "phalguni mela khatu dham", "khatu shyam mela 2026"],
+            (7, 0): ["sawan khatu shyam", "shravan maas darshan", "sawan somvar shyam"],
+            (4, 0): ["chaitra navratri khatu", "ram navami darshan"],
+            (6, 0): ["rath yatra khatu shyam", "ashadhi ekadashi darshan"],
+        }
+        
+        for (m, d), keywords in festival_map.items():
+            if m == month and (d == 0 or d == day):
+                trending_keywords.extend(keywords)
+        
+        weekday = now_ist.weekday()
+        day_trends = {
+            0: ["somvar vrat khatu shyam", "monday darshan live"],
+            1: ["mangalwar khatu shyam darshan", "tuesday bhakti shorts"],
+            2: ["budhwar darshan live", "wednesday khatu shyam"],
+            3: ["guruvar khatu shyam", "thursday darshan live"],
+            4: ["shukravar darshan", "friday bhakti status"],
+            5: ["shanivar khatu shyam", "saturday darshan live"],
+            6: ["ravivar khatu shyam darshan", "sunday bhakti shorts"]
+        }
+        trending_keywords.extend(day_trends.get(weekday, []))
+        
+        hour = now_ist.hour
+        if 4 <= hour <= 7:
+            trending_keywords.extend(["mangla aarti khatu shyam", "subah ka darshan live", "early morning darshan"])
+        elif 11 <= hour <= 14:
+            trending_keywords.extend(["rajbhog aarti khatu shyam", "dopahar darshan live"])
+        elif 17 <= hour <= 20:
+            trending_keywords.extend(["sandhya aarti khatu shyam", "shaam ka darshan live", "evening aarti live"])
+        elif 20 <= hour <= 23:
+            trending_keywords.extend(["shayan aarti khatu shyam", "raat ka darshan", "night darshan live"])
+        
+        trending_keywords.extend(["khatu shyam aaj ka darshan", f"khatu shyam {now_ist.strftime('%B').lower()} 2026"])
+    except Exception:
+        pass
+    return trending_keywords
+
+def session_duration_maximizer(yt, current_vid, niche="bhakti"):
+    """🔗 FEATURE: Session Duration Maximizer — Chains best videos into smart playlists."""
+    try:
+        search_resp = yt.search().list(
+            part="snippet", forMine=True, type="video",
+            order="viewCount", maxResults=10
+        ).execute()
+        
+        top_vids = [item["id"]["videoId"] for item in search_resp.get("items", []) if item["id"].get("videoId")]
+        if len(top_vids) < 3:
+            return
+        
+        session_pl_title = "बाबा श्याम सम्पूर्ण दर्शन यात्रा 🌸" if niche == "bhakti" else "जीवन के अनमोल सबक 🌟"
+        session_pl_id = get_or_create_playlist(yt, session_pl_title, niche)
+        if not session_pl_id:
+            return
+        
+        existing_items = []
+        try:
+            pl_items = yt.playlistItems().list(part="snippet", playlistId=session_pl_id, maxResults=50).execute()
+            existing_items = [item["snippet"]["resourceId"]["videoId"] for item in pl_items.get("items", [])]
+        except Exception:
+            pass
+        
+        if current_vid not in existing_items:
+            try:
+                yt.playlistItems().insert(
+                    part="snippet",
+                    body={"snippet": {"playlistId": session_pl_id, "position": 0, "resourceId": {"kind": "youtube#video", "videoId": current_vid}}}
+                ).execute()
+                print(f"     🔗 [SESSION CHAIN] Video {current_vid} added to session playlist!")
+            except Exception:
+                pass
+    except Exception:
+        pass
+
+def smart_comment_traffic_funnel(yt, hot_vid, hot_views, niche, state):
+    """🌊 FEATURE: Smart Comment Traffic Funnel — Routes traffic from viral videos to underperforming ones."""
+    try:
+        if hot_views < 5000:
+            return
+        funnel_key = f"funnel_{hot_vid}"
+        if state.get(funnel_key):
+            return
+        
+        search_resp = yt.search().list(
+            part="snippet", forMine=True, type="video",
+            order="date", maxResults=10
+        ).execute()
+        
+        target_vid = None
+        for item in search_resp.get("items", []):
+            vid_id = item["id"].get("videoId")
+            if vid_id and vid_id != hot_vid:
+                v_stats = yt.videos().list(part="statistics", id=vid_id).execute()
+                v_items = v_stats.get("items", [])
+                if v_items:
+                    v_views = int(v_items[0]["statistics"].get("viewCount", 0))
+                    if v_views < hot_views // 5:
+                        target_vid = vid_id
+                        break
+        
+        if target_vid:
+            if niche == "bhakti":
+                funnel_comment = f"🌸 बाबा श्याम का और भी अलौकिक दर्शन यहाँ देखें 👉 https://www.youtube.com/shorts/{target_vid} 🙏 जय श्री श्याम!"
+            else:
+                funnel_comment = f"✨ एक और जीवन बदलने वाली सीख यहाँ देखें 👉 https://www.youtube.com/shorts/{target_vid} 💫"
+            
+            yt.commentThreads().insert(
+                part="snippet",
+                body={"snippet": {"videoId": hot_vid, "topLevelComment": {"snippet": {"textOriginal": funnel_comment}}}}
+            ).execute()
+            state[funnel_key] = True
+            print(f"     🌊 [TRAFFIC FUNNEL] Routed viewers from {hot_vid} ({hot_views} views) → {target_vid}")
+    except Exception:
+        pass
+
+def competitor_spy_tag_hijacker(yt, niche="bhakti"):
+    """🕵️ FEATURE: Competitor Spy & Tag Hijacker."""
+    hijacked_tags = []
+    try:
+        if niche == "bhakti":
+            search_queries = ["khatu shyam darshan today", "khatu shyam live", "baba shyam shorts"]
+        else:
+            search_queries = ["motivational shorts hindi", "life lessons shorts"]
+        
+        query = random.choice(search_queries)
+        search_resp = yt.search().list(
+            part="snippet", q=query, type="video",
+            order="viewCount", maxResults=5,
+            publishedAfter=(datetime.now(timezone.utc) - timedelta(days=3)).strftime("%Y-%m-%dT%H:%M:%SZ")
+        ).execute()
+        
+        competitor_vids = [item["id"]["videoId"] for item in search_resp.get("items", []) if item["id"].get("videoId")]
+        
+        if competitor_vids:
+            vids_resp = yt.videos().list(part="snippet", id=",".join(competitor_vids[:3])).execute()
+            for v_item in vids_resp.get("items", []):
+                comp_tags = v_item["snippet"].get("tags", [])
+                for tag in comp_tags:
+                    tag_lower = tag.lower().strip()
+                    skip_words = ["subscribe", "channel", "http", "www", "@"]
+                    if len(tag_lower) > 3 and len(tag_lower) < 50 and not any(sw in tag_lower for sw in skip_words):
+                        if tag_lower not in [t.lower() for t in hijacked_tags]:
+                            hijacked_tags.append(tag)
+            print(f"     🕵️ [COMPETITOR SPY] Found {len(hijacked_tags)} trending competitor tags")
+    except Exception:
+        pass
+    return hijacked_tags[:10]
 
 def get_next_available_slot(existing_scheduled_utc):
     now_utc = datetime.now(timezone.utc)
@@ -455,6 +649,21 @@ def run_cloud_cycle():
         hooks = POWER_HOOKS_BHAKTI if niche == "bhakti" else POWER_HOOKS_MOTIVATION
         tags = VIRAL_TAGS_BHAKTI if niche == "bhakti" else VIRAL_TAGS_MOTIVATION
 
+        # 🌊 Trending Wave Rider
+        trending_kws = get_trending_bhakti_keywords() if niche == "bhakti" else []
+        if trending_kws:
+            tags = tags + trending_kws
+            print(f"  🌊 [TRENDING WAVE RIDER] Injected {len(trending_kws)} live trending keywords")
+
+        # 🕵️ Competitor Spy
+        try:
+            competitor_tags = competitor_spy_tag_hijacker(yt, niche)
+            if competitor_tags:
+                tags = tags + competitor_tags
+                print(f"  🕵️ [COMPETITOR SPY] Hijacked {len(competitor_tags)} competitor tags")
+        except Exception:
+            competitor_tags = []
+
         try:
             creds = Credentials.from_authorized_user_info(json.loads(tok_str))
             yt = build('youtube', 'v3', credentials=creds)
@@ -540,6 +749,7 @@ def run_cloud_cycle():
                 ab_tested = prev_record.get("ab_tested", False)
                 playlist_added = prev_record.get("playlist_added", False)
                 replied_comments = prev_record.get("replied_comments", [])
+                session_done = prev_record.get("session_chained", False)
 
                 time_diff_mins = max(1, (now_ts - prev_time) // 60)
                 views_gained = current_views - prev_views
@@ -676,6 +886,35 @@ def run_cloud_cycle():
                     except Exception:
                         pass
 
+                # 6️⃣ Analytics API Brain
+                analytics_data = get_analytics_data(yt, vid)
+                if analytics_data:
+                    avg_pct = analytics_data.get("avg_view_pct", 0)
+                    print(f"     🧠 [ANALYTICS BRAIN] AVD: {analytics_data.get('avg_view_duration', 0):.1f}s | Retention: {avg_pct:.1f}% | Watch Mins: {analytics_data.get('watch_mins', 0):.1f}")
+                    if avg_pct > 70 and ab_tested:
+                        print(f"     🧠 [ANALYTICS BRAIN] HIGH RETENTION {avg_pct:.1f}% — Title is PERFECT!")
+                    elif avg_pct < 30 and not ab_tested and current_views > 100:
+                        print(f"     🧠 [ANALYTICS BRAIN] LOW RETENTION {avg_pct:.1f}% — Force A/B title test...")
+                        new_unique_title = generate_dynamic_unique_title(niche, existing_channel_titles)
+                        if new_unique_title and new_unique_title != title_curr:
+                            snip["title"] = new_unique_title
+                            snip["categoryId"] = "22"
+                            try:
+                                yt.videos().update(part="snippet,status", body={"id": vid, "snippet": snip, "status": stat}).execute()
+                                print(f"     🧠 [ANALYTICS-DRIVEN TITLE CHANGE] -> {new_unique_title[:45]}...")
+                                ab_tested = True
+                            except Exception:
+                                pass
+
+                # 7️⃣ Session Duration Maximizer
+                session_done = prev_record.get("session_chained", False)
+                if not session_done and current_views >= 100:
+                    session_duration_maximizer(yt, vid, niche)
+                    session_done = True
+
+                # 8️⃣ Smart Comment Traffic Funnel
+                smart_comment_traffic_funnel(yt, vid, current_views, niche, state)
+
                 state[vid] = {
                     "views": current_views,
                     "likes": current_likes,
@@ -685,7 +924,8 @@ def run_cloud_cycle():
                     "ab_tested": ab_tested,
                     "playlist_added": playlist_added,
                     "replied_comments": replied_comments,
-                    "reindexed": reindexed
+                    "reindexed": reindexed,
+                    "session_chained": session_done
                 }
 
         except Exception as e:
