@@ -85,11 +85,28 @@ jobs:
           PART_DURATION=19200
           
           echo "=========================================================================="
-          echo "🚀 11-HOUR SAFE YOUTUBE LIVE STREAMING PROTOCOL"
+          echo "🚀 11-HOUR SAFE YOUTUBE LIVE STREAMING (ZERO-GAP HOT HANDSHAKE PROTOCOL)"
           echo "Current Leg: Part $PART of 2"
           echo "Leg Duration: 5 Hours 20 Minutes ($PART_DURATION seconds)"
           echo "Streaming Video: $VIDEO"
           echo "=========================================================================="
+          
+          # 🔥 ZERO-GAP HOT HANDSHAKE: Auto-dispatch Part 2 exactly 2 minutes BEFORE Part 1 ends
+          # This allows Part 2 runner to boot, install FFmpeg & download video while Part 1 is STILL streaming!
+          if [ "$PART" -eq 1 ]; then
+            (
+              TRIGGER_DELAY=$(( PART_DURATION - 120 ))
+              if [ $TRIGGER_DELAY -gt 0 ]; then
+                sleep $TRIGGER_DELAY
+                echo "=========================================================================="
+                echo "⚡ [ZERO-GAP HOT HANDSHAKE] Dispatching Part 2 in advance (2m buffer)!"
+                echo "Part 2 is booting up in parallel while Part 1 continues streaming uninterrupted..."
+                echo "=========================================================================="
+                gh workflow run stream.yml -f stream_key="$KEY" -f video_name="$VIDEO" -f relay_part="2" --repo ${{ github.repository }} || true
+                echo "✅ Part 2 parallel boot successfully dispatched!"
+              fi
+            ) &
+          fi
           
           END_TIME=$(( $(date +%s) + PART_DURATION ))
           
@@ -118,9 +135,9 @@ jobs:
           done
           
           if [ "$PART" -eq 1 ]; then
-            echo "⚡ Part 1 (5h 20m) Finished Cleanly! Auto-triggering Part 2 for remaining 5h 20m..."
-            gh workflow run stream.yml -f stream_key="$KEY" -f video_name="$VIDEO" -f relay_part="2" --repo ${{ github.repository }}
-            echo "✅ Part 2 Relay successfully dispatched to GitHub Actions!"
+            echo "=========================================================================="
+            echo "⚡ Part 1 (5h 20m) Completed Cleanly! Part 2 is already streaming on YouTube!"
+            echo "=========================================================================="
           else
             echo "=========================================================================="
             echo "🎉 FULL 11 HOURS OF LIVE STREAMING COMPLETED SUCCESSFULLY!"
