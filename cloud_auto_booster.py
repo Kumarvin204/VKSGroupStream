@@ -1,5 +1,5 @@
 """
-24/7 GITHUB CLOUD REALTIME VELOCITY & "SEO KR DO" ENGINE (V5.0)
+24/7 GITHUB CLOUD REALTIME VELOCITY & "SEO KR DO" ENGINE (V6.0)
 --------------------------------------------------------------
 """
 import sys
@@ -549,6 +549,7 @@ def generate_seo_package(raw_title, niche="bhakti", existing_titles=None):
     if any(k in title_lower for k in ["khatu", "shyam", "khatushyam", "morpankh", "sanwariya"]) or niche == "bhakti":
         base_title = generate_dynamic_unique_title("bhakti", existing_titles)
         title = f"{fest_prefix}{base_title}" if fest_prefix and len(fest_prefix + base_title) <= 95 else base_title
+        key_moments = generate_key_moments_chapters(is_live=False, niche="bhakti")
         desc = f"""{date_header_hi}
 🙏 जय श्री श्याम! खाटू धाम से बाबा श्री खाटू श्याम जी का अलौकिक शृंगार दर्शन 🌸
 
@@ -560,6 +561,8 @@ def generate_seo_package(raw_title, niche="bhakti", existing_titles=None):
 🦚 मोरपंखी मुकुट व स्वर्ण आभूषण
 🌺 ताज़ा गुलाब, गेंदे व चमेली के फूलों का शृंगार
 {time_theme_desc}
+
+{key_moments}
 
 बाबा श्याम की कृपा से आपके घर में सुख-समृद्धि, शांति और खुशहाली आए! 🙏
 कमेंट में "जय श्री श्याम" या "हारे के सहारे की जय" ज़रूर लिखें! 🌸
@@ -584,10 +587,13 @@ All devotional footage & darshan visuals are creatively curated, color-graded, a
 
     else:
         title = generate_dynamic_unique_title("motivation", existing_titles)
+        key_moments = generate_key_moments_chapters(is_live=False, niche="motivation")
         desc = f"""✨ जीवन में कभी हार मत मानो! हर मुश्किल समय में एक नई सीख छिपी होती है। 🌟
 
 📖 गीता सार व विचार: "कर्म करो फल की चिंता मत करो | हर अंधकार के बाद एक नया सवेरा आता है" 💫
 👁️ लूप चैलेंज: इस सीख के अंतिम 3 सेकंड को दोबारा ध्यान से सुनें और अपने जीवन में लागू करें! 🌟
+
+{key_moments}
 
 इस वीडियो को पूरा देखें और अपने दोस्तों के साथ शेयर करें! 💪
 अगर यह सीख पसंद आई हो तो Like करें और Channel SUBSCRIBE करें! 🔔
@@ -633,9 +639,70 @@ def get_or_create_playlist(yt, title, niche="bhakti"):
     except Exception:
         return None
 
+def get_live_suggest_keywords(seed_query="khatu shyam"):
+    """🔍 FEATURE: YouTube Live Suggest Autocomplete Harvester — Fetches real-time search queries."""
+    suggested = []
+    try:
+        url = f"https://suggestqueries.google.com/complete/search?client=firefox&ds=yt&q={urllib.parse.quote(seed_query)}"
+        req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+        with urllib.request.urlopen(req, timeout=3) as response:
+            data = json.loads(response.read().decode('utf-8'))
+            if len(data) >= 2 and isinstance(data[1], list):
+                for item in data[1][:8]:
+                    clean_item = str(item).strip()
+                    if clean_item and len(clean_item) > 3:
+                        suggested.append(clean_item)
+    except Exception:
+        pass
+    return suggested
+
+def get_nri_global_tags(niche="bhakti"):
+    """🌍 FEATURE: NRI & Multi-Timezone Global Devotee Targeter — Catches US/UK/Canada/Dubai search traffic."""
+    now_utc = datetime.now(timezone.utc)
+    utc_hour = now_utc.hour
+    global_tags = []
+    if niche == "bhakti":
+        if 13 <= utc_hour or utc_hour <= 2:
+            global_tags.extend(["khatu shyam live usa", "shyam baba darshan usa today", "khatu dham usa timing", "global shyam parivar live", "khatu shyam temple uk darshan"])
+        if 4 <= utc_hour <= 18:
+            global_tags.extend(["khatu shyam dubai", "khatu shyam live stream global", "khatu shyam international"])
+    return global_tags
+
+def generate_key_moments_chapters(is_live=False, niche="bhakti"):
+    """⏱️ FEATURE: Key Moments Chapter Stamp Engine — Awards Google/YouTube Search Key Moments rich badge."""
+    if niche == "bhakti":
+        if is_live:
+            return """⏱️ Key Moments & पावन दर्शन प्रवाह:
+00:00 - 🌸 पावन मंगला शुरुआत व दर्शन
+03:15 - 🌺 बाबा का अलौकिक शृंगार व पुष्प दर्शन
+08:30 - 🦚 हारे के सहारे की पावन कथा व लीला
+15:00 - 🕯️ सुगंधित महाआरती व दिव्य प्रार्थना
+22:00 - 🙏 मनोकामना संकल्प व पावन अर्जी"""
+        else:
+            return """⏱️ Key Moments & दर्शन सूची:
+00:00 - 🌸 अलौकिक शृंगार व मोरपंख दर्शन
+00:15 - 🦚 दिव्य स्वर्ण मुकुट व पुष्प माला
+00:30 - 🙏 पावन आशीर्वाद व मनोकामना प्रार्थना"""
+    else:
+        return """⏱️ Key Moments:
+00:00 - 🌟 मुख्य सीख व विचार
+00:20 - 💫 जीवन बदलने वाला दृष्टांत
+00:45 - 💪 सफलता का अचूक मंत्र"""
+
+def get_active_live_stream_id(yt):
+    """🔴 FEATURE: Live-to-Shorts Instant Traffic Loop — Checks if a live stream is running right now."""
+    try:
+        broadcasts = yt.liveBroadcasts().list(part="id,status", broadcastStatus="active", maxResults=1).execute()
+        for b in broadcasts.get("items", []):
+            if b["status"]["lifeCycleStatus"] == "live":
+                return b["id"]
+    except Exception:
+        pass
+    return None
+
 def run_cloud_cycle():
     now_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')
-    print(f"\n[{now_str}] ☁️ GITHUB CLOUD RUNNING V5.0 'SEO KR DO' & VELOCITY SENTINEL...")
+    print(f"\n[{now_str}] ☁️ GITHUB CLOUD RUNNING V6.0 'SEO KR DO' & VELOCITY SENTINEL...")
     state = load_state()
     now_ts = int(time.time())
 
@@ -648,6 +715,14 @@ def run_cloud_cycle():
         niche = ch_cfg["niche"]
         hooks = POWER_HOOKS_BHAKTI if niche == "bhakti" else POWER_HOOKS_MOTIVATION
         tags = VIRAL_TAGS_BHAKTI if niche == "bhakti" else VIRAL_TAGS_MOTIVATION
+
+        # 🔍 Live Suggest & 🌍 NRI Tags
+        suggest_kws = get_live_suggest_keywords("khatu shyam" if niche == "bhakti" else "motivational")
+        nri_tags = get_nri_global_tags(niche)
+        tags = tags + suggest_kws + nri_tags
+        
+        # Ensure all tags are sanitized (we will sanitize them again when assigning, but good to do it here too just in case)
+        tags = sanitize_tags(tags, max_total_chars=400)
 
         # 🌊 Trending Wave Rider
         trending_kws = get_trending_bhakti_keywords() if niche == "bhakti" else []
@@ -663,10 +738,17 @@ def run_cloud_cycle():
                 print(f"  🕵️ [COMPETITOR SPY] Hijacked {len(competitor_tags)} competitor tags")
         except Exception:
             competitor_tags = []
+            
+        tags = sanitize_tags(tags, max_total_chars=400)
 
         try:
             creds = Credentials.from_authorized_user_info(json.loads(tok_str))
             yt = build('youtube', 'v3', credentials=creds)
+
+            active_live_id = get_active_live_stream_id(yt)
+            if active_live_id:
+                print(f"  🔴 [LIVE-TO-SHORTS BRIDGE ACTIVE] Active Live Stream detected: {active_live_id}")
+
 
             ch_resp = yt.channels().list(part="contentDetails,statistics", mine=True).execute()
             uploads_id = ch_resp["items"][0]["contentDetails"]["relatedPlaylists"]["uploads"]
@@ -935,7 +1017,7 @@ def run_cloud_cycle():
 
 def main():
     print("=" * 80)
-    print("☁️ GITHUB CLOUD 24/7 ULTRA-VIRAL V5.0 STARTED (5.5 HOURS RUNNER)")
+    print("☁️ GITHUB CLOUD 24/7 ULTRA-VIRAL V6.0 STARTED (5.5 HOURS RUNNER)")
     print("=" * 80)
 
     start_time = time.time()
