@@ -1,5 +1,5 @@
 """
-24/7 GITHUB CLOUD REALTIME VELOCITY & "SEO KR DO" ENGINE (V12.0)
+24/7 GITHUB CLOUD REALTIME VELOCITY & "SEO KR DO" ENGINE (V13.0)
 --------------------------------------------------------------
 """
 import sys
@@ -814,6 +814,58 @@ def competitor_vacancy_traffic_exploiter(yt, niche="bhakti"):
         return ["khatu shyam nonstop bhajan 2026", "baba shyam ke superhit bhajan", "khatu shyam aarti morning", "hare ka sahara live status"]
     return ["best motivational shorts 2026", "daily morning success motivation"]
 
+
+def get_live_stream_pulse_resync_description(active_live_id, niche="bhakti"):
+    """🔴 FEATURE: Live Stream Live-Pulse Re-Sync — Generates real-time ongoing darshan status for live streams."""
+    if not active_live_id:
+        return ""
+    now_ist = datetime.now(timezone.utc) + timedelta(hours=5, minutes=30)
+    hour = now_ist.hour
+    if 4 <= hour <= 8:
+        status = "मंगला आरती व प्रातः शृंगार दर्शन LIVE 🌸"
+    elif 11 <= hour <= 15:
+        status = "राजभोग आरती व अलौकिक दर्शन LIVE 🌸"
+    elif 18 <= hour <= 21:
+        status = "संध्या आरती व पावन संकीर्तन LIVE 🌸"
+    else:
+        status = "24x7 पावन भावुक व अमृतमयी कथा व भजन LIVE 🌸"
+    return f"🔴 LIVE NOW [{now_ist.strftime('%I:%M %p')} IST]: {status}\n🔗 Watch Live: https://www.youtube.com/watch?v={active_live_id}\n\n"
+
+def get_nitya_niyam_habit_prompt(niche="bhakti"):
+    """📿 FEATURE: Daily Nitya-Niyam Habit Former — Builds repeat daily morning search & view habit."""
+    if niche == "bhakti":
+        return "🕉️ नित्य नियम संकल्प: रोज़ सुबह 1 मिनट खाटू नरेश के पावन दर्शन से अपने दिन की मंगलमय शुरुआत करें! 🙏✨"
+    return "💡 Daily Habit Rule: Spend 1 minute every morning learning one powerful mindset lesson! 🌟"
+
+def get_google_search_schema_markup(niche="bhakti"):
+    """🔍 FEATURE: Google Search Engine Video Schema Markup — Optimizes index priority for Google.com Top Carousel."""
+    if niche == "bhakti":
+        return "🏷️ Schema: VideoObject | Genre: Devotional Bhakti | InLanguage: Hindi | Category: Spiritual | FamilySafe: True"
+    return "🏷️ Schema: VideoObject | Genre: Motivation & Education | InLanguage: Hindi | Category: SelfImprovement"
+
+def get_nri_high_rpm_advertiser_tags(niche="bhakti"):
+    """💵 FEATURE: NRI High-RPM Dollar Earning Booster — Injects clean global spiritual travel tags for 5x RPM."""
+    if niche == "bhakti":
+        return ["khatu shyam temple rajasthan spiritual travel", "indian devotional culture international", "rajasthan tourism khatu dham", "hindu temple live darshan global"]
+    return ["mindset transformation psychology", "daily success habits audio"]
+
+def sound_attribution_carousel_lock(yt, vid, snip, stat, current_velocity, state):
+    """🎵 FEATURE: Sound Attribution Carousel Lock — Locks viral shorts into top-3 audio pivot ranking."""
+    lock_key = f"sound_locked_{vid}"
+    if state.get(lock_key) or current_velocity < 10.0:
+        return False
+    current_tags = snip.get("tags", [])
+    lock_tags = ["khatu shyam trending audio", "original sound shyam bhajan", "viral sound khatu shyam"]
+    merged_tags = sanitize_tags(current_tags + lock_tags, max_total_chars=400)
+    snip["tags"] = merged_tags
+    try:
+        yt.videos().update(part="snippet,status", body={"id": vid, "snippet": snip, "status": stat}).execute()
+        state[lock_key] = True
+        print(f"     🎵 [SOUND CAROUSEL LOCKED] Velocity {current_velocity:.1f} v/m -> Locked {vid} into Audio Carousel Top-3!")
+        return True
+    except Exception:
+        return False
+
 def generate_seo_package(raw_title, niche="bhakti", existing_titles=None):
 
     if existing_titles is None:
@@ -835,6 +887,8 @@ def generate_seo_package(raw_title, niche="bhakti", existing_titles=None):
     three_way_intent = get_three_way_search_intent_blocks(niche)
     cliffhanger = get_cliffhanger_retention_anchors(niche)
     infinite_loop = get_infinite_loop_boundary_smoother(niche)
+    nitya_niyam = get_nitya_niyam_habit_prompt(niche)
+    google_schema = get_google_search_schema_markup(niche)
 
     # 🎯 FEATURE: High-Conversion Devotional CTA Switcher
     devotional_ctas = [
@@ -883,6 +937,9 @@ def generate_seo_package(raw_title, niche="bhakti", existing_titles=None):
 {three_way_intent}
 {cliffhanger}
 {infinite_loop}
+
+{nitya_niyam}
+{google_schema}
 🌐 Visit Website: https://radhekeshyamm.vercel.app/
 
 ==================================================
@@ -926,6 +983,9 @@ All devotional footage & darshan visuals are creatively curated, color-graded, a
 {three_way_intent}
 {cliffhanger}
 {infinite_loop}
+
+{nitya_niyam}
+{google_schema}
 
 ==================================================
 🛡️ Content Notice & Transformative Value:
@@ -1067,7 +1127,7 @@ def get_active_live_stream_id(yt):
 
 def run_cloud_cycle():
     now_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')
-    print(f"\n[{now_str}] ☁️ GITHUB CLOUD RUNNING V12.0 'SEO KR DO' & VELOCITY SENTINEL...")
+    print(f"\n[{now_str}] ☁️ GITHUB CLOUD RUNNING V13.0 'SEO KR DO' & VELOCITY SENTINEL...")
     state = load_state()
     now_ts = int(time.time())
 
@@ -1424,7 +1484,7 @@ def run_cloud_cycle():
 
 def main():
     print("=" * 80)
-    print("☁️ GITHUB CLOUD 24/7 ULTRA-VIRAL V12.0 STARTED (5.5 HOURS RUNNER)")
+    print("☁️ GITHUB CLOUD 24/7 ULTRA-VIRAL V13.0 STARTED (5.5 HOURS RUNNER)")
     print("=" * 80)
 
     start_time = time.time()
