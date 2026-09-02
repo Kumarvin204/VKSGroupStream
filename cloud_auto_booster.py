@@ -433,10 +433,30 @@ def get_panchang_festival_boost():
 def get_video_localizations(base_title, niche="bhakti"):
     """
     🌐 FEATURE: Multi-Language Localization Engine
-    Guarantees English (India) devices ALWAYS see the original pure Hindi title by omitting en override.
+    Provides high-converting English, Gujarati & Marathi localizations for NRI & global devotees.
     """
-    # Omit en so English (India) phones always display the original Hindi title
-    return {}
+    if niche == "bhakti":
+        return {
+            "en": {
+                "title": "🔴 LIVE: Shyam... Calling Your Name With Tears 😭💔 Emotional Khatu Shyam Bhajan 2026",
+                "description": "Daily 24x7 live darshan, emotional bhajan and sacred katha from Khatu Dham Rajasthan. Seek blessings of Baba Shyam!\n\n#KhatuShyam #JaiShreeShyam #KhatuDham #LiveStream #ShyamBhajan"
+            },
+            "gu": {
+                "title": "🔴 LIVE: શ્યામ... હવે રડતાં રડતાં તારું નામ લીધું છે 😭 દર્દભર્યું ખાટુ શ્યામ ભજન લાઈવ 2026",
+                "description": "ખાટુ ધામ રાજસ્થાન થી 24x7 લાઈવ શ્રી શ્યામ દર્શન અને અમૃતમય કથા ભજન. સબ્સ્ક્રાઇબ કરો અને આશીર્વાદ મેળવો!\n\n#KhatuShyam #JaiShreeShyam #LiveStream"
+            },
+            "mr": {
+                "title": "🔴 LIVE: श्याम... आता रडत रडत तुझे नाव घेतले आहे 😭 भावुक खाटू श्याम भजन लाईव्ह 2026",
+                "description": "खाटू धाम राजस्थान येथून 24x7 थेट खाटू श्याम दर्शन आणि भावुक भजन. सबस्क्राईब करा व आशीर्वाद मिळवा!\n\n#KhatuShyam #JaiShreeShyam #Live"
+            }
+        }
+    else:
+        return {
+            "en": {
+                "title": "10 Seconds That Will Change Your Life 🌟 Powerful Mindset Lessons",
+                "description": "Daily motivation, life lessons, and wisdom for unstoppable focus and success. Subscribe now!\n\n#Motivation #Success #LifeLessons"
+            }
+        }
 
 def get_panchang_festival_boost():
     """
