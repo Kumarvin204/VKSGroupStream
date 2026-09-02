@@ -404,32 +404,6 @@ def generate_dynamic_unique_title(niche, existing_titles=None):
         cand = f"{random.choice(MOTIVATION_L1)} {random.choice(MOTIVATION_L3)}"
         return cand[:95]
 
-def get_panchang_festival_boost():
-    """
-    🌸 FEATURE 2 & 3: Hindu Panchang, Tithi & Multi-State Regional Devotee Expansion
-    Detects special days (Shanivar, Ravivar, Ekadashi / Gyas) and returns festive hooks and regional high-volume tags.
-    """
-    now_dt = datetime.now()
-    weekday = now_dt.weekday()
-    day_num = now_dt.day
-
-    fest_title_prefix = ""
-    extra_tags = [
-        # Regional Multi-State Devotee Tags (Gujarat, Rajasthan, Maharashtra, Delhi NCR)
-        "khatu shyam live darshan", "khatu naresh na darshan", "sanwariya seth mandir gujarat",
-        "shyam baba status hindi", "khatu dham live today"
-    ]
-
-    # Real-Time Search Trends Hijacker (Time-of-day surge keywords)
-    hour = now_dt.hour
-    if 4 <= hour <= 11:
-        extra_tags.extend(["khatu shyam mangla aarti", "pratah darshan khatu shyam"])
-    elif 17 <= hour <= 23:
-        extra_tags.extend(["khatu shyam sandhya aarti", "shyam darshan today live 2026"])
-
-# =============================================================================
-# 🌍 MULTI-LANGUAGE LOCALIZATION ENGINE (English, Gujarati, Marathi)
-# =============================================================================
 def get_video_localizations(base_title, niche="bhakti", hindi_desc=""):
     """
     🌐 FEATURE: Smart Regional Locale Multi-Language Engine
