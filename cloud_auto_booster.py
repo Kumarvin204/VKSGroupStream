@@ -430,13 +430,27 @@ def get_panchang_festival_boost():
 # =============================================================================
 # 🌍 MULTI-LANGUAGE LOCALIZATION ENGINE (English, Gujarati, Marathi)
 # =============================================================================
-def get_video_localizations(base_title, niche="bhakti"):
+def get_video_localizations(base_title, niche="bhakti", hindi_desc=""):
     """
-    🌐 FEATURE: Multi-Language Localization Engine
-    Provides high-converting English, Gujarati & Marathi localizations for NRI & global devotees.
+    🌐 FEATURE: Smart Regional Locale Multi-Language Engine
+    - en-IN (English India): Retains original pure Hindi title & description so 90%+ Indian phones see pure Hindi.
+    - en-US / en-GB / en: Shows exact English translated title & description for foreign NRI devotees.
+    - gu / mr: Regional Gujarati and Marathi diaspora.
     """
     if niche == "bhakti":
         return {
+            "en-IN": {
+                "title": base_title,
+                "description": hindi_desc if hindi_desc else "खाटू धाम राजस्थान से 24x7 पावन अमृतमयी कथा व भजन लाइव दर्शन।\n\n#KhatuShyam #JaiShreeShyam #KhatuDham"
+            },
+            "en-US": {
+                "title": "🔴 LIVE: Shyam... Calling Your Name With Tears 😭💔 Emotional Khatu Shyam Bhajan 2026",
+                "description": "Daily 24x7 live darshan, emotional bhajan and sacred katha from Khatu Dham Rajasthan. Seek blessings of Baba Shyam!\n\n#KhatuShyam #JaiShreeShyam #KhatuDham #LiveStream #ShyamBhajan"
+            },
+            "en-GB": {
+                "title": "🔴 LIVE: Shyam... Calling Your Name With Tears 😭💔 Emotional Khatu Shyam Bhajan 2026",
+                "description": "Daily 24x7 live darshan, emotional bhajan and sacred katha from Khatu Dham Rajasthan. Seek blessings of Baba Shyam!\n\n#KhatuShyam #JaiShreeShyam #KhatuDham #LiveStream #ShyamBhajan"
+            },
             "en": {
                 "title": "🔴 LIVE: Shyam... Calling Your Name With Tears 😭💔 Emotional Khatu Shyam Bhajan 2026",
                 "description": "Daily 24x7 live darshan, emotional bhajan and sacred katha from Khatu Dham Rajasthan. Seek blessings of Baba Shyam!\n\n#KhatuShyam #JaiShreeShyam #KhatuDham #LiveStream #ShyamBhajan"
@@ -452,6 +466,10 @@ def get_video_localizations(base_title, niche="bhakti"):
         }
     else:
         return {
+            "en-IN": {
+                "title": base_title,
+                "description": hindi_desc if hindi_desc else "दैनिक प्रेरणा और जीवन के अनमोल सबक।\n\n#Motivation #Success #LifeLessons"
+            },
             "en": {
                 "title": "10 Seconds That Will Change Your Life 🌟 Powerful Mindset Lessons",
                 "description": "Daily motivation, life lessons, and wisdom for unstoppable focus and success. Subscribe now!\n\n#Motivation #Success #LifeLessons"
