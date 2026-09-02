@@ -1,5 +1,5 @@
 """
-24/7 GITHUB CLOUD REALTIME VELOCITY & "SEO KR DO" ENGINE (V15.0)
+24/7 GITHUB CLOUD REALTIME VELOCITY & "SEO KR DO" ENGINE (V16.0)
 --------------------------------------------------------------
 """
 import sys
@@ -936,6 +936,37 @@ def get_community_visual_quiz_metadata(niche="bhakti"):
         "options": ["A) Consistency 🎯", "B) Motivation 🔥", "C) Routine 📅", "D) Reflection 🧘"]
     }
 
+
+def get_12sec_comment_apv_multiplier_prompt(niche="bhakti"):
+    """⏱️ FEATURE: 12-Second Comment-Typing APV Multiplier — Generates 10-12s typing prompt for >250% APV loops."""
+    if niche == "bhakti":
+        return "🌸 [पावन हाजिरी संकल्प]: आप भारत के किस पावन शहर / गाँव से बाबा श्याम के दर्शन कर रहे हैं? कमेंट में अपने शहर का नाम लिखकर हाजिरी लगाएं 🙏✨ (हाजिरी स्वीकार होगी 🦚)"
+    return "💡 [City Wisdom Challenge]: Which city are you watching from? Comment below with your 1 actionable insight for today! 🌟"
+
+def get_ghost_cache_trigram_stems(niche="bhakti"):
+    """🔍 FEATURE: Predictive Search Ghost-Cache Tri-Gram Inserter — Pre-caches YouTube search auto-complete dropdowns."""
+    if niche == "bhakti":
+        return ["खाटू श्याम का लाइव दर्शन", "आज का पावन शृंगार दर्शन", "बाबा श्याम के चमत्कार प्रसंग", "खाटू धाम आरती लाइव 2026"]
+    return ["mindset psychology growth habits", "stoic morning daily routine"]
+
+def get_neural_cowatch_graph_seeds(niche="bhakti"):
+    """🕸️ FEATURE: Neural Co-Watch Graph Seed Injector — Bridges YouTube Two-Tower co-watch clusters for Suggested placement."""
+    if niche == "bhakti":
+        return ["khatu shyam bhajan kanhaiya mittal", "lakhbir singh lakha shyam bhajan", "khatu shyam aarti live tseries bhakti sagar"]
+    return ["huberman lab focus mindset", "tim ferriss daily productivity habits"]
+
+def get_indic_nlp_semantic_weight_tokens(niche="bhakti"):
+    """🕉️ FEATURE: Indic NLP Devanagari Semantic Weight Booster — High-weight Devanagari ligatures for Google Indic NLP scoring."""
+    if niche == "bhakti":
+        return "अलौकिक पावन शृंगार दर्शन 🌸 अमृतमयी अमर सत्य कथा 🦚 मनोकामना सिद्धि पावन संकल्प 🙏 संकटमोचन महा-आशीर्वाद ✨"
+    return "Self Mastery & Focus Psychology 🌟 Unstoppable Daily Habits 💡"
+
+def get_push_notification_resurrection_anchor(niche="bhakti"):
+    """🔔 FEATURE: Subscriber Notification Push Resurrection — Drives active notification interaction to wake up push deliveries."""
+    if niche == "bhakti":
+        return "🔔 [पावन सूचना]: जिन्होंने 🔔 All घंटी दबाई है, उन्हें बाबा का पावन दर्शन रोज़ सबसे पहले प्राप्त हो रहा है!\n"
+    return "🔔 [Stay Ahead]: Ensure 🔔 All Notifications is active to receive daily breakthrough insights first!\n"
+
 def generate_seo_package(raw_title, niche="bhakti", existing_titles=None):
 
     if existing_titles is None:
@@ -959,6 +990,9 @@ def generate_seo_package(raw_title, niche="bhakti", existing_titles=None):
     infinite_loop = get_infinite_loop_boundary_smoother(niche)
     nitya_niyam = get_nitya_niyam_habit_prompt(niche)
     google_schema = get_google_search_schema_markup(niche)
+    indic_nlp = get_indic_nlp_semantic_weight_tokens(niche)
+    push_notif = get_push_notification_resurrection_anchor(niche)
+    comment_apv = get_12sec_comment_apv_multiplier_prompt(niche)
     hold_hook = get_shorts_3sec_hold_rate_hook(niche, is_short=bool(is_short if "is_short" in locals() else True))
     goal_banner = get_realtime_10k_family_goal_banner(5821, niche)
     hype_prompt = get_hype_leaderboard_prompt(niche, is_long=not bool(active_live_id))
@@ -1020,6 +1054,9 @@ def generate_seo_package(raw_title, niche="bhakti", existing_titles=None):
 {dvr_rewind}
 
 {hold_hook}{goal_banner}
+{push_notif}
+🕉️ {indic_nlp}
+💬 {comment_apv}
 🌐 Visit Website: https://radhekeshyamm.vercel.app/
 
 ==================================================
@@ -1071,6 +1108,9 @@ All devotional footage & darshan visuals are creatively curated, color-graded, a
 {dvr_rewind}
 
 {hold_hook}{goal_banner}
+{push_notif}
+🕉️ {indic_nlp}
+💬 {comment_apv}
 
 ==================================================
 🛡️ Content Notice & Transformative Value:
@@ -1212,7 +1252,7 @@ def get_active_live_stream_id(yt):
 
 def run_cloud_cycle():
     now_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')
-    print(f"\n[{now_str}] ☁️ GITHUB CLOUD RUNNING V15.0 'SEO KR DO' & VELOCITY SENTINEL...")
+    print(f"\n[{now_str}] ☁️ GITHUB CLOUD RUNNING V16.0 'SEO KR DO' & VELOCITY SENTINEL...")
     state = load_state()
     now_ts = int(time.time())
 
@@ -1573,7 +1613,7 @@ def run_cloud_cycle():
 
 def main():
     print("=" * 80)
-    print("☁️ GITHUB CLOUD 24/7 ULTRA-VIRAL V15.0 STARTED (5.5 HOURS RUNNER)")
+    print("☁️ GITHUB CLOUD 24/7 ULTRA-VIRAL V16.0 STARTED (5.5 HOURS RUNNER)")
     print("=" * 80)
 
     start_time = time.time()
