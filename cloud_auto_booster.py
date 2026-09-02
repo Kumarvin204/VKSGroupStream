@@ -1,5 +1,5 @@
 """
-24/7 GITHUB CLOUD REALTIME VELOCITY & "SEO KR DO" ENGINE (V13.0)
+24/7 GITHUB CLOUD REALTIME VELOCITY & "SEO KR DO" ENGINE (V14.0)
 --------------------------------------------------------------
 """
 import sys
@@ -884,6 +884,43 @@ def sound_attribution_carousel_lock(yt, vid, snip, stat, current_velocity, state
     except Exception:
         return False
 
+
+def get_hype_leaderboard_prompt(niche="bhakti", is_long=False):
+    """🚀 FEATURE: Hype Leaderboard Velocity Magnet — Pushes new 7-day long videos into YouTube Top-100 Leaderboard."""
+    if is_long:
+        if niche == "bhakti":
+            return "🚀 [YouTube Hype Leaderboard]: Like के पास वाले 'Hype' बटन को दबाकर बाबा के इस पावन दर्शन को Top-100 में पहुँचाएँ! 🌸🏆\n"
+        return "🚀 [Support Growth]: Hit the 'Hype' button next to Like to push this video to the Weekly Top-100! 🌟\n"
+    return ""
+
+def format_smart_tv_display_title(raw_title, niche="bhakti"):
+    """📺 FEATURE: Smart TV & Living Room Display Optimizer — Formats front-loaded readable headline for 55-inch screens."""
+    clean_title = raw_title.replace("**", "").strip()
+    if len(clean_title) > 65 and "|" in clean_title:
+        parts = clean_title.split("|")
+        return f"{parts[0].strip()} | {parts[1].strip()}"[:95]
+    return clean_title[:95]
+
+def get_asr_speech_to_metadata_coherence_tags(niche="bhakti"):
+    """🎙️ FEATURE: ASR Speech-to-Metadata Coherence — Matches YouTube speech recognition audio phonetics with search tags."""
+    if niche == "bhakti":
+        return ["shyam baba ke anmol vachan", "khatu dham aarti bol", "sheesh ke daani live aarti katha", "haare ka sahara katha bol"]
+    return ["mindset psychology speech audio", "success habits spoken word"]
+
+def get_prayer_chain_cascade_prompt(niche="bhakti"):
+    """📿 FEATURE: Devotional Prayer Chain Cascade Loop — Generates recursive comment velocity on devotion threads."""
+    if niche == "bhakti":
+        return "🌸 [अखंड प्रार्थना श्रृंखला]: जिस भी भक्त का 'जय श्री श्याम' कमेंट अंतिम रहेगा, उनके नाम की विशेष अरदास बाबा के चरणों में लगेगी! 🙏✨"
+    return "💡 [Wisdom Chain]: Leave the last insight in the comments to inspire the next viewer! 🌟"
+
+def get_live_dvr_rewind_catchup_anchor(is_live=False, niche="bhakti"):
+    """⏪ FEATURE: Live Stream DVR & Rewind Catch-Up Anchor — Doubles live session duration for late-joining viewers."""
+    if is_live and niche == "bhakti":
+        return "⏪ [लाइव रीवाइंड]: जो भक्त अभी जुड़े हैं, वे लाइव बार को पीछे करके शुरू से पावन मंगला आरती व कथा का संपूर्ण पुण्य लाभ उठा सकते हैं 🌸"
+    elif is_live:
+        return "⏪ [Catch-Up DVR]: Scrub back to the beginning to catch the complete session! 🌟"
+    return ""
+
 def generate_seo_package(raw_title, niche="bhakti", existing_titles=None):
 
     if existing_titles is None:
@@ -907,6 +944,9 @@ def generate_seo_package(raw_title, niche="bhakti", existing_titles=None):
     infinite_loop = get_infinite_loop_boundary_smoother(niche)
     nitya_niyam = get_nitya_niyam_habit_prompt(niche)
     google_schema = get_google_search_schema_markup(niche)
+    hype_prompt = get_hype_leaderboard_prompt(niche, is_long=not bool(active_live_id))
+    prayer_chain = get_prayer_chain_cascade_prompt(niche)
+    dvr_rewind = get_live_dvr_rewind_catchup_anchor(bool(active_live_id), niche)
 
     # 🎯 FEATURE: High-Conversion Devotional CTA Switcher
     devotional_ctas = [
@@ -958,6 +998,9 @@ def generate_seo_package(raw_title, niche="bhakti", existing_titles=None):
 
 {nitya_niyam}
 {google_schema}
+
+{hype_prompt}{prayer_chain}
+{dvr_rewind}
 🌐 Visit Website: https://radhekeshyamm.vercel.app/
 
 ==================================================
@@ -1004,6 +1047,9 @@ All devotional footage & darshan visuals are creatively curated, color-graded, a
 
 {nitya_niyam}
 {google_schema}
+
+{hype_prompt}{prayer_chain}
+{dvr_rewind}
 
 ==================================================
 🛡️ Content Notice & Transformative Value:
@@ -1145,7 +1191,7 @@ def get_active_live_stream_id(yt):
 
 def run_cloud_cycle():
     now_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')
-    print(f"\n[{now_str}] ☁️ GITHUB CLOUD RUNNING V13.0 'SEO KR DO' & VELOCITY SENTINEL...")
+    print(f"\n[{now_str}] ☁️ GITHUB CLOUD RUNNING V14.0 'SEO KR DO' & VELOCITY SENTINEL...")
     state = load_state()
     now_ts = int(time.time())
 
@@ -1506,7 +1552,7 @@ def run_cloud_cycle():
 
 def main():
     print("=" * 80)
-    print("☁️ GITHUB CLOUD 24/7 ULTRA-VIRAL V13.0 STARTED (5.5 HOURS RUNNER)")
+    print("☁️ GITHUB CLOUD 24/7 ULTRA-VIRAL V14.0 STARTED (5.5 HOURS RUNNER)")
     print("=" * 80)
 
     start_time = time.time()
