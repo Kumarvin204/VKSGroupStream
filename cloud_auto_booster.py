@@ -432,31 +432,11 @@ def get_panchang_festival_boost():
 # =============================================================================
 def get_video_localizations(base_title, niche="bhakti"):
     """
-    🌍 FEATURE: Multi-Language Localization Engine
-    Provides backend translations for NRI devotees & multi-state diaspora without altering the main Hindi title.
+    🌐 FEATURE: Multi-Language Localization Engine
+    Guarantees English (India) devices ALWAYS see the original pure Hindi title by omitting en override.
     """
-    if niche == "bhakti":
-        return {
-            "en": {
-                "title": "Khatu Shyam Ji Live Darshan Today 🌸 Divine Blessings & Aarti",
-                "description": "Daily live darshan and aarti of Shri Khatu Shyam Ji from Khatu Dham Rajasthan. Subscribe for daily spiritual blessings!\n\n#KhatuShyam #JaiShreeShyam #KhatuDham #Shorts"
-            },
-            "gu": {
-                "title": "ખાટુ શ્યામ જી ના લાઈવ દર્શન 🌸 શ્રી ખાટુ ધામ આરતી",
-                "description": "રોજના પાવન શૃંગાર અને આરતી દર્શન ખાટુ ધામથી. સબસ્ક્રાઈબ કરો અને આશીર્વાદ મેળવો!\n\n#KhatuShyam #JaiShreeShyam #BhaktiShorts"
-            },
-            "mr": {
-                "title": "खाटू श्याम जी चे थेट दर्शन 🌸 आजचा दिव्य शृंगार व आरती",
-                "description": "दररोज सकाळी आणि संध्याकाळी खाटू श्याम जी चे पावन दर्शन. कृपा आणि शांती साठी सबस्क्राईબ करा!\n\n#KhatuShyam #JaiShreeShyam #Bhakti"
-            }
-        }
-    else:
-        return {
-            "en": {
-                "title": "10 Seconds That Will Change Your Life 🌟 Powerful Mindset Lessons",
-                "description": "Daily motivation, life lessons, and Bhagavad Gita wisdom for peace, focus, and unstoppable success. Subscribe now!\n\n#Motivation #Success #LifeLessons #Shorts"
-            }
-        }
+    # Omit en so English (India) phones always display the original Hindi title
+    return {}
 
 def get_panchang_festival_boost():
     """
