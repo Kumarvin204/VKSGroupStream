@@ -1220,7 +1220,11 @@ def run_cloud_cycle():
                 stat = v["status"]
                 stats = v["statistics"]
                 dur = v.get("contentDetails", {}).get("duration", "PT15S")
-                is_short = not ("M" in dur or "H" in dur)
+                dur = v.get("contentDetails", {}).get("duration", "")
+                live_content = snip.get("liveBroadcastContent", "none")
+                is_live_stream = (live_content in ["live", "upcoming"]) or ("LIVE" in snip.get("title", "").upper()) or ("🔴" in snip.get("title", ""))
+                has_long_duration = ("M" in dur or "H" in dur) and not (dur.startswith("PT0M") and "H" not in dur)
+                is_short = not (is_live_stream or has_long_duration)
                 title_curr = snip.get("title", "")
 
                 # TRIGGER CHECK
