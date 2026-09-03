@@ -1,3 +1,4 @@
+_SEARCH_CACHE = {}
 """
 24/7 GITHUB CLOUD REALTIME VELOCITY & "SEO KR DO" ENGINE (V16.0)
 --------------------------------------------------------------
@@ -278,6 +279,7 @@ def competitor_spy_tag_hijacker(yt, niche="bhakti"):
             print(f"     🕵️ [COMPETITOR SPY] Found {len(hijacked_tags)} trending competitor tags")
     except Exception:
         pass
+    _SEARCH_CACHE[cache_key] = (now_ts, hijacked_tags[:10])
     return hijacked_tags[:10]
 
 def get_next_available_slot(existing_scheduled_utc):
