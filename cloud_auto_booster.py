@@ -21,12 +21,21 @@ sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='repla
 
 STATE_FILE = "cloud_velocity_state.json"
 
-PEAK_SLOTS_IST = [
-    (7, 30),   # Morning Darshan Peak
-    (13, 15),  # Lunch Time Peak
-    (18, 30),  # Evening Prime Peak
-    (20, 15)   # Night Leisure Peak
-]
+# 📊 FEATURE 96: Studio Heatmap Dynamic Primetime Publishing Slots
+STUDIO_HEATMAP_SLOTS = {
+    "tuesday": [(8, 15), (12, 45), (19, 15), (21, 0)],      # Tuesday Hanuman/Shyam 12:45 PM Surge
+    "weekend": [(8, 15), (13, 15), (18, 45), (20, 30)],      # Fri/Sat Dense Purple Evening Wave
+    "standard": [(8, 15), (13, 15), (19, 15), (20, 45)]      # Mon/Wed/Thu/Sun 7:15 PM Super Peak
+}
+
+def get_heatmap_slots_for_date(target_date):
+    """Returns exact audience active slots based on day of week from Studio Heatmap."""
+    weekday = target_date.weekday()
+    if weekday == 1:
+        return STUDIO_HEATMAP_SLOTS["tuesday"]
+    elif weekday in [4, 5]:
+        return STUDIO_HEATMAP_SLOTS["weekend"]
+    return STUDIO_HEATMAP_SLOTS["standard"]
 
 CHANNELS_CONFIG = [
     {
@@ -289,7 +298,7 @@ def get_next_available_slot(existing_scheduled_utc):
 
     for day_offset in range(7):
         target_date = now_ist.date() + timedelta(days=day_offset)
-        for hour, minute in PEAK_SLOTS_IST:
+        for hour, minute in get_heatmap_slots_for_date(target_date):
             slot_ist = datetime(target_date.year, target_date.month, target_date.day, hour, minute, tzinfo=timezone.utc)
             if slot_ist > now_ist + timedelta(minutes=30):
                 slot_utc = slot_ist - ist_offset
