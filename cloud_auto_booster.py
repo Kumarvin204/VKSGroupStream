@@ -181,34 +181,40 @@ def get_trending_bhakti_keywords():
     return trending_keywords
 
 def session_duration_maximizer(yt, current_vid, niche="bhakti"):
-    """🔗 FEATURE: Session Duration Maximizer — Chains best videos into smart playlists."""
+    """🔗 FEATURE: Session Duration Maximizer — 1-Unit Uploads Ingestion (99% Quota Saved)."""
     try:
-        search_resp = yt.search().list(
-            part="snippet", forMine=True, type="video",
-            order="viewCount", maxResults=10
-        ).execute()
-        
-        top_vids = [item["id"]["videoId"] for item in search_resp.get("items", []) if item["id"].get("videoId")]
-        if len(top_vids) < 3:
+        ch_resp = yt.channels().list(part="contentDetails", mine=True).execute()
+        uploads_id = ch_resp["items"][0]["contentDetails"]["relatedPlaylists"]["uploads"]
+        pl_resp = yt.playlistItems().list(part="snippet", playlistId=uploads_id, maxResults=10).execute()
+        top_vids = [item["snippet"]["resourceId"]["videoId"] for item in pl_resp.get("items", []) if item["snippet"].get("resourceId", {}).get("videoId")]
+
+        if len(top_vids) < 2:
             return
-        
+
         session_pl_title = "बाबा श्याम सम्पूर्ण दर्शन यात्रा 🌸" if niche == "bhakti" else "जीवन के अनमोल सबक 🌟"
         session_pl_id = get_or_create_playlist(yt, session_pl_title, niche)
+
         if not session_pl_id:
             return
-        
+
         existing_items = []
         try:
             pl_items = yt.playlistItems().list(part="snippet", playlistId=session_pl_id, maxResults=50).execute()
             existing_items = [item["snippet"]["resourceId"]["videoId"] for item in pl_items.get("items", [])]
         except Exception:
             pass
-        
+
         if current_vid not in existing_items:
             try:
                 yt.playlistItems().insert(
                     part="snippet",
-                    body={"snippet": {"playlistId": session_pl_id, "position": 0, "resourceId": {"kind": "youtube#video", "videoId": current_vid}}}
+                    body={
+                        "snippet": {
+                            "playlistId": session_pl_id,
+                            "position": 0,
+                            "resourceId": {"kind": "youtube#video", "videoId": current_vid}
+                        }
+                    }
                 ).execute()
                 print(f"     🔗 [SESSION CHAIN] Video {current_vid} added to session playlist!")
             except Exception:
@@ -217,37 +223,35 @@ def session_duration_maximizer(yt, current_vid, niche="bhakti"):
         pass
 
 def smart_comment_traffic_funnel(yt, hot_vid, hot_views, niche, state):
-    """🌊 FEATURE: Smart Comment Traffic Funnel — Routes traffic from viral videos to underperforming ones."""
+    """🌊 FEATURE: Smart Comment Traffic Funnel — 1-Unit Scanner (99% Quota Saved)."""
     try:
         if hot_views < 5000:
             return
+        
         funnel_key = f"funnel_{hot_vid}"
         if state.get(funnel_key):
             return
-        
-        search_resp = yt.search().list(
-            part="snippet", forMine=True, type="video",
-            order="date", maxResults=10
-        ).execute()
-        
+
+        ch_resp = yt.channels().list(part="contentDetails", mine=True).execute()
+        uploads_id = ch_resp["items"][0]["contentDetails"]["relatedPlaylists"]["uploads"]
+        pl_resp = yt.playlistItems().list(part="snippet", playlistId=uploads_id, maxResults=10).execute()
+
         target_vid = None
-        for item in search_resp.get("items", []):
-            vid_id = item["id"].get("videoId")
+        for item in pl_resp.get("items", []):
+            vid_id = item["snippet"]["resourceId"].get("videoId")
             if vid_id and vid_id != hot_vid:
-                v_stats = yt.videos().list(part="statistics", id=vid_id).execute()
-                v_items = v_stats.get("items", [])
-                if v_items:
-                    v_views = int(v_items[0]["statistics"].get("viewCount", 0))
-                    if v_views < hot_views // 5:
-                        target_vid = vid_id
-                        break
-        
+                prev = state.get(vid_id, {})
+                v_views = prev.get("views", 0)
+                if v_views < hot_views // 5:
+                    target_vid = vid_id
+                    break
+
         if target_vid:
             if niche == "bhakti":
                 funnel_comment = f"🌸 बाबा श्याम का और भी अलौकिक दर्शन यहाँ देखें 👉 https://www.youtube.com/shorts/{target_vid} 🙏 जय श्री श्याम!"
             else:
                 funnel_comment = f"✨ एक और जीवन बदलने वाली सीख यहाँ देखें 👉 https://www.youtube.com/shorts/{target_vid} 💫"
-            
+
             yt.commentThreads().insert(
                 part="snippet",
                 body={"snippet": {"videoId": hot_vid, "topLevelComment": {"snippet": {"textOriginal": funnel_comment}}}}
