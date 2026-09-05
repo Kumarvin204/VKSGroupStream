@@ -1381,7 +1381,28 @@ def get_active_live_stream_id(yt):
         pass
     return None
 
+
+def is_local_pc_active():
+    """📡 FEATURE 102: Primary-Relay Heartbeat Listener — Prevents double quota burning when Local PC is online."""
+    try:
+        hb_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "heartbeat.json")
+        if os.path.exists(hb_file):
+            with open(hb_file, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            last_hb = data.get("last_local_heartbeat", 0)
+            now_ts = int(time.time())
+            if now_ts - last_hb < 900:  # If local PC active within 15 mins
+                return True, now_ts - last_hb
+    except Exception:
+        pass
+    return False, 9999
+
 def run_cloud_cycle():
+    pc_online, diff_sec = is_local_pc_active()
+    if pc_online:
+        print(f"💤 [PRIMARY RELAY ACTIVE] Local PC Sentinel is ONLINE (Heartbeat: {diff_sec}s ago). Cloud in STANDBY MODE (0 Units Quota Spent).")
+        return
+    print("🚀 [PRIMARY RELAY ACTIVE] Local PC Sentinel is OFFLINE. Cloud Sentinel ENGAGED AS PRIMARY!")
     now_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')
     print(f"\n[{now_str}] ☁️ GITHUB CLOUD RUNNING V16.0 'SEO KR DO' & VELOCITY SENTINEL...")
     state = load_state()
