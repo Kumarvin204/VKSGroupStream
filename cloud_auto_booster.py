@@ -985,6 +985,89 @@ def get_push_notification_resurrection_anchor(niche="bhakti"):
 
 # 📊 MODULE 21: STUDIO AUDIENCE DEMOGRAPHICS & MOBILE-FIRST ENGINE (Features 97 - 100)
 
+
+# 🛡️ MODULE 22: 24x7 DYNAMIC QUOTA PACING & HOURLY BUDGETING ENGINE (Feature 101)
+
+QUOTA_TRACKER_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "quota_budget_state.json")
+
+def load_quota_tracker():
+    """Loads persistent daily quota budget tracker."""
+    now_ist = datetime.now(timezone.utc) + timedelta(hours=5, minutes=30)
+    today_str = now_ist.strftime("%Y-%m-%d")
+    current_hour = now_ist.hour
+
+    default_data = {
+        "date": today_str,
+        "current_hour": current_hour,
+        "hourly_spent": 0,
+        "daily_spent": 0,
+        "last_local_heartbeat": 0
+    }
+    if os.path.exists(QUOTA_TRACKER_FILE):
+        try:
+            with open(QUOTA_TRACKER_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            # Reset daily budget at new IST day
+            if data.get("date") != today_str:
+                data["date"] = today_str
+                data["daily_spent"] = 0
+                data["hourly_spent"] = 0
+                data["current_hour"] = current_hour
+            # Reset hourly budget on new hour
+            elif data.get("current_hour") != current_hour:
+                data["current_hour"] = current_hour
+                data["hourly_spent"] = 0
+            return data
+        except Exception:
+            pass
+    return default_data
+
+def save_quota_tracker(data):
+    """Saves persistent quota budget tracker."""
+    try:
+        with open(QUOTA_TRACKER_FILE, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2)
+    except Exception:
+        pass
+
+def get_hourly_quota_allowance(hour, weekday):
+    """Calculates max allowed units for the current hour based on Studio Heatmap."""
+    # Peak Heatmap Hours (7:00 PM - 10:00 PM IST)
+    if 19 <= hour <= 22:
+        return 500  # High velocity allocation
+    # Tuesday 12:45 PM surge
+    if weekday == 1 and 12 <= hour <= 14:
+        return 400
+    # Night sleep hours (11:00 PM - 7:00 AM)
+    if hour >= 23 or hour < 7:
+        return 100  # Ultra-low saver mode
+    # Standard daytime
+    return 300
+
+def can_spend_quota(action_cost, action_name="Action"):
+    """Throttles and gates quota spending to mathematically guarantee 24/7 non-stop execution."""
+    data = load_quota_tracker()
+    now_ist = datetime.now(timezone.utc) + timedelta(hours=5, minutes=30)
+    hour = now_ist.hour
+    weekday = now_ist.weekday()
+
+    # Hard Cap: Never exceed 8,500 units per day (leaves 1,500 reserve buffer)
+    if data["daily_spent"] + action_cost > 8500:
+        print(f"     🛡️ [QUOTA PACER] Daily Hard-Cap Reached ({data['daily_spent']}/8500). Throttling {action_name} to preserve 24/7 uptime.")
+        return False
+
+    # Hourly Cap
+    hourly_limit = get_hourly_quota_allowance(hour, weekday)
+    if data["hourly_spent"] + action_cost > hourly_limit:
+        print(f"     🛡️ [QUOTA PACER] Hourly Allowance Reached ({data['hourly_spent']}/{hourly_limit} units). Deferring {action_name} to next hour.")
+        return False
+
+    # Approve and log
+    data["hourly_spent"] += action_cost
+    data["daily_spent"] += action_cost
+    save_quota_tracker(data)
+    return True
+
 def get_92pct_nonsub_conversion_hook():
     """🔔 FEATURE 97: 92.4% Non-Subscribed Conversion Multiplier Hook — Converts floating viewers into subscribers."""
     return (
