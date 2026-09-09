@@ -1068,6 +1068,56 @@ def can_spend_quota(action_cost, action_name="Action"):
     save_quota_tracker(data)
     return True
 
+
+# 🌊 MODULE 23: LIVE-TO-VOD WAVE-2 AUTO-TRANSITIONER (Feature 103)
+
+def check_and_transition_live_vod(yt, vid, snip, stat, current_views, published_at_str, state):
+    """🌊 FEATURE 103: Live-to-VOD Wave-2 Auto-Transitioner — Automatically revives 3+ day old stagnant live streams."""
+    try:
+        vod_key = f"vod_wave2_{vid}"
+        if state.get(vod_key):
+            return False, snip
+
+        # Check if video was a live stream or long broadcast (>1 hour)
+        title_curr = snip.get("title", "")
+        is_live_archive = "LIVE" in title_curr.upper() or "🔴" in title_curr
+
+        if not is_live_archive:
+            return False, snip
+
+        # Parse published date
+        pub_dt = datetime.fromisoformat(published_at_str.replace("Z", "+00:00"))
+        now_dt = datetime.now(timezone.utc)
+        days_old = (now_dt - pub_dt).total_seconds() / 86400.0
+
+        # If live stream is 3+ days old and plateaued (<15 views in last cycle)
+        if days_old >= 3.0:
+            print(f"     🌊 [WAVE-2 LIVE-TO-VOD] Video {vid} is {days_old:.1f} days old live archive. Transitioning to Evergreen Nonstop SEO...")
+            
+            # Format evergreen search title
+            new_vod_title = "🔴 LIVE: रोते-रोते पुकारा तो दौड़े आए बाबा श्याम 😭 6 घंटे का अखंड दर्द भरा खाटू श्याम भजन"
+            if len(new_vod_title) > 95:
+                new_vod_title = new_vod_title[:95]
+                
+            snip["title"] = new_vod_title
+            
+            # Ensure long nonstop search tags
+            vod_tags = [
+                "khatu shyam live", "khatu shyam bhajan nonstop", "shyam bhajan live",
+                "dard bhara shyam bhajan", "khatu shyam darshan live", "khatu dham live",
+                "shyam aarti nonstop", "6 ghante ka shyam bhajan", "khatu shyam ji ki katha",
+                "aaj ka shyam darshan", "shyam baba ke anmol vachan", "khatu shyam salasar balaji darshan",
+                "nandini vinod soni"
+            ]
+            snip["tags"] = vod_tags
+            snip["categoryId"] = "22"
+            
+            state[vod_key] = True
+            return True, snip
+    except Exception as e:
+        print(f"Live-to-VOD check notice: {e}")
+    return False, snip
+
 def get_92pct_nonsub_conversion_hook():
     """🔔 FEATURE 97: 92.4% Non-Subscribed Conversion Multiplier Hook — Converts floating viewers into subscribers."""
     return (
