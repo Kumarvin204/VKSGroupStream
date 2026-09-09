@@ -15,6 +15,7 @@ from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 import urllib.request
 import urllib.parse
+import hashlib
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
@@ -1109,8 +1110,58 @@ def generate_dynamic_vod_chapters(hours):
             chapters.append(f"{h:02d}:15:00 - 🦚 अखंड श्याम भजन प्रवाह व संकटमोचन दर्शन")
     return "\n".join(chapters)
 
-def check_and_transition_live_vod(yt, vid, snip, stat, current_views, views_gained, published_at_str, duration_str, state):
-    """🌊 FEATURE 103: Dynamic Multi-Hour Live-to-VOD Transitioner — Automatically scales for 5, 6, 8, 10, 11+ hours when at least 5 days old and stagnant."""
+def generate_high_ctr_vod_title(vid, exact_hours, existing_titles=None, niche="bhakti"):
+    """🎯 High-CTR 10/10 Clickable Title Selector — Zero generic text, 100% emotional hook first."""
+    if existing_titles is None:
+        existing_titles = []
+        
+    candidate_hooks = [
+        f"🔴 LIVE: रोते-रोते पुकारा तो दौड़े आए बाबा श्याम 😭 {exact_hours} घंटे का अखंड दर्द भरा खाटू भजन",
+        f"🔴 LIVE: सुनते ही बदल जाएगी बिगड़ी किस्मत ✨ {exact_hours} घंटे का अलौकिक खाटू श्याम दर्शन भजन",
+        f"🔴 LIVE: आज घर में चलाकर छोड़ दें, सारे कष्ट कटेंगे 🙏 {exact_hours} घंटे का महा-चमत्कारी श्याम भजन",
+        f"🔴 LIVE: जब दुनिया साथ छोड़ दे तो ये सुनो 😭 {exact_hours} घंटे का नॉनस्टॉप बाबा श्याम कीर्तन",
+        f"🔴 LIVE: 1 बार सच्चे मन से अर्जी लगाओ, संकट कटेगा 📿 {exact_hours} घंटे का भावुक खाटू श्याम भजन",
+        f"🔴 LIVE: सेठ करमसी की अमर सत्य कथा व साक्षात दर्शन 🦚 {exact_hours} घंटे का अखंड पावन प्रवाह",
+        f"🔴 LIVE: घर में सुख, शांति व बरकत का महा-उपाय 🌸 {exact_hours} घंटे का अखंड श्याम भजन अमृतवाणी"
+    ]
+    
+    # Pick a candidate that isn't already used on the channel
+    for title in candidate_hooks:
+        if title not in existing_titles:
+            return title[:95]
+            
+    # Hash-based deterministic pick
+    try:
+        pick_idx = int(hashlib.md5(vid.encode()).hexdigest(), 16) % len(candidate_hooks)
+    except Exception:
+        pick_idx = 0
+    return candidate_hooks[pick_idx][:95]
+
+def generate_high_ctr_vod_description(title, hours, niche="bhakti"):
+    """📄 Generates a 10/10 High-CTR & High-Retention VOD Description with Chapters & Prayer Hook."""
+    chapters = generate_dynamic_vod_chapters(hours)
+    desc = f"""🔴 {title}
+
+🌸 ॐ श्री श्याम देवाय नमः | ॐ श्री खाटू नरेशाय नमः 🌸
+
+जब जीवन में चारों तरफ अंधेरा छा जाए और कोई राह न दिखे, तो सच्चे दिल से हारे के सहारे बाबा श्याम को याद करें। इस {hours} घंटे के अखंड पावन संकीर्तन और अमृतमयी भजनों को घर या दुकान में चलाकर श्रद्धापूर्वक श्रवण करें — बाबा श्याम आपके जीवन के सभी कष्ट, रोग, शोक, कर्ज व संकट दूर कर सुख-समृद्धि और शांति प्रदान करेंगे। 🙏✨
+
+📿 [अर्जी व मंगल कामना संकल्प]:
+कमेंट में अपनी सच्ची मनोकामना और अर्जी लिखकर 3 बार "जय श्री श्याम" ज़रूर लिखें। बाबा श्याम की कृपा से हर बिगड़ा काम बनेगा। 🌸❤️
+
+⏱️ पावन दर्शन व भजन प्रवाह (Key Moments & Chapters):
+{chapters}
+
+🎯 [10,000 पावन श्याम परिवार संकल्प]: 92% भक्त रोज़ दर्शन तो करते हैं लेकिन सब्सक्राइब करना भूल जाते हैं — आज ही SUBSCRIBE करके बाबा के 10K परिवार का पावन हिस्सा बनें! 🙏🌸
+
+🔔 नित्य पावन दर्शन व चमत्कारी भजनों के लिए चैनल को अभी SUBSCRIBE करें:
+👉 https://www.youtube.com/@vinodtech4975?sub_confirmation=1
+
+#KhatuShyam #ShyamBhajan #KhatuShyamLive #JaiShreeShyam #DardBharaBhajan #KhatuDham #BhaktiLive #VinodTechnical #NandiniVinodSoni"""
+    return desc
+
+def check_and_transition_live_vod(yt, vid, snip, stat, current_views, views_gained, published_at_str, duration_str, state, niche="bhakti"):
+    """🌊 FEATURE 103: Dynamic Multi-Hour Live-to-VOD Transitioner — Automatically scales for 5, 6, 8, 10, 11+ hours with 10/10 High-CTR Title & SEO."""
     try:
         vod_key = f"vod_wave2_{vid}"
         if state.get(vod_key):
@@ -1136,27 +1187,29 @@ def check_and_transition_live_vod(yt, vid, snip, stat, current_views, views_gain
             print(f"     🌱 [LIVE-TO-VOD MOMENTUM GUARD] Video {vid} ({days_old:.1f} days old) is actively gaining views (+{views_gained} views). Holding Wave-2 transition to let it grow naturally.")
             return False, snip
 
-        # Video is 5+ days old AND stagnant -> Transition to Dynamic Evergreen VOD SEO
+        # Video is 5+ days old AND stagnant -> Transition to 10/10 High-CTR Dynamic Evergreen VOD SEO
         exact_hours = parse_iso_duration_hours(duration_str)
-        print(f"     🌊 [WAVE-2 LIVE-TO-VOD] Video {vid} is {days_old:.1f} days old ({exact_hours} Hours) and plateaued (+{views_gained} views). Transitioning to Dynamic {exact_hours}-Hour Evergreen SEO...")
+        print(f"     🌊 [WAVE-2 LIVE-TO-VOD] Video {vid} is {days_old:.1f} days old ({exact_hours} Hours) and plateaued (+{views_gained} views). Transitioning to 10/10 High-CTR Dynamic {exact_hours}-Hour Evergreen SEO...")
 
-        # Dynamic hour title
-        new_vod_title = f"🔴 LIVE: रोते-रोते पुकारा तो दौड़े आए बाबा श्याम 😭 {exact_hours} घंटे का अखंड दर्द भरा खाटू श्याम भजन"
-        if len(new_vod_title) > 95:
-            new_vod_title = new_vod_title[:95]
-
+        # 10/10 High-CTR Clickable Title
+        new_vod_title = generate_high_ctr_vod_title(vid, exact_hours, niche=niche)
         snip["title"] = new_vod_title
+
+        # High-CTR Dynamic Description with Key Moments & Arji Hook
+        snip["description"] = generate_high_ctr_vod_description(new_vod_title, exact_hours, niche=niche)
         
-        # Dynamic tags with exact duration
+        # High-Converting Search Intent Tags
         vod_tags = [
             "khatu shyam live", "khatu shyam bhajan nonstop", "shyam bhajan live",
             "dard bhara shyam bhajan", "khatu shyam darshan live", "khatu dham live",
             "shyam aarti nonstop", f"{exact_hours} ghante ka shyam bhajan", "khatu shyam ji ki katha",
             "aaj ka shyam darshan", "shyam baba ke anmol vachan", "khatu shyam salasar balaji darshan",
-            "nandini vinod soni"
+            "hare ka sahara baba shyam hamara", "khatu shyam chamatkar", "nandini vinod soni"
         ]
-        snip["tags"] = vod_tags
+        snip["tags"] = sanitize_tags(vod_tags, max_total_chars=400)
         snip["categoryId"] = "22"
+        snip["defaultLanguage"] = "hi"
+        snip["defaultAudioLanguage"] = "hi"
 
         state[vod_key] = True
         return True, snip
@@ -1841,7 +1894,7 @@ def run_cloud_cycle():
 
                     # 🌊 FEATURE 103: Dynamic Multi-Hour Live-to-VOD Auto-Transitioner
                     pub_at = snip.get("publishedAt", "")
-                    is_vod_updated, snip = check_and_transition_live_vod(yt, vid, snip, stat, current_views, views_gained, pub_at, dur, state)
+                    is_vod_updated, snip = check_and_transition_live_vod(yt, vid, snip, stat, current_views, views_gained, pub_at, dur, state, niche=niche)
                     if is_vod_updated:
                         try:
                             yt.videos().update(part="snippet,status", body={"id": vid, "snippet": snip, "status": stat}).execute()
