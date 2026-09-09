@@ -1109,8 +1109,8 @@ def generate_dynamic_vod_chapters(hours):
             chapters.append(f"{h:02d}:15:00 - 🦚 अखंड श्याम भजन प्रवाह व संकटमोचन दर्शन")
     return "\n".join(chapters)
 
-def check_and_transition_live_vod(yt, vid, snip, stat, current_views, published_at_str, duration_str, state):
-    """🌊 FEATURE 103: Dynamic Multi-Hour Live-to-VOD Transitioner — Automatically scales for 5, 6, 8, 10, 11+ hours."""
+def check_and_transition_live_vod(yt, vid, snip, stat, current_views, views_gained, published_at_str, duration_str, state):
+    """🌊 FEATURE 103: Dynamic Multi-Hour Live-to-VOD Transitioner — Automatically scales for 5, 6, 8, 10, 11+ hours when at least 5 days old and stagnant."""
     try:
         vod_key = f"vod_wave2_{vid}"
         if state.get(vod_key):
@@ -1127,31 +1127,39 @@ def check_and_transition_live_vod(yt, vid, snip, stat, current_views, published_
         now_dt = datetime.now(timezone.utc)
         days_old = (now_dt - pub_dt).total_seconds() / 86400.0
 
-        if days_old >= 3.0:
-            # Calculate exact duration hours dynamically
-            exact_hours = parse_iso_duration_hours(duration_str)
-            print(f"     🌊 [WAVE-2 LIVE-TO-VOD] Video {vid} is {days_old:.1f} days old ({exact_hours} Hours). Transitioning to Dynamic {exact_hours}-Hour SEO...")
+        # Strict Rule 1: Must be AT LEAST 5 days old
+        if days_old < 5.0:
+            return False, snip
 
-            # Dynamic hour title
-            new_vod_title = f"🔴 LIVE: रोते-रोते पुकारा तो दौड़े आए बाबा श्याम 😭 {exact_hours} घंटे का अखंड दर्द भरा खाटू श्याम भजन"
-            if len(new_vod_title) > 95:
-                new_vod_title = new_vod_title[:95]
+        # Strict Rule 2: Only transition if views and watch-hours are NOT growing (stagnant/plateaued)
+        if views_gained > 10:
+            print(f"     🌱 [LIVE-TO-VOD MOMENTUM GUARD] Video {vid} ({days_old:.1f} days old) is actively gaining views (+{views_gained} views). Holding Wave-2 transition to let it grow naturally.")
+            return False, snip
 
-            snip["title"] = new_vod_title
-            
-            # Dynamic tags with exact duration
-            vod_tags = [
-                "khatu shyam live", "khatu shyam bhajan nonstop", "shyam bhajan live",
-                "dard bhara shyam bhajan", "khatu shyam darshan live", "khatu dham live",
-                "shyam aarti nonstop", f"{exact_hours} ghante ka shyam bhajan", "khatu shyam ji ki katha",
-                "aaj ka shyam darshan", "shyam baba ke anmol vachan", "khatu shyam salasar balaji darshan",
-                "nandini vinod soni"
-            ]
-            snip["tags"] = vod_tags
-            snip["categoryId"] = "22"
+        # Video is 5+ days old AND stagnant -> Transition to Dynamic Evergreen VOD SEO
+        exact_hours = parse_iso_duration_hours(duration_str)
+        print(f"     🌊 [WAVE-2 LIVE-TO-VOD] Video {vid} is {days_old:.1f} days old ({exact_hours} Hours) and plateaued (+{views_gained} views). Transitioning to Dynamic {exact_hours}-Hour Evergreen SEO...")
 
-            state[vod_key] = True
-            return True, snip
+        # Dynamic hour title
+        new_vod_title = f"🔴 LIVE: रोते-रोते पुकारा तो दौड़े आए बाबा श्याम 😭 {exact_hours} घंटे का अखंड दर्द भरा खाटू श्याम भजन"
+        if len(new_vod_title) > 95:
+            new_vod_title = new_vod_title[:95]
+
+        snip["title"] = new_vod_title
+        
+        # Dynamic tags with exact duration
+        vod_tags = [
+            "khatu shyam live", "khatu shyam bhajan nonstop", "shyam bhajan live",
+            "dard bhara shyam bhajan", "khatu shyam darshan live", "khatu dham live",
+            "shyam aarti nonstop", f"{exact_hours} ghante ka shyam bhajan", "khatu shyam ji ki katha",
+            "aaj ka shyam darshan", "shyam baba ke anmol vachan", "khatu shyam salasar balaji darshan",
+            "nandini vinod soni"
+        ]
+        snip["tags"] = vod_tags
+        snip["categoryId"] = "22"
+
+        state[vod_key] = True
+        return True, snip
     except Exception as e:
         print(f"Live-to-VOD dynamic notice: {e}")
     return False, snip
@@ -1833,7 +1841,7 @@ def run_cloud_cycle():
 
                     # 🌊 FEATURE 103: Dynamic Multi-Hour Live-to-VOD Auto-Transitioner
                     pub_at = snip.get("publishedAt", "")
-                    is_vod_updated, snip = check_and_transition_live_vod(yt, vid, snip, stat, current_views, pub_at, dur, state)
+                    is_vod_updated, snip = check_and_transition_live_vod(yt, vid, snip, stat, current_views, views_gained, pub_at, dur, state)
                     if is_vod_updated:
                         try:
                             yt.videos().update(part="snippet,status", body={"id": vid, "snippet": snip, "status": stat}).execute()
