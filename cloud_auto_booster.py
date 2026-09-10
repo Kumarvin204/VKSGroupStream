@@ -262,12 +262,25 @@ def smart_comment_traffic_funnel(yt, hot_vid, hot_views, niche, state):
     except Exception:
         pass
 
-def competitor_spy_tag_hijacker(yt, niche="bhakti"):
-    """🕵️ FEATURE: Competitor Spy & Tag Hijacker."""
+def competitor_spy_tag_hijacker(yt, niche="bhakti", state=None):
+    """🕵️ FEATURE: Competitor Spy & Tag Hijacker — 6-Hour Persistent Smart Cache for 24/7 Zero Quota Exhaustion."""
+    now_ts = time.time()
+    cache_key = f"comp_spy_cache_{niche}"
+    
+    if state is not None and cache_key in state:
+        cache_data = state[cache_key]
+        if isinstance(cache_data, dict) and now_ts - cache_data.get("timestamp", 0) < 21600:  # 6 Hours Cache
+            return cache_data.get("tags", [])
+
+    if state is not None and not can_spend_quota(100, "SEARCH", state):
+        if cache_key in state and isinstance(state[cache_key], dict):
+            return state[cache_key].get("tags", [])
+        return []
+
     hijacked_tags = []
     try:
         if niche == "bhakti":
-            search_queries = ["khatu shyam darshan today", "khatu shyam live", "baba shyam shorts"]
+            search_queries = ["khatu shyam darshan today", "khatu shyam live", "baba shyam bhajan"]
         else:
             search_queries = ["motivational shorts hindi", "life lessons shorts"]
         
@@ -279,7 +292,6 @@ def competitor_spy_tag_hijacker(yt, niche="bhakti"):
         ).execute()
         
         competitor_vids = [item["id"]["videoId"] for item in search_resp.get("items", []) if item["id"].get("videoId")]
-        
         if competitor_vids:
             vids_resp = yt.videos().list(part="snippet", id=",".join(competitor_vids[:3])).execute()
             for v_item in vids_resp.get("items", []):
@@ -290,12 +302,14 @@ def competitor_spy_tag_hijacker(yt, niche="bhakti"):
                     if len(tag_lower) > 3 and len(tag_lower) < 50 and not any(sw in tag_lower for sw in skip_words):
                         if tag_lower not in [t.lower() for t in hijacked_tags]:
                             hijacked_tags.append(tag)
-            print(f"     🕵️ [COMPETITOR SPY] Found {len(hijacked_tags)} trending competitor tags")
+            print(f"     🕵️ [COMPETITOR SPY 6H SYNC] Harvested {len(hijacked_tags)} competitor tags (Cached for 6 hours)")
     except Exception:
         pass
-    _SEARCH_CACHE[cache_key] = (now_ts, hijacked_tags[:10])
-    return hijacked_tags[:10]
 
+    results = hijacked_tags[:10]
+    if state is not None and results:
+        state[cache_key] = {"tags": results, "timestamp": now_ts}
+    return results
 def get_next_available_slot(existing_scheduled_utc):
     now_utc = datetime.now(timezone.utc)
     ist_offset = timedelta(hours=5, minutes=30)
@@ -625,11 +639,24 @@ def algorithmic_plateau_breaker(yt, vid, snip, stat, current_views, state):
     except Exception:
         return False
 
-def competitor_suggested_video_hijacker(yt, niche="bhakti"):
-    """🧲 FEATURE: Competitor Suggested Video Hijacker — Aligns tags to appear in top suggested rails of viral videos."""
+def competitor_suggested_video_hijacker(yt, niche="bhakti", state=None):
+    """🧲 FEATURE: Competitor Suggested Video Hijacker — 6-Hour Persistent Smart Cache for 24/7 Zero Quota Drain."""
+    now_ts = time.time()
+    cache_key = f"comp_suggested_cache_{niche}"
+    
+    if state is not None and cache_key in state:
+        cache_data = state[cache_key]
+        if isinstance(cache_data, dict) and now_ts - cache_data.get("timestamp", 0) < 21600:  # 6 Hours Cache
+            return cache_data.get("tags", [])
+
+    if state is not None and not can_spend_quota(100, "SEARCH", state):
+        if cache_key in state and isinstance(state[cache_key], dict):
+            return state[cache_key].get("tags", [])
+        return []
+
     suggested_tags = []
     try:
-        query = "khatu shyam bh भजन viral" if niche == "bhakti" else "motivational shorts viral"
+        query = "khatu shyam bhajan viral" if niche == "bhakti" else "motivational shorts viral"
         resp = yt.search().list(part="snippet", q=query, type="video", order="viewCount", maxResults=3).execute()
         for item in resp.get("items", []):
             comp_id = item["id"].get("videoId")
@@ -640,10 +667,14 @@ def competitor_suggested_video_hijacker(yt, niche="bhakti"):
                     for t in c_tags:
                         if len(t) > 3 and len(t) < 40 and t.lower() not in [x.lower() for x in suggested_tags]:
                             suggested_tags.append(t)
+        print(f"     🧲 [SUGGESTED HIJACKER 6H SYNC] Cached {len(suggested_tags)} suggested tags")
     except Exception:
         pass
-    return suggested_tags[:6]
 
+    results = suggested_tags[:6]
+    if state is not None and results:
+        state[cache_key] = {"tags": results, "timestamp": now_ts}
+    return results
 def live_chat_prayer_sentiment_responder(yt, live_chat_id):
     """💬 FEATURE: Live Chat Sentiment & Prayer Loyalty Engine — Posts dynamic blessings to maximize Live Chat Velocity."""
     if not live_chat_id:
@@ -987,88 +1018,139 @@ def get_push_notification_resurrection_anchor(niche="bhakti"):
 # 📊 MODULE 21: STUDIO AUDIENCE DEMOGRAPHICS & MOBILE-FIRST ENGINE (Features 97 - 100)
 
 
-# 🛡️ MODULE 22: 24x7 DYNAMIC QUOTA PACING & HOURLY BUDGETING ENGINE (Feature 101)
+# 🛡️ MODULE 22: 24x7 DYNAMIC QUOTA GOVERNOR & PACING ENGINE (24/7/365 Non-Stop Execution)
 
-QUOTA_TRACKER_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "quota_budget_state.json")
+def get_current_quota_cycle_id():
+    """Returns unique date-hour cycle ID resetting at 13:30 IST (08:00 UTC)."""
+    now_utc = datetime.now(timezone.utc)
+    if now_utc.hour < 8:
+        cycle_dt = now_utc.date() - timedelta(days=1)
+    else:
+        cycle_dt = now_utc.date()
+    return cycle_dt.strftime("%Y-%m-%d")
 
-def load_quota_tracker():
-    """Loads persistent daily quota budget tracker."""
-    now_ist = datetime.now(timezone.utc) + timedelta(hours=5, minutes=30)
-    today_str = now_ist.strftime("%Y-%m-%d")
-    current_hour = now_ist.hour
+def load_quota_tracker(state=None):
+    """Loads persistent quota governor tracking from state dictionary."""
+    cycle_id = get_current_quota_cycle_id()
+    now_ts = int(time.time())
+    current_hour_idx = int(now_ts // 3600)
 
-    default_data = {
-        "date": today_str,
-        "current_hour": current_hour,
-        "hourly_spent": 0,
-        "daily_spent": 0,
-        "last_local_heartbeat": 0
-    }
-    if os.path.exists(QUOTA_TRACKER_FILE):
-        try:
-            with open(QUOTA_TRACKER_FILE, "r", encoding="utf-8") as f:
-                data = json.load(f)
-            # Reset daily budget at new IST day
-            if data.get("date") != today_str:
-                data["date"] = today_str
-                data["daily_spent"] = 0
-                data["hourly_spent"] = 0
-                data["current_hour"] = current_hour
-            # Reset hourly budget on new hour
-            elif data.get("current_hour") != current_hour:
-                data["current_hour"] = current_hour
-                data["hourly_spent"] = 0
-            return data
-        except Exception:
-            pass
-    return default_data
+    if state is None:
+        state = {}
 
-def save_quota_tracker(data):
-    """Saves persistent quota budget tracker."""
-    try:
-        with open(QUOTA_TRACKER_FILE, "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=2)
-    except Exception:
-        pass
+    tracker = state.get("_quota_governor", {})
+    if tracker.get("cycle_id") != cycle_id:
+        tracker = {
+            "cycle_id": cycle_id,
+            "daily_spent": 0,
+            "current_hour_idx": current_hour_idx,
+            "hourly_spent": 0,
+            "hourly_write_count": 0
+        }
+    elif tracker.get("current_hour_idx") != current_hour_idx:
+        tracker["current_hour_idx"] = current_hour_idx
+        tracker["hourly_spent"] = 0
+        tracker["hourly_write_count"] = 0
 
-def get_hourly_quota_allowance(hour, weekday):
-    """Calculates max allowed units for the current hour based on Studio Heatmap."""
-    # Peak Heatmap Hours (7:00 PM - 10:00 PM IST)
-    if 19 <= hour <= 22:
-        return 500  # High velocity allocation
-    # Tuesday 12:45 PM surge
-    if weekday == 1 and 12 <= hour <= 14:
-        return 400
-    # Night sleep hours (11:00 PM - 7:00 AM)
-    if hour >= 23 or hour < 7:
-        return 100  # Ultra-low saver mode
-    # Standard daytime
-    return 300
+    state["_quota_governor"] = tracker
+    return tracker
 
-def can_spend_quota(action_cost, action_name="Action"):
-    """Throttles and gates quota spending to mathematically guarantee 24/7 non-stop execution."""
-    data = load_quota_tracker()
-    now_ist = datetime.now(timezone.utc) + timedelta(hours=5, minutes=30)
-    hour = now_ist.hour
-    weekday = now_ist.weekday()
+def can_spend_quota(action_cost, category="WRITE", state=None):
+    """
+    🛡️ Mathematical 24x7 Quota Gatekeeper:
+    - Daily Hard Cap: 8,500 units (guarantees 1,500 reserve buffer).
+    - Hourly Cap: 350 units / hour.
+    - Hourly Write Cap: Max 6 writes (300 units) / hour.
+    - Monitoring (1-unit calls): Always permitted if under daily hard cap.
+    """
+    if state is None:
+        return True
 
-    # Hard Cap: Never exceed 8,500 units per day (leaves 1,500 reserve buffer)
-    if data["daily_spent"] + action_cost > 8500:
-        print(f"     🛡️ [QUOTA PACER] Daily Hard-Cap Reached ({data['daily_spent']}/8500). Throttling {action_name} to preserve 24/7 uptime.")
+    tracker = load_quota_tracker(state)
+    daily_spent = tracker.get("daily_spent", 0)
+    hourly_spent = tracker.get("hourly_spent", 0)
+    hourly_writes = tracker.get("hourly_write_count", 0)
+
+    # 1. Daily Hard Cap Check (8,500 Units max)
+    if daily_spent + action_cost > 8500:
+        print(f"     🛡️ [QUOTA GOVERNOR] Daily Hard-Cap Reached ({daily_spent}/8500). Deferring {category} to maintain 1,500 reserve.")
         return False
 
-    # Hourly Cap
-    hourly_limit = get_hourly_quota_allowance(hour, weekday)
-    if data["hourly_spent"] + action_cost > hourly_limit:
-        print(f"     🛡️ [QUOTA PACER] Hourly Allowance Reached ({data['hourly_spent']}/{hourly_limit} units). Deferring {action_name} to next hour.")
+    # 2. Monitoring (1 unit) always passes if daily cap is safe
+    if category == "MONITORING" or action_cost <= 2:
+        tracker["daily_spent"] += action_cost
+        tracker["hourly_spent"] += action_cost
+        state["_quota_governor"] = tracker
+        return True
+
+    # 3. Hourly Cap Check (350 units / hour)
+    if hourly_spent + action_cost > 350:
+        print(f"     🛡️ [QUOTA GOVERNOR] Hourly Cap Reached ({hourly_spent}/350). Deferring {category} to next hour.")
         return False
 
-    # Approve and log
-    data["hourly_spent"] += action_cost
-    data["daily_spent"] += action_cost
-    save_quota_tracker(data)
+    # 4. Write Operations Cap (Max 6 writes / hour = 300 units)
+    if category == "WRITE":
+        if hourly_writes >= 6:
+            print(f"     🛡️ [QUOTA GOVERNOR] Hourly Writes Capped ({hourly_writes}/6). Deferring write to next hour.")
+            return False
+        tracker["hourly_write_count"] += 1
+
+    # Approve and track
+    tracker["daily_spent"] += action_cost
+    tracker["hourly_spent"] += action_cost
+    state["_quota_governor"] = tracker
     return True
 
+# 🛡️ SAFE 24x7 QUOTA-GATED WRITE WRAPPERS
+
+def safe_video_update(yt, vid, snip, stat, localizations=None, state=None, action_name="Video Update"):
+    """Safely updates video only if quota governor approves, tracking quota accurately."""
+    if state is not None and not can_spend_quota(50, "WRITE", state):
+        print(f"     🛡️ [WRITE THROTTLED] Quota Governor deferred {action_name} for video {vid} to next hourly cycle.")
+        return False
+    try:
+        body = {"id": vid, "snippet": snip, "status": stat}
+        part = "snippet,status"
+        if localizations:
+            body["localizations"] = localizations
+            part += ",localizations"
+        yt.videos().update(part=part, body=body).execute()
+        return True
+    except Exception as e:
+        print(f"     ⚠️ Video update error on {vid}: {e}")
+        return False
+
+def safe_comment_insert(yt, vid, comment_text, state=None, action_name="Comment"):
+    """Safely inserts comment thread only if quota governor approves."""
+    if state is not None and not can_spend_quota(50, "WRITE", state):
+        return False
+    try:
+        yt.commentThreads().insert(
+            part="snippet",
+            body={"snippet": {"videoId": vid, "topLevelComment": {"snippet": {"textOriginal": comment_text}}}}
+        ).execute()
+        return True
+    except Exception as e:
+        return False
+
+def safe_playlist_item_insert(yt, playlist_id, vid, position=0, state=None, action_name="Playlist Item"):
+    """Safely inserts video into playlist only if quota governor approves."""
+    if state is not None and not can_spend_quota(50, "WRITE", state):
+        return False
+    try:
+        yt.playlistItems().insert(
+            part="snippet",
+            body={
+                "snippet": {
+                    "playlistId": playlist_id,
+                    "position": position,
+                    "resourceId": {"kind": "youtube#video", "videoId": vid}
+                }
+            }
+        ).execute()
+        return True
+    except Exception as e:
+        return False
 
 # 🌊 MODULE 23: LIVE-TO-VOD WAVE-2 AUTO-TRANSITIONER (Feature 103)
 
@@ -1591,7 +1673,7 @@ def run_cloud_cycle():
 
         # 🕵️ Competitor Spy
         try:
-            competitor_tags = competitor_spy_tag_hijacker(yt, niche)
+            competitor_tags = competitor_spy_tag_hijacker(yt, niche, state=state)
             if competitor_tags:
                 tags = tags + competitor_tags
                 print(f"  🕵️ [COMPETITOR SPY] Hijacked {len(competitor_tags)} competitor tags")
@@ -1605,7 +1687,7 @@ def run_cloud_cycle():
             yt = build('youtube', 'v3', credentials=creds)
 
             try:
-                suggested_tags = competitor_suggested_video_hijacker(yt, niche)
+                suggested_tags = competitor_suggested_video_hijacker(yt, niche, state=state)
                 if suggested_tags:
                     tags = tags + suggested_tags
                     tags = sanitize_tags(tags, max_total_chars=400)
@@ -1738,10 +1820,7 @@ def run_cloud_cycle():
                         try:
                             yt.videos().update(part="snippet,status", body={"id": vid, "snippet": snip, "status": stat}).execute()
                             celebration_msg = f"🎉 आज {current_views}+ श्याम भक्तों ने पावन दर्शन किए! अपनी मनोकामना कमेंट में लिखकर 'जय श्री श्याम' ज़रूर बोलें! 🌸🙏" if niche == "bhakti" else f"🔥 {current_views}+ लोगों ने यह सीख देखी! आप भी कमेंट में अपना विचार ज़रूर साझा करें! 💫"
-                            yt.commentThreads().insert(
-                                part="snippet",
-                                body={"snippet": {"videoId": vid, "topLevelComment": {"snippet": {"textOriginal": celebration_msg}}}}
-                            ).execute()
+                            safe_comment_insert(yt, vid, celebration_msg, state=state, action_name="Milestone Celebration Comment")
                         except Exception:
                             pass
 
@@ -1834,10 +1913,7 @@ def run_cloud_cycle():
                 if comments_cnt == 0:
                     pin_msg = "👑 बाबा श्याम के पावन स्वरूप: 1. लखदातार 2. शीश के दानी 3. हारे के सहारे — अपनी मनोकामना कमेंट में लिखकर 'जय श्री श्याम' ज़रूर बोलें! (अंतिम 3 सेकंड में मोरपंख ध्यान से देखें 🦚✨)" if niche == "bhakti" else "🌟 जिंदगी में आगे बढ़ने का आपका #1 नियम क्या है: 1. कभी हार न मानना 2. खुद पर भरोसा 3. ईश्वर का साथ? कमेंट में लिखें! (अंतिम सीख दोबारा सुनें 💫)"
                     try:
-                        yt.commentThreads().insert(
-                            part="snippet",
-                            body={"snippet": {"videoId": vid, "topLevelComment": {"snippet": {"textOriginal": pin_msg}}}}
-                        ).execute()
+                        safe_comment_insert(yt, vid, pin_msg, state=state, action_name="Auto-Pinned Comment")
                         print(f"     📌 [CLOUD AUTO-PINNED COMMENT POSTED] on {vid}")
                     except Exception:
                         pass
@@ -1902,11 +1978,7 @@ def run_cloud_cycle():
                     pub_at = snip.get("publishedAt", "")
                     is_vod_updated, snip = check_and_transition_live_vod(yt, vid, snip, stat, current_views, views_gained, pub_at, dur, state, niche=niche)
                     if is_vod_updated:
-                        try:
-                            yt.videos().update(part="snippet,status", body={"id": vid, "snippet": snip, "status": stat}).execute()
-                            print(f"     🌊 [WAVE-2 LIVE-TO-VOD APPLIED] -> {snip['title'][:50]}...")
-                        except Exception as e:
-                            print(f"     ⚠️ Cloud Wave-2 update error: {e}")
+                        safe_video_update(yt, vid, snip, stat, state=state, action_name="Wave-2 Live-to-VOD")
 
                 state[vid] = {
                     "views": current_views,
@@ -1939,13 +2011,13 @@ def main():
     cycle_count = 0
     while time.time() - start_time < max_duration_secs:
         cycle_count += 1
-        print(f"\n--- [CYCLE #{cycle_count}] Running 5-Min Super Best Interval ---")
+        print(f"\n--- [CYCLE #{cycle_count}] Running 15-Min 24x7 Paced Interval ---")
         try:
             run_cloud_cycle()
         except Exception as e:
             print(f"⚠️ Top-level cycle error: {e}")
 
-        time.sleep(300)
+        time.sleep(900)
 
     print("\n✅ Runner completed 5.5 hours. Handing over to next relay...")
 
