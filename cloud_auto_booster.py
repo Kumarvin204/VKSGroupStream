@@ -1157,7 +1157,13 @@ def generate_high_ctr_vod_description(title, hours, niche="bhakti"):
 🔔 नित्य पावन दर्शन व चमत्कारी भजनों के लिए चैनल को अभी SUBSCRIBE करें:
 👉 https://www.youtube.com/@vinodtech4975?sub_confirmation=1
 
-#KhatuShyam #ShyamBhajan #KhatuShyamLive #JaiShreeShyam #DardBharaBhajan #KhatuDham #BhaktiLive #VinodTechnical #NandiniVinodSoni"""
+#KhatuShyam #ShyamBhajan #KhatuShyamLive #JaiShreeShyam #DardBharaBhajan #KhatuDham #BhaktiLive #VinodTechnical #NandiniVinodSoni
+
+==================================================
+🛡️ Content Notice & Transformative Value:
+All devotional footage & darshan visuals are creatively curated, color-graded, and edited with original spiritual commentary, structured prayers, and devotional context by Nandini & Vinod Soni Official to spread peace and positivity.
+📧 Contact for business & inquiries: vsoni9060@gmail.com
+=================================================="""
     return desc
 
 def check_and_transition_live_vod(yt, vid, snip, stat, current_views, views_gained, published_at_str, duration_str, state, niche="bhakti"):
