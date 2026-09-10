@@ -1152,12 +1152,215 @@ def safe_playlist_item_insert(yt, playlist_id, vid, position=0, state=None, acti
     except Exception as e:
         return False
 
-# 🌊 MODULE 23: LIVE-TO-VOD WAVE-2 AUTO-TRANSITIONER (Feature 103)
+# =========================================================================
+# 🌊 MODULE 23: ZERO-DUPLICATE 12-THEME LIVE-TO-VOD ENGINE (Feature 103)
+# =========================================================================
 
-# 🌊 MODULE 23: LIVE-TO-VOD DYNAMIC MULTI-HOUR AUTO-TRANSITIONER (Feature 103)
+THEMES_VOD_BHAKTI = [
+    {
+        "id": 0,
+        "title_hook": "रोते-रोते पुकारा तो दौड़े आए बाबा श्याम 😭",
+        "title_tail": "घंटे का अखंड दर्द भरा खाटू भजन",
+        "poetry": """आँखों में आँसू लेकर जो भी तेरे दर आया,
+खाली हाथ न लौटा बाबा, झोली भर कर पाया। 🌸😭
+तेरे सिवा मेरा कोई नहीं इस जग में दाता,
+तू ही है मेरा सच्चा मीत, तू ही है विधाता। 🦚""",
+        "reflection": "जब जीवन में चारों तरफ अंधेरा छा जाए और कोई राह न दिखे, तो सच्चे दिल से हारे के सहारे बाबा श्याम को याद करें। इस अखंड दर्द भरे भजन प्रवाह को सुनकर बाबा आपकी हर पुकार सुनेंगे।",
+        "arji_prompt": "कमेंट में अपनी सच्ची अर्जी लिखकर 3 बार 'जय श्री श्याम' ज़रूर लिखें, बाबा आपकी पुकार अवश्य सुनेंगे।",
+        "chapters": [
+            "00:00 - 🔴 पावन मंगला शुरुआत व भावुक दर्शन",
+            "30:00 - 😭 रोते-रोते पुकारा तो दौड़े आए बाबा श्याम (भावुक प्रसंग)",
+            "01:15:00 - 🌸 हारे का सहारा बाबा श्याम हमारा (अमृतमयी भजन)",
+            "02:30:00 - 📿 महा-चमत्कारी अर्जी व संकट निवारण मंत्र जाप",
+            "03:45:00 - 🦚 सेठ करमसी की अमर सत्य कथा व साक्षात दर्शन",
+            "04:45:00 - 🌺 शयन आरती व अखंड पावन आशीर्वाद",
+            "05:30:00 - 🦚 सम्पूर्ण दर्शन महा-आरती व पावन मंगल कामना"
+        ],
+        "keywords": [
+            "rote rote pukara to daude aaye baba shyam", "dard bhara shyam bhajan", "khatu shyam live bhajan",
+            "emotional khatu shyam bhajan", "khatu shyam live", "hare ka sahara baba shyam hamara",
+            "shyam baba ke bhajan", "खाटू श्याम भजन", "दर्द भरा खाटू भजन", "रोते रोते पुकारा"
+        ]
+    },
+    {
+        "id": 1,
+        "title_hook": "सुनते ही बदल जाएगी बिगड़ी किस्मत ✨",
+        "title_tail": "घंटे का अलौकिक खाटू श्याम दर्शन भजन",
+        "poetry": """हारे के सहारे आजा, बिगड़ी बनाने आजा,
+लाज मेरी रख ले बाबा, दर पे बुलाने आजा। 🌸✨
+तेरी चौखट पे जो आया, वो कभी न खाली लौटा,
+तूने ही तो डूबते को तिनके का सहारा सौंपा। 📿""",
+        "reflection": "जिस भक्त पर बाबा श्याम की कृपा हो जाए, उसकी सोई हुई किस्मत भी जाग उठती है। इस अलौकिक दर्शन व भजन प्रवाह को श्रद्धापूर्वक श्रवण करें — आपका हर रुका हुआ काम अवश्य बनेगा।",
+        "arji_prompt": "कमेंट में 'ॐ श्री श्याम देवाय नमः' लिखकर अपनी मनोकामना व्यक्त करें, बाबा कृपा करेंगे।",
+        "chapters": [
+            "00:00 - ✨ अलौकिक प्रातः शृंगार व पुष्प दर्शन",
+            "30:00 - 🦚 बिगड़ी किस्मत संवारने वाले चमत्कारी भजन",
+            "01:15:00 - 🌸 सांवरिया सेठ की अमृतमयी कृपा धारा",
+            "02:30:00 - 📿 सुख-समृद्धि व सौभाग्य प्राप्ति जाप",
+            "03:45:00 - 🌺 खाटू नरेश की पावन अमृत लीला",
+            "04:45:00 - 🕯️ सुगंधित महाआरती व दिव्य आशीर्वाद",
+            "05:30:00 - 🦚 नित्य मंगल कामना व पावन दर्शन"
+        ],
+        "keywords": [
+            "sunte hi badal jayegi kismat", "khatu shyam chamatkar", "alaukik shyam darshan",
+            "khatu shyam live stream", "khatu shyam new bhajan 2026", "shyam darshan live",
+            "khatu naresh bhajan", "किस्मत बदलने वाला भजन", "खाटू श्याम दर्शन", "अलौकिक भजन"
+        ]
+    },
+    {
+        "id": 2,
+        "title_hook": "आज घर में चलाकर छोड़ दें, सारे कष्ट कटेंगे 🙏",
+        "title_tail": "घंटे का महा-चमत्कारी श्याम भजन",
+        "poetry": """जिस घर में गूंजे बाबा श्याम का पावन नाम,
+उस घर में कभी न आए कोई संकट या क्लेश का काम। 📿🙏
+सुख, शांति और बरकत की होगी सदा बौछार,
+जब साक्षात कृपा करेंगे हमारे लखदातार। 🌸""",
+        "reflection": "घर और दुकान में नकारात्मक ऊर्जा दूर करने, सुख-शांति व कर्ज मुक्ति के लिए इस महा-चमत्कारी भजन प्रवाह को चलाकर छोड़ दें। बाबा की कृपा से घर में बरकत और शांति का वास होगा।",
+        "arji_prompt": "अपने घर में सुख-शांति की कामना के साथ कमेंट में 'जय लखदातार की' लिखें।",
+        "chapters": [
+            "00:00 - 📿 घर-दुकान संकट निवारण पावन मंगला",
+            "30:00 - 🌸 सुख, शांति व बरकत प्रदाता श्याम भजन",
+            "01:15:00 - 🦚 कर्ज मुक्ति व व्यापार वृद्धि महामंत्र",
+            "02:30:00 - 🌺 नकारात्मक ऊर्जा नाशक अमृतवाणी",
+            "03:45:00 - 🕯️ पावन भोग आरती व संकटमोचन दर्शन",
+            "04:45:00 - 📿 शांति व समृद्धि पावन आशीर्वाद",
+            "05:30:00 - 🌸 सम्पूर्ण परिवार रक्षा कवच दर्शन"
+        ],
+        "keywords": [
+            "aaj ghar me chalakar chhod de", "sare kasht katenge", "sukh shanti shyam bhajan",
+            "karj mukti shyam mantra", "khatu shyam live", "barkat shyam bhajan",
+            "khatu dham live today", "घर में सुख शांति भजन", "सारे कष्ट दूर होंगे", "महा चमत्कारी भजन"
+        ]
+    },
+    {
+        "id": 3,
+        "title_hook": "जब दुनिया साथ छोड़ दे तो ये सुनो 😭",
+        "title_tail": "घंटे का नॉनस्टॉप बाबा श्याम कीर्तन",
+        "poetry": """जब साथ छोड़ दे ये जमाना सारा,
+तब थामेगा हाथ सिर्फ लखदातार हमारा। 🦚❤️
+दुनिया के झूठे वादों से जब थक जाए मन,
+बाबा के चरणों में पा लो जीवन का हर धन। 🌸""",
+        "reflection": "रिश्ते-नाते जब मुँह मोड़ लें और अकेलापन सताए, तब एक बार हारे के सहारे श्याम प्यारे को सच्चे मन से याद करें। बाबा अपने भक्त का हाथ कभी नहीं छोड़ते।",
+        "arji_prompt": "कमेंट में सच्चे दिल से 'हारे का सहारा बाबा श्याम हमारा' लिखकर हाजिरी लगाएं।",
+        "chapters": [
+            "00:00 - 😭 भावुक हृदय पुकार व पावन शुरुआत",
+            "30:00 - 🦚 जब दुनिया साथ छोड़ दे (अमृतमयी संकीर्तन)",
+            "01:15:00 - 🌸 हारे के सहारे का साक्षात सहारा",
+            "02:30:00 - 📿 नीले घोड़े वाले की दिव्य लीला प्रसंग",
+            "03:45:00 - 🌺 मोरछड़ी का पावन झाड़ा व आशीर्वाद",
+            "04:45:00 - 🕯️ सांध्य आरती व प्रभु मिलन भाव",
+            "05:30:00 - 🦚 अखंड श्याम नाम रस प्रवाह"
+        ],
+        "keywords": [
+            "jab duniya sath chhod de to ye suno", "non stop shyam kirtan", "emotional bhajan",
+            "khatu shyam nonstop", "khatu shyam live bhajan", "shyam baba live",
+            "hare ka sahara kirtan", "जब दुनिया साथ छोड़ दे", "नॉनस्टॉप श्याम कीर्तन", "भावुक भजन"
+        ]
+    },
+    {
+        "id": 4,
+        "title_hook": "1 बार सच्चे मन से अर्जी लगाओ, संकट कटेगा 📿",
+        "title_tail": "घंटे का भावुक खाटू श्याम भजन",
+        "poetry": """दरबार में तेरे आया हूँ, अपनी अर्जी लाया हूँ,
+सारे जग से हार कर बाबा, तेरी शरण में आया हूँ। 📿🙏
+सुन लो मेरी भी करुण पुकार हे श्याम प्यारे,
+तेरे बिना अब कौन है जो मुझको संभाले। 🌸""",
+        "reflection": "बाबा श्याम के दरबार में लगाई गई सच्ची अर्जी कभी खाली नहीं जाती। इस भावुक भजन को सुनते हुए अपनी हर परेशानी बाबा के चरणों में समर्पित कर दें।",
+        "arji_prompt": "कमेंट बॉक्स में अपनी अर्जी लिखकर 11 बार 'श्री श्याम देवाय नमः' का ध्यान करें।",
+        "chapters": [
+            "00:00 - 📿 पावन अर्जी संकल्प व मंगला दर्शन",
+            "30:00 - 🌸 संकटमोचन श्याम भजन अमृत धारा",
+            "01:15:00 - 🦚 शीश के दानी का अद्भुत पावन प्रसंग",
+            "02:30:00 - 🌺 मनोकामना सिद्धि महामंत्र व जाप",
+            "03:45:00 - 🕯️ धूप-दीप पावन आरती व दर्शन",
+            "04:45:00 - 📿 संकट निवारण अमृत आशीर्वाद",
+            "05:30:00 - 🌸 अखंड अर्जी स्वीकार मंगल कामना"
+        ],
+        "keywords": [
+            "ek bar sache man se arji lagao", "sankat katega", "khatu shyam arji bhajan",
+            "khatu shyam live darshan", "shyam baba ki arji", "khatu dham live",
+            "manokamna purti bhajan", "सच्चे मन से अर्जी लगाओ", "संकट कटेगा", "खाटू श्याम अर्जी"
+        ]
+    },
+    {
+        "id": 5,
+        "title_hook": "सेठ करमसी की अमर सत्य कथा व साक्षात दर्शन 🦚",
+        "title_tail": "घंटे का अखंड पावन प्रवाह",
+        "poetry": """सेठ करमसी की श्रद्धा देख, बाबा खुद दौड़े आए,
+भक्त की लाज बचाने को, प्रभु ने सब संकट मिटाए। 🦚✨
+सच्ची भक्ति का ऐसा फल, दुनिया ने जब देखा,
+बाबा श्याम ने बदल दी करमसी की हर रेखा। 🌸""",
+        "reflection": "बाबा श्याम और सेठ करमसी की अमर सत्य कथा का पावन श्रवण करें। यह कथा सिखाती है कि सच्चा विश्वास कभी व्यर्थ नहीं जाता और बाबा हमेशा भक्त के साथ खड़े रहते हैं।",
+        "arji_prompt": "कमेंट में 'सच्चे दरबार की जय' लिखकर करमसी जैसी सच्ची निष्ठा का संकल्प लें।",
+        "chapters": [
+            "00:00 - 🦚 सेठ करमसी कथा प्रारम्भ व पावन दर्शन",
+            "30:00 - 🌸 बाबा श्याम का साक्षात चमत्कार व सहायता",
+            "01:15:00 - 📿 भक्त और भगवान के अमर प्रेम का प्रसंग",
+            "02:30:00 - 🌺 संकट में बाबा का अद्भुत सहयोग",
+            "03:45:00 - 🕯️ पावन राजभोग आरती व कीर्तन",
+            "04:45:00 - 🦚 सत्य कथा महात्म्य व आशीर्वाद",
+            "05:30:00 - 🌸 सम्पूर्ण कथा पूर्णाहुति दर्शन"
+        ],
+        "keywords": [
+            "seth karamsi ki amar katha", "khatu shyam ki katha", "khatu shyam chamatkar katha",
+            "khatu shyam live", "shyam baba ki satya katha", "khatu dham katha",
+            "akhand shyam pravah", "सेठ करमसी की कथा", "खाटू श्याम सत्य कथा", "साक्षात दर्शन"
+        ]
+    },
+    {
+        "id": 6,
+        "title_hook": "घर में सुख, शांति व बरकत का महा-उपाय 🌸",
+        "title_tail": "घंटे का अखंड श्याम भजन अमृतवाणी",
+        "poetry": """श्याम नाम की ज्योति जगाओ, हर संकट से मुक्ति पाओ,
+हारे का जो बने सहारा, उस दाता के गुण तुम गाओ। 🌸🙏
+जिस आँगन में गूंजे कीर्तन, वहाँ न आए दुख का साया,
+लखदातार ने अपने भक्तों पर सदा अमृत बरसाया। 🦚""",
+        "reflection": "बाबा श्याम की यह पावन अमृतवाणी घर में सकारात्मक ऊर्जा, पारिवारिक सौहार्द और खुशहाली का संचार करती है। नित्य श्रवण से जीवन में शांति का वास होता है।",
+        "arji_prompt": "कमेंट में 'जय श्री साँवरिया सेठ' लिखकर अपने परिवार के लिए मंगल कामना करें।",
+        "chapters": [
+            "00:00 - 🌸 अमृतवाणी प्रारम्भ व मंगल दर्शन",
+            "30:00 - 📿 पारिवारिक सुख-शांति प्रदाता भजन",
+            "01:15:00 - 🦚 बरकत व खुशहाली महामंत्र संकीर्तन",
+            "02:30:00 - 🌺 मन की शांति व चिंता मुक्ति दर्शन",
+            "03:45:00 - 🕯️ संध्या महाआरती व पावन आशीर्वाद",
+            "04:45:00 - 📿 अखंड श्याम नाम अमृत रस",
+            "05:30:00 - 🌸 सर्व मंगल कल्याण दर्शन"
+        ],
+        "keywords": [
+            "ghar me sukh shanti shyam bhajan", "khatu shyam amritwani", "shyam bhajan non stop",
+            "khatu shyam live today", "peace of mind bhakti", "shyam baba darshan",
+            "barkat ka upaye bhajan", "सुख शांति अमृतवाणी", "खाटू श्याम भजन लाइव", "बरकत भजन"
+        ]
+    },
+    {
+        "id": 7,
+        "title_hook": "शीश के दानी का सबसे शक्तिशाली अमृतमयी भजन 🦚",
+        "title_tail": "घंटे का दिव्य खाटू श्याम संकीर्तन",
+        "poetry": """शीश का दान दिया जिसने, वो श्याम हमारा है,
+तीन बाण का धारी प्रभु, जग का रखवाला है। 🦚✨
+जिसने भी टेका माथा, वो पार उतर गया,
+बाबा की एक नज़र से, हर जीवन संवर गया। 🌸""",
+        "reflection": "महाभारत कालीन शीश के दानी बर्बरीक यानी हमारे प्यारे बाबा श्याम का यह संकीर्तन हर बाधा को समाप्त करने वाला है। श्रद्धापूर्वक श्रवण कर पुण्य लाभ प्राप्त करें।",
+        "arji_prompt": "कमेंट में 'शीश के दानी की जय' लिखकर अपनी श्रद्धा समर्पित करें।",
+        "chapters": [
+            "00:00 - 🦚 शीश के दानी पावन नमन व दर्शन",
+            "30:00 - 🌸 तीन बाण धारी महाबली श्याम भजन",
+            "01:15:00 - 📿 शत्रु व संकट नाशक दिव्य संकीर्तन",
+            "02:30:00 - 🌺 खाटू धाम की अमर पावन महिमा",
+            "03:45:00 - 🕯️ भव्य शृंगार व आरती दर्शन",
+            "04:45:00 - 🦚 शीश के दानी का साक्षात आशीष",
+            "05:30:00 - 🌸 अखंड महा संकीर्तन समापन"
+        ],
+        "keywords": [
+            "sheesh ke daani shyam bhajan", "teen baan dhari khatu shyam", "khatu shyam sankirtan",
+            "khatu shyam live", "shyam baba live stream", "khatu naresh katha",
+            "shyam ji ke bhajan", "शीश के दानी भजन", "खाटू श्याम संकीर्तन", "अमृतमयी भजन"
+        ]
+    }
+]
 
 def parse_iso_duration_hours(duration_str):
-    """Parses ISO 8601 duration (e.g. PT5H56M7S, PT8H30M, PT11H) into rounded integer hours."""
+    """Parses ISO 8601 duration into rounded integer hours."""
     try:
         hours = 0
         minutes = 0
@@ -1171,85 +1374,84 @@ def parse_iso_duration_hours(duration_str):
             hours += 1
         return max(hours, 1)
     except Exception:
-        return 6
+        return 5
 
-def generate_dynamic_vod_chapters(hours):
-    """Generates dynamic Key Moments chapters scaled for any duration from 2 to 12+ hours."""
-    chapters = [
-        "00:00 - 🔴 पावन मंगला व प्रातः शृंगार दर्शन",
-        "30:00 - 😭 रोते-रोते पुकारा तो दौड़े आए बाबा श्याम (भावुक प्रसंग)",
-        "01:15:00 - 🌸 हारे का सहारा बाबा श्याम हमारा (अमृतमयी भजन)",
-        "02:30:00 - 📿 महा-चमत्कारी अर्जी व संकट निवारण मंत्र जाप"
-    ]
-    for h in range(3, hours):
-        if h == 3:
-            chapters.append("03:45:00 - 🦚 सेठ करमसी की अमर सत्य कथा व साक्षात दर्शन")
-        elif h == 4:
-            chapters.append("04:45:00 - 🌺 शयन आरती व अखंड पावन आशीर्वाद")
-        elif h == 5:
-            chapters.append("05:30:00 - 🦚 सम्पूर्ण दर्शन महा-आरती व पावन मंगल कामना")
-        else:
-            chapters.append(f"{h:02d}:15:00 - 🦚 अखंड श्याम भजन प्रवाह व संकटमोचन दर्शन")
-    return "\n".join(chapters)
-
-def generate_high_ctr_vod_title(vid, exact_hours, existing_titles=None, niche="bhakti"):
-    """🎯 High-CTR 10/10 Clickable Title Selector — Zero generic text, 100% emotional hook first."""
+def generate_unique_vod_package(vid, exact_hours, existing_titles=None, niche="bhakti"):
+    """
+    🎯 100% Zero-Duplicate Guarantee:
+    Selects a distinct theme from THEMES_VOD_BHAKTI that is NOT on the channel.
+    Generates a 100% unique Title, unique Description, and unique Search Keywords.
+    """
     if existing_titles is None:
         existing_titles = []
-        
-    candidate_hooks = [
-        f"🔴 LIVE: रोते-रोते पुकारा तो दौड़े आए बाबा श्याम 😭 {exact_hours} घंटे का अखंड दर्द भरा खाटू भजन",
-        f"🔴 LIVE: सुनते ही बदल जाएगी बिगड़ी किस्मत ✨ {exact_hours} घंटे का अलौकिक खाटू श्याम दर्शन भजन",
-        f"🔴 LIVE: आज घर में चलाकर छोड़ दें, सारे कष्ट कटेंगे 🙏 {exact_hours} घंटे का महा-चमत्कारी श्याम भजन",
-        f"🔴 LIVE: जब दुनिया साथ छोड़ दे तो ये सुनो 😭 {exact_hours} घंटे का नॉनस्टॉप बाबा श्याम कीर्तन",
-        f"🔴 LIVE: 1 बार सच्चे मन से अर्जी लगाओ, संकट कटेगा 📿 {exact_hours} घंटे का भावुक खाटू श्याम भजन",
-        f"🔴 LIVE: सेठ करमसी की अमर सत्य कथा व साक्षात दर्शन 🦚 {exact_hours} घंटे का अखंड पावन प्रवाह",
-        f"🔴 LIVE: घर में सुख, शांति व बरकत का महा-उपाय 🌸 {exact_hours} घंटे का अखंड श्याम भजन अमृतवाणी"
-    ]
-    
-    # Pick a candidate that isn't already used on the channel
-    for title in candidate_hooks:
-        if title not in existing_titles:
-            return title[:95]
-            
-    # Hash-based deterministic pick
-    try:
-        pick_idx = int(hashlib.md5(vid.encode()).hexdigest(), 16) % len(candidate_hooks)
-    except Exception:
-        pick_idx = 0
-    return candidate_hooks[pick_idx][:95]
 
-def generate_high_ctr_vod_description(title, hours, niche="bhakti"):
-    """📄 Generates a 10/10 High-CTR & High-Retention VOD Description with Chapters & Prayer Hook."""
-    chapters = generate_dynamic_vod_chapters(hours)
-    desc = f"""🔴 {title}
+    # Find the first theme whose title has NOT been used
+    selected_theme = None
+    selected_title = ""
+    
+    for theme in THEMES_VOD_BHAKTI:
+        candidate_title = f"🔴 LIVE: {theme['title_hook']} {exact_hours} {theme['title_tail']}"[:95]
+        if candidate_title not in existing_titles:
+            selected_theme = theme
+            selected_title = candidate_title
+            break
+
+    # If all candidate titles exist on channel, use hash-fallback with unique video suffix
+    if not selected_theme:
+        try:
+            pick_idx = int(hashlib.md5(vid.encode()).hexdigest(), 16) % len(THEMES_VOD_BHAKTI)
+        except Exception:
+            pick_idx = 0
+        selected_theme = THEMES_VOD_BHAKTI[pick_idx]
+        selected_title = f"🔴 LIVE: {selected_theme['title_hook']} {exact_hours} {selected_theme['title_tail']} | #{vid[-4:]}"[:95]
+
+    # Generate matching 100% unique description
+    t = selected_theme
+    chapters_str = "\n".join(t["chapters"])
+    keywords_str = "\n".join([f"- {k}" for k in t["keywords"]])
+
+    desc = f"""{selected_title}
 
 🌸 ॐ श्री श्याम देवाय नमः | ॐ श्री खाटू नरेशाय नमः 🌸
 
-जब जीवन में चारों तरफ अंधेरा छा जाए और कोई राह न दिखे, तो सच्चे दिल से हारे के सहारे बाबा श्याम को याद करें। इस {hours} घंटे के अखंड पावन संकीर्तन और अमृतमयी भजनों को घर या दुकान में चलाकर श्रद्धापूर्वक श्रवण करें — बाबा श्याम आपके जीवन के सभी कष्ट, रोग, शोक, कर्ज व संकट दूर कर सुख-समृद्धि और शांति प्रदान करेंगे। 🙏✨
+{t['poetry']}
 
-📿 [अर्जी व मंगल कामना संकल्प]:
-कमेंट में अपनी सच्ची मनोकामना और अर्जी लिखकर 3 बार "जय श्री श्याम" ज़रूर लिखें। बाबा श्याम की कृपा से हर बिगड़ा काम बनेगा। 🌸❤️
+{t['reflection']}
 
-⏱️ पावन दर्शन व भजन प्रवाह (Key Moments & Chapters):
-{chapters}
+📿 [अर्जी व मनोकामना संकल्प]:
+{t['arji_prompt']} 🌸🙏
+
+⏱️ Key Moments & पावन दर्शन प्रवाह (Chapters):
+{chapters_str}
+
+🔍 Your Queries / Search Topics Covered:
+{keywords_str}
+- nandini vinod soni
+- khatu shyam live
 
 🎯 [10,000 पावन श्याम परिवार संकल्प]: 92% भक्त रोज़ दर्शन तो करते हैं लेकिन सब्सक्राइब करना भूल जाते हैं — आज ही SUBSCRIBE करके बाबा के 10K परिवार का पावन हिस्सा बनें! 🙏🌸
 
 🔔 नित्य पावन दर्शन व चमत्कारी भजनों के लिए चैनल को अभी SUBSCRIBE करें:
 👉 https://www.youtube.com/@vinodtech4975?sub_confirmation=1
 
-#KhatuShyam #ShyamBhajan #KhatuShyamLive #JaiShreeShyam #DardBharaBhajan #KhatuDham #BhaktiLive #VinodTechnical #NandiniVinodSoni
-
 ==================================================
 🛡️ Content Notice & Transformative Value:
 All devotional footage & darshan visuals are creatively curated, color-graded, and edited with original spiritual commentary, structured prayers, and devotional context by Nandini & Vinod Soni Official to spread peace and positivity.
 📧 Contact for business & inquiries: vsoni9060@gmail.com
-=================================================="""
-    return desc
+==================================================
 
-def check_and_transition_live_vod(yt, vid, snip, stat, current_views, views_gained, published_at_str, duration_str, state, niche="bhakti"):
-    """🌊 FEATURE 103: Dynamic Multi-Hour Live-to-VOD Transitioner — Automatically scales for 5, 6, 8, 10, 11+ hours with 10/10 High-CTR Title & SEO."""
+#KhatuShyam #KhatuShyamBhajan #KhatuShyamLive #JaiShreeShyam #ShyamBhajan #खाटूश्याम #हारेकासहारा #KhatuShyamJi #ShyamBaba #NandiniVinodSoni"""
+
+    # Dynamic tags
+    vod_tags = t["keywords"] + [
+        "khatu shyam live", "khatu shyam bhajan live", "shyam baba bhajan",
+        "jai shree shyam", "hare ka sahara baba shyam hamara", "nandini vinod soni"
+    ]
+
+    return selected_title, desc, vod_tags
+
+def check_and_transition_live_vod(yt, vid, snip, stat, current_views, views_gained, published_at_str, duration_str, state, existing_titles=None, niche="bhakti"):
+    """🌊 FEATURE 103: Dynamic Multi-Hour Live-to-VOD Transitioner — 100% Unique Titles & Descriptions."""
     try:
         vod_key = f"vod_wave2_{vid}"
         if state.get(vod_key):
@@ -1275,36 +1477,27 @@ def check_and_transition_live_vod(yt, vid, snip, stat, current_views, views_gain
             print(f"     🌱 [LIVE-TO-VOD MOMENTUM GUARD] Video {vid} ({days_old:.1f} days old) is actively gaining views (+{views_gained} views). Holding Wave-2 transition to let it grow naturally.")
             return False, snip
 
-        # Video is 5+ days old AND stagnant -> Transition to 10/10 High-CTR Dynamic Evergreen VOD SEO
+        # Video is 5+ days old AND stagnant -> Transition to 100% UNIQUE Dynamic VOD SEO
         exact_hours = parse_iso_duration_hours(duration_str)
-        print(f"     🌊 [WAVE-2 LIVE-TO-VOD] Video {vid} is {days_old:.1f} days old ({exact_hours} Hours) and plateaued (+{views_gained} views). Transitioning to 10/10 High-CTR Dynamic {exact_hours}-Hour Evergreen SEO...")
+        print(f"     🌊 [WAVE-2 LIVE-TO-VOD] Video {vid} is {days_old:.1f} days old ({exact_hours} Hours) and plateaued (+{views_gained} views). Transitioning to 100% UNIQUE {exact_hours}-Hour SEO...")
 
-        # 10/10 High-CTR Clickable Title
-        new_vod_title = generate_high_ctr_vod_title(vid, exact_hours, niche=niche)
-        snip["title"] = new_vod_title
-
-        # High-CTR Dynamic Description with Key Moments & Arji Hook
-        snip["description"] = generate_high_ctr_vod_description(new_vod_title, exact_hours, niche=niche)
-        
-        # High-Converting Search Intent Tags
-        vod_tags = [
-            "khatu shyam live", "khatu shyam bhajan nonstop", "shyam bhajan live",
-            "dard bhara shyam bhajan", "khatu shyam darshan live", "khatu dham live",
-            "shyam aarti nonstop", f"{exact_hours} ghante ka shyam bhajan", "khatu shyam ji ki katha",
-            "aaj ka shyam darshan", "shyam baba ke anmol vachan", "khatu shyam salasar balaji darshan",
-            "hare ka sahara baba shyam hamara", "khatu shyam chamatkar", "nandini vinod soni"
-        ]
-        snip["tags"] = sanitize_tags(vod_tags, max_total_chars=400)
+        # 100% Unique Title & Description
+        new_title, new_desc, new_tags = generate_unique_vod_package(vid, exact_hours, existing_titles=existing_titles, niche=niche)
+        snip["title"] = new_title
+        snip["description"] = new_desc
+        snip["tags"] = sanitize_tags(new_tags, max_total_chars=400)
         snip["categoryId"] = "22"
         snip["defaultLanguage"] = "hi"
         snip["defaultAudioLanguage"] = "hi"
+
+        if existing_titles is not None:
+            existing_titles.append(new_title)
 
         state[vod_key] = True
         return True, snip
     except Exception as e:
         print(f"Live-to-VOD dynamic notice: {e}")
     return False, snip
-
 def get_92pct_nonsub_conversion_hook():
     """🔔 FEATURE 97: 92.4% Non-Subscribed Conversion Multiplier Hook — Converts floating viewers into subscribers."""
     return (
@@ -1976,7 +2169,7 @@ def run_cloud_cycle():
 
                     # 🌊 FEATURE 103: Dynamic Multi-Hour Live-to-VOD Auto-Transitioner
                     pub_at = snip.get("publishedAt", "")
-                    is_vod_updated, snip = check_and_transition_live_vod(yt, vid, snip, stat, current_views, views_gained, pub_at, dur, state, niche=niche)
+                    is_vod_updated, snip = check_and_transition_live_vod(yt, vid, snip, stat, current_views, views_gained, pub_at, dur, state, existing_titles=existing_channel_titles, niche=niche)
                     if is_vod_updated:
                         safe_video_update(yt, vid, snip, stat, state=state, action_name="Wave-2 Live-to-VOD")
 
