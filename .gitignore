@@ -54,6 +54,7 @@ backend/uploads/*
 *.flv
 *.webm
 *.ts
+*.mp4
 
 # Misc
 .vercel
