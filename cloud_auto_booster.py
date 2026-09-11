@@ -262,53 +262,35 @@ def smart_comment_traffic_funnel(yt, hot_vid, hot_views, niche, state):
     except Exception:
         pass
 
-def competitor_spy_tag_hijacker(yt, niche="bhakti", state=None):
-    """🕵️ FEATURE: Competitor Spy & Tag Hijacker — 6-Hour Persistent Smart Cache for 24/7 Zero Quota Exhaustion."""
-    now_ts = time.time()
-    cache_key = f"comp_spy_cache_{niche}"
-    
-    if state is not None and cache_key in state:
-        cache_data = state[cache_key]
-        if isinstance(cache_data, dict) and now_ts - cache_data.get("timestamp", 0) < 21600:  # 6 Hours Cache
-            return cache_data.get("tags", [])
-
-    if state is not None and not can_spend_quota(100, "SEARCH", state):
-        if cache_key in state and isinstance(state[cache_key], dict):
-            return state[cache_key].get("tags", [])
-        return []
-
+def competitor_spy_tag_hijacker(yt=None, niche="bhakti", state=None):
+    """🕵️ FEATURE: Competitor Spy & Tag Hijacker — 100% Zero-Quota Public Suggest Harvester (0 Units Cost)."""
     hijacked_tags = []
     try:
         if niche == "bhakti":
-            search_queries = ["khatu shyam darshan today", "khatu shyam live", "baba shyam bhajan"]
+            seed_queries = ["khatu shyam darshan today", "khatu shyam live", "baba shyam bhajan", "khatu dham live today", "khatu shyam aarti"]
         else:
-            search_queries = ["motivational shorts hindi", "life lessons shorts"]
+            seed_queries = ["motivational shorts hindi", "life lessons shorts", "geeta saar hindi"]
         
-        query = random.choice(search_queries)
-        search_resp = yt.search().list(
-            part="snippet", q=query, type="video",
-            order="viewCount", maxResults=5,
-            publishedAfter=(datetime.now(timezone.utc) - timedelta(days=3)).strftime("%Y-%m-%dT%H:%M:%SZ")
-        ).execute()
-        
-        competitor_vids = [item["id"]["videoId"] for item in search_resp.get("items", []) if item["id"].get("videoId")]
-        if competitor_vids:
-            vids_resp = yt.videos().list(part="snippet", id=",".join(competitor_vids[:3])).execute()
-            for v_item in vids_resp.get("items", []):
-                comp_tags = v_item["snippet"].get("tags", [])
-                for tag in comp_tags:
-                    tag_lower = tag.lower().strip()
-                    skip_words = ["subscribe", "channel", "http", "www", "@"]
-                    if len(tag_lower) > 3 and len(tag_lower) < 50 and not any(sw in tag_lower for sw in skip_words):
-                        if tag_lower not in [t.lower() for t in hijacked_tags]:
-                            hijacked_tags.append(tag)
-            print(f"     🕵️ [COMPETITOR SPY 6H SYNC] Harvested {len(hijacked_tags)} competitor tags (Cached for 6 hours)")
+        # Free autocomplete harvesting from Google YouTube Suggest API (0 API Quota Units)
+        for seed in random.sample(seed_queries, min(3, len(seed_queries))):
+            url = f"https://suggestqueries.google.com/complete/search?client=firefox&ds=yt&q={urllib.parse.quote(seed)}"
+            req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'})
+            try:
+                with urllib.request.urlopen(req, timeout=3) as response:
+                    data = json.loads(response.read().decode('utf-8'))
+                    if len(data) >= 2 and isinstance(data[1], list):
+                        for item in data[1][:6]:
+                            clean_item = str(item).strip()
+                            skip_words = ["subscribe", "channel", "http", "www", "@"]
+                            if clean_item and 3 < len(clean_item) < 50 and not any(sw in clean_item.lower() for sw in skip_words):
+                                if clean_item.lower() not in [t.lower() for t in hijacked_tags]:
+                                    hijacked_tags.append(clean_item)
+            except Exception:
+                pass
     except Exception:
         pass
 
     results = hijacked_tags[:10]
-    if state is not None and results:
-        state[cache_key] = {"tags": results, "timestamp": now_ts}
     return results
 def get_next_available_slot(existing_scheduled_utc):
     now_utc = datetime.now(timezone.utc)
