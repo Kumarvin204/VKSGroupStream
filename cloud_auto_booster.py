@@ -2016,24 +2016,40 @@ def run_cloud_cycle():
                         except Exception:
                             pass
 
-                # 4️⃣ FEATURE: Auto-Hearting Push & Devotee Engagement Reply Booster
-                if comments_cnt > 0 and len(replied_comments) < 5:
+                # 4️⃣ FEATURE: Auto-Hearting Push & Devotee Engagement Reply Booster (GENUINE PUBLIC ONLY)
+                if comments_cnt > 0 and len(replied_comments) < 10:
                     try:
-                        cmt_resp = yt.commentThreads().list(part="snippet", videoId=vid, maxResults=10).execute()
+                        cmt_resp = yt.commentThreads().list(part="snippet", videoId=vid, maxResults=20).execute()
+                        our_channel_id = ch_resp["items"][0]["id"] if ("items" in ch_resp and ch_resp["items"]) else ""
+
                         for c_item in cmt_resp.get("items", []):
+                            c_snippet = c_item["snippet"]["topLevelComment"]["snippet"]
                             c_id = c_item["id"]
-                            c_text = c_item["snippet"]["topLevelComment"]["snippet"].get("textOriginal", "").lower()
+                            c_author_id = c_snippet.get("authorChannelId", {}).get("value", "")
+                            c_text = c_snippet.get("textOriginal", "").lower()
                             
-                            # 🧲 FEATURE: Miracle Story Pin (Detects faith/miracle stories and highlights them)
-                            miracle_words = ["चमत्कार", "अर्जी", "कृपा", "मनोकामना", "सुख", "श्याम कृपा", "दर्शन", "जय श्री श्याम"]
-                            if c_id not in replied_comments and any(w in c_text for w in miracle_words):
-                                reply_text = "❤️ बाबा श्याम आपकी हर मनोकामना व अर्जी स्वीकार करें! 🌸🙏 जय श्री श्याम!" if niche == "bhakti" else "❤️ ईश्वर आप पर सदैव कृपा बनाए रखें! 💫🌟"
+                            # 🚫 STRICT RULE: NEVER reply to our own comments (Pinned or Channel Owner comments)
+                            if c_author_id and c_author_id == our_channel_id:
+                                continue
+                            if c_id in replied_comments:
+                                continue
+                                
+                            # 🧲 Match genuine devotee faith, prayers, greetings, or questions
+                            devotee_words = [
+                                "जय श्री श्याम", "जय बाबा श्याम", "खाटू श्याम", "श्याम प्यारे",
+                                "चमत्कार", "अर्जी", "कृपा", "मनोकामना", "सुख", "श्याम कृपा",
+                                "दर्शन", "जय लखदातार", "सांवरिया", "राधे राधे", "हर हर महादेव",
+                                "जय श्री कृष्णा", "जय हो", "जय माता दी", "सुंदर", "अमृत", "shyam"
+                            ] if niche == "bhakti" else ["great", "nice", "motivation", "true", "sahi", "super", "life", "seekh"]
+                            
+                            if any(w in c_text for w in devotee_words) or len(c_text.strip()) > 3:
+                                reply_text = "❤️ बाबा श्याम आपकी हर सच्ची मनोकामना व अर्जी स्वीकार करें! 🌸🙏 जय श्री श्याम!" if niche == "bhakti" else "❤️ ईश्वर आप पर सदैव कृपा बनाए रखें और जीवन में सफलता दें! 💫🌟"
                                 yt.comments().insert(
                                     part="snippet",
                                     body={"snippet": {"parentId": c_id, "textOriginal": reply_text}}
                                 ).execute()
                                 replied_comments.append(c_id)
-                                print(f"     ❤️ [CLOUD AUTO-HEARTING PUSH & DEVOTEE BLESSING SENT] on {vid}")
+                                print(f"     ❤️ [CLOUD GENUINE DEVOTEE REPLY SENT] to {c_snippet.get('authorDisplayName', 'Public User')} on {vid}")
                                 break
                     except Exception:
                         pass
