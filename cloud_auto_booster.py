@@ -1788,17 +1788,47 @@ def get_active_live_stream_id(yt):
 
 def is_local_pc_active():
     """📡 FEATURE 102: Primary-Relay Heartbeat Listener — Prevents double quota burning when Local PC is online."""
+    now_ts = int(time.time())
+    # 1. First check local heartbeat file if available
     try:
         hb_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "heartbeat.json")
         if os.path.exists(hb_file):
             with open(hb_file, "r", encoding="utf-8") as f:
                 data = json.load(f)
             last_hb = data.get("last_local_heartbeat", 0)
-            now_ts = int(time.time())
-            if now_ts - last_hb < 900:  # If local PC active within 15 mins
+            if now_ts - last_hb < 1800:
                 return True, now_ts - last_hb
     except Exception:
         pass
+
+    # 2. Check GitHub Repository via REST API (when running in GitHub Actions container)
+    try:
+        import urllib.request, base64
+        repo = "Kumarvin204/VKSGroupStream"
+        url = f"https://api.github.com/repos/{repo}/contents/heartbeat.json"
+        headers = {
+            "Accept": "application/vnd.github.v3+json",
+            "User-Agent": "Cloud-Heartbeat-Listener"
+        }
+        gh_token = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN")
+        if gh_token:
+            headers["Authorization"] = f"token {gh_token}"
+            
+        req = urllib.request.Request(url, headers=headers)
+        with urllib.request.urlopen(req, timeout=5) as resp:
+            data = json.loads(resp.read().decode())
+            if "content" in data:
+                raw_bytes = base64.b64decode(data["content"])
+                hb = json.loads(raw_bytes.decode("utf-8"))
+                last_hb = hb.get("last_local_heartbeat", 0)
+                diff = now_ts - last_hb
+                if diff < 1800:  # If local PC pinged within last 30 minutes
+                    return True, diff
+                else:
+                    return False, diff
+    except Exception:
+        pass
+
     return False, 9999
 
 def run_cloud_cycle():
