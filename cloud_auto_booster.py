@@ -621,42 +621,34 @@ def algorithmic_plateau_breaker(yt, vid, snip, stat, current_views, state):
     except Exception:
         return False
 
-def competitor_suggested_video_hijacker(yt, niche="bhakti", state=None):
-    """🧲 FEATURE: Competitor Suggested Video Hijacker — 6-Hour Persistent Smart Cache for 24/7 Zero Quota Drain."""
-    now_ts = time.time()
-    cache_key = f"comp_suggested_cache_{niche}"
-    
-    if state is not None and cache_key in state:
-        cache_data = state[cache_key]
-        if isinstance(cache_data, dict) and now_ts - cache_data.get("timestamp", 0) < 21600:  # 6 Hours Cache
-            return cache_data.get("tags", [])
-
-    if state is not None and not can_spend_quota(100, "SEARCH", state):
-        if cache_key in state and isinstance(state[cache_key], dict):
-            return state[cache_key].get("tags", [])
-        return []
-
+def competitor_suggested_video_hijacker(yt=None, niche="bhakti", state=None):
+    """🧲 FEATURE: Competitor Suggested Video Hijacker — 100% Zero-Quota Public Suggest Harvester (0 Units Cost)."""
     suggested_tags = []
     try:
-        query = "khatu shyam bhajan viral" if niche == "bhakti" else "motivational shorts viral"
-        resp = yt.search().list(part="snippet", q=query, type="video", order="viewCount", maxResults=3).execute()
-        for item in resp.get("items", []):
-            comp_id = item["id"].get("videoId")
-            if comp_id:
-                v_resp = yt.videos().list(part="snippet", id=comp_id).execute()
-                for v_item in v_resp.get("items", []):
-                    c_tags = v_item["snippet"].get("tags", [])
-                    for t in c_tags:
-                        if len(t) > 3 and len(t) < 40 and t.lower() not in [x.lower() for x in suggested_tags]:
-                            suggested_tags.append(t)
-        print(f"     🧲 [SUGGESTED HIJACKER 6H SYNC] Cached {len(suggested_tags)} suggested tags")
+        seed_queries = [
+            "khatu shyam viral bhajan", "khatu shyam trending status", "khatu shyam chamatkar video",
+            "shyam baba live kirtan", "khatu dham darshan live"
+        ] if niche == "bhakti" else ["motivational shorts viral", "life lessons trending", "geeta updesh hindi"]
+        
+        for seed in random.sample(seed_queries, min(2, len(seed_queries))):
+            url = f"https://suggestqueries.google.com/complete/search?client=firefox&ds=yt&q={urllib.parse.quote(seed)}"
+            req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'})
+            try:
+                with urllib.request.urlopen(req, timeout=3) as response:
+                    data = json.loads(response.read().decode('utf-8'))
+                    if len(data) >= 2 and isinstance(data[1], list):
+                        for item in data[1][:4]:
+                            clean_item = str(item).strip()
+                            skip_words = ["subscribe", "channel", "http", "www", "@"]
+                            if clean_item and 3 < len(clean_item) < 40 and not any(sw in clean_item.lower() for sw in skip_words):
+                                if clean_item.lower() not in [x.lower() for x in suggested_tags]:
+                                    suggested_tags.append(clean_item)
+            except Exception:
+                pass
     except Exception:
         pass
 
-    results = suggested_tags[:6]
-    if state is not None and results:
-        state[cache_key] = {"tags": results, "timestamp": now_ts}
-    return results
+    return suggested_tags[:6]
 def live_chat_prayer_sentiment_responder(yt, live_chat_id):
     """💬 FEATURE: Live Chat Sentiment & Prayer Loyalty Engine — Posts dynamic blessings to maximize Live Chat Velocity."""
     if not live_chat_id:
