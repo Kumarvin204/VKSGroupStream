@@ -22,12 +22,12 @@ sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='repla
 
 STATE_FILE = "cloud_velocity_state.json"
 
-# 📊 FEATURE 96: Studio Heatmap Dynamic Primetime Publishing Slots (Synced with Latest Channel Analytics)
+# 📊 FEATURE 96: Studio Heatmap Dynamic Primetime Publishing Slots (STRICT DEEP-PURPLE SLOTS ONLY)
 STUDIO_HEATMAP_SLOTS = {
-    "saturday": [(8, 0), (12, 45), (17, 30), (19, 15)],     # Sat: 12:45 PM Lunch + 5:30 PM & 7:15 PM Super Surge
-    "sunday":   [(8, 0), (12, 30), (17, 30), (19, 15)],     # Sun: Morning + 5:30 PM & 7:15 PM Prime
-    "friday":   [(7, 45), (12, 45), (17, 30), (19, 30)],     # Fri: Weekend Start 5:30 PM - 7:30 PM Peak
-    "standard": [(7, 45), (12, 45), (17, 30), (19, 15)]     # Mon/Tue/Wed/Thu: 5:30 PM (Pre-6PM) & 7:15 PM Peak
+    "saturday": [(13, 0), (17, 30), (18, 45), (20, 0)],     # Sat: 1:00 PM Afternoon Dark Purple + 5:30 PM, 6:45 PM, 8:00 PM Evening Deepest Purple
+    "sunday":   [(17, 30), (18, 45), (20, 0), (21, 0)],     # Sun: 5:30 PM, 6:45 PM, 8:00 PM, 9:00 PM Evening Deepest Purple
+    "friday":   [(17, 30), (18, 45), (20, 0), (21, 0)],     # Fri: 5:30 PM, 6:45 PM, 8:00 PM, 9:00 PM Evening Deepest Purple
+    "standard": [(17, 30), (18, 45), (20, 0), (21, 0)]     # Mon/Tue/Wed/Thu: 5:30 PM, 6:45 PM, 8:00 PM, 9:00 PM Evening Deepest Purple
 }
 
 def get_heatmap_slots_for_date(target_date):
