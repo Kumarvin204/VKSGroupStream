@@ -22,12 +22,19 @@ sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='repla
 
 STATE_FILE = "cloud_velocity_state.json"
 
-# 📊 FEATURE 96: Studio Heatmap Dynamic Primetime Publishing Slots (STRICT DEEP-PURPLE SLOTS ONLY)
+# 📊 FEATURE 96: Studio Heatmap Dynamic Primetime Publishing Slots (EXACT 7-DAY DEEP-PURPLE MAPPING)
 STUDIO_HEATMAP_SLOTS = {
-    "saturday": [(13, 0), (17, 30), (18, 45), (20, 0)],     # Sat: 1:00 PM Afternoon Dark Purple + 5:30 PM, 6:45 PM, 8:00 PM Evening Deepest Purple
-    "sunday":   [(17, 30), (18, 45), (20, 0), (21, 0)],     # Sun: 5:30 PM, 6:45 PM, 8:00 PM, 9:00 PM Evening Deepest Purple
-    "friday":   [(17, 30), (18, 45), (20, 0), (21, 0)],     # Fri: 5:30 PM, 6:45 PM, 8:00 PM, 9:00 PM Evening Deepest Purple
-    "standard": [(17, 30), (18, 45), (20, 0), (21, 0)]     # Mon/Tue/Wed/Thu: 5:30 PM, 6:45 PM, 8:00 PM, 9:00 PM Evening Deepest Purple
+    # 🌟 Saturday (शनिवार): Afternoon Lunch Surge (1:00 PM) + Full Evening Deep Purple (5:30 PM - 9:00 PM)
+    "saturday": [(13, 0), (17, 30), (18, 45), (20, 0), (21, 0)],
+    
+    # 🌸 Sunday (रविवार): Mega Evening Deep Purple Wave (5:30 PM - 9:00 PM)
+    "sunday":   [(17, 30), (18, 45), (20, 0), (21, 0)],
+    
+    # 🔥 Friday (शुक्रवार): Weekend-Eve Deep Purple Rush (5:30 PM - 9:00 PM)
+    "friday":   [(17, 30), (18, 45), (20, 0), (21, 0)],
+    
+    # 💼 Monday to Thursday (सोमवार से गुरुवार): Weekday Evening Core Peak (5:30 PM - 9:00 PM)
+    "standard": [(17, 30), (18, 45), (20, 0), (21, 0)]
 }
 
 def get_heatmap_slots_for_date(target_date):
