@@ -22,20 +22,23 @@ sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='repla
 
 STATE_FILE = "cloud_velocity_state.json"
 
-# 📊 FEATURE 96: Studio Heatmap Dynamic Primetime Publishing Slots
+# 📊 FEATURE 96: Studio Heatmap Dynamic Primetime Publishing Slots (Synced with Latest Channel Analytics)
 STUDIO_HEATMAP_SLOTS = {
-    "tuesday": [(8, 15), (12, 45), (19, 15), (21, 0)],      # Tuesday Hanuman/Shyam 12:45 PM Surge
-    "weekend": [(8, 15), (13, 15), (18, 45), (20, 30)],      # Fri/Sat Dense Purple Evening Wave
-    "standard": [(8, 15), (13, 15), (19, 15), (20, 45)]      # Mon/Wed/Thu/Sun 7:15 PM Super Peak
+    "saturday": [(8, 0), (12, 45), (17, 30), (19, 15)],     # Sat: 12:45 PM Lunch + 5:30 PM & 7:15 PM Super Surge
+    "sunday":   [(8, 0), (12, 30), (17, 30), (19, 15)],     # Sun: Morning + 5:30 PM & 7:15 PM Prime
+    "friday":   [(7, 45), (12, 45), (17, 30), (19, 30)],     # Fri: Weekend Start 5:30 PM - 7:30 PM Peak
+    "standard": [(7, 45), (12, 45), (17, 30), (19, 15)]     # Mon/Tue/Wed/Thu: 5:30 PM (Pre-6PM) & 7:15 PM Peak
 }
 
 def get_heatmap_slots_for_date(target_date):
     """Returns exact audience active slots based on day of week from Studio Heatmap."""
     weekday = target_date.weekday()
-    if weekday == 1:
-        return STUDIO_HEATMAP_SLOTS["tuesday"]
-    elif weekday in [4, 5]:
-        return STUDIO_HEATMAP_SLOTS["weekend"]
+    if weekday == 5:
+        return STUDIO_HEATMAP_SLOTS["saturday"]
+    elif weekday == 6:
+        return STUDIO_HEATMAP_SLOTS["sunday"]
+    elif weekday == 4:
+        return STUDIO_HEATMAP_SLOTS["friday"]
     return STUDIO_HEATMAP_SLOTS["standard"]
 
 CHANNELS_CONFIG = [
