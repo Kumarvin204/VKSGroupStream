@@ -691,27 +691,7 @@ def get_shorts_remix_bait_metadata(niche="bhakti"):
     return ["use this sound", "viral voiceover audio", "trending audio sound"]
 
 def negative_swipe_away_shield(yt, vid, snip, stat, current_views, state):
-    """🛡️ FEATURE: Negative Swipe-Away Shield — Swaps emergency curiosity hook on new releases with slow start."""
-    shield_key = f"swipe_shield_{vid}"
-    if state.get(shield_key) or current_views > 35 or current_views == 0:
-        return False
-    title_curr = snip.get("title", "")
-    emergency_hooks = [
-        "🌸 [100% मनोकामना पूर्ण होगी] ",
-        "😭 [देखते ही रोंगटे खड़े हो जाएंगे] ",
-        "🙏 [आज ही दर्शन का पुण्य लाभ उठाएं] "
-    ]
-    hook = random.choice(emergency_hooks)
-    if not any(h in title_curr for h in emergency_hooks) and len(title_curr) <= 70:
-        new_title = f"{hook}{title_curr}"[:95]
-        snip["title"] = new_title
-        try:
-            yt.videos().update(part="snippet,status", body={"id": vid, "snippet": snip, "status": stat}).execute()
-            state[shield_key] = True
-            print(f"     🛡️ [SWIPE-AWAY SHIELD ACTIVATED] Injected emergency hook on {vid} ({current_views} views) -> {new_title[:45]}...")
-            return True
-        except Exception:
-            pass
+    # ❌ REMOVED: YouTube policy violation — clickbait/misleading titles ("100% मनोकामना पूर्ण", "रोंगटे खड़े")
     return False
 
 def get_geographic_devotee_surge_tags(niche="bhakti"):
@@ -748,15 +728,8 @@ def generate_community_tab_viral_polls(niche="bhakti"):
 
 
 def get_social_preview_card_header(niche="bhakti", raw_title=""):
-    """📲 FEATURE: WhatsApp & Social Preview Card Optimizer — Formats top description for 3x link clicks on WhatsApp/Facebook."""
-    if niche == "bhakti":
-        cards = [
-            "🦚 [बाबा श्याम का दिव्य पावन दर्शन] 🌸 आज का विशेष आशीर्वाद: 10 सेकंड में मनोकामना पूर्ण हो 🙏 | हाथ जोड़कर दर्शन करें ✨\n",
-            "🌸 [हारे का सहारा बाबा श्याम] 💫 आज की पावन कथा व शृंगार: जो सच्चे मन से देखेगा उसके सब संकट दूर होंगे 🙏\n",
-            "🦚 [शीश के दानी का अलौकिक रूप] 🌟 जय श्री श्याम बाबा के चरणों में | पावन दर्शन का पुण्य लाभ उठाएं 🙏✨\n"
-        ]
-        return random.choice(cards)
-    return "🌟 [Life Changing Wisdom] 💫 10 Seconds that can change your mindset forever! Watch now ✨\n"
+    # ❌ REMOVED: YouTube policy violation — engagement trading ("1 Like = 1 Hajiri", "मनोकामना पूर्ण")
+    return ""
 
 def get_daily_panchang_nakshatra_sync():
     """🕉️ FEATURE: Daily Panchang & Nakshatra Micro-Sync — Captures Shubh Yoga & Nakshatra astrological search traffic."""
@@ -981,10 +954,8 @@ def get_ghost_cache_trigram_stems(niche="bhakti"):
     return ["mindset psychology growth habits", "stoic morning daily routine"]
 
 def get_neural_cowatch_graph_seeds(niche="bhakti"):
-    """🕸️ FEATURE: Neural Co-Watch Graph Seed Injector — Bridges YouTube Two-Tower co-watch clusters for Suggested placement."""
-    if niche == "bhakti":
-        return ["khatu shyam bhajan kanhaiya mittal", "lakhbir singh lakha shyam bhajan", "khatu shyam aarti live tseries bhakti sagar"]
-    return ["huberman lab focus mindset", "tim ferriss daily productivity habits"]
+    # ❌ REMOVED: YouTube policy violation — competitor tag hijacking (Kanhaiya Mittal, T-Series, etc.)
+    return []
 
 def get_indic_nlp_semantic_weight_tokens(niche="bhakti"):
     """🕉️ FEATURE: Indic NLP Devanagari Semantic Weight Booster — High-weight Devanagari ligatures for Google Indic NLP scoring."""
@@ -1696,40 +1667,8 @@ def get_or_create_long_playlist(yt, niche="bhakti"):
     return get_or_create_playlist(yt, title, niche)
 
 def boost_stagnant_long_video_seo(yt, vid, snip, stat, current_views, niche="bhakti"):
-    """🚀 FEATURE: Long & Live Replay Search SEO Re-Indexer — Revives stuck long videos and live replays."""
-    if current_views > 500:
-        return False
-    
-    title_curr = snip.get("title", "")
-    if "🔴" not in title_curr and "[सुनकर रो पड़ेंगे]" not in title_curr and "[चमत्कारिक]" not in title_curr:
-        if len(title_curr) <= 75:
-            new_title = f"🔴 {title_curr} | [सुनकर रो पड़ेंगे 😭] #KhatuShyam"
-            if len(new_title) <= 95:
-                snip["title"] = new_title
-    
-    long_search_tags = [
-        "khatu shyam live", "khatu shyam bhajan nonstop", "khatu shyam katha full",
-        "khatu shyam live stream 2026", "shyam bhajan full", "khatu shyam aarti",
-        "jai shree shyam live", "shyam baba ke bhajan", "khatu dham live today",
-        "sanwariya seth bhajan", "non stop shyam bhajan", "khatu shyam chamatkar"
-    ]
-    current_tags = snip.get("tags", [])
-    merged_tags = sanitize_tags(current_tags + long_search_tags, max_total_chars=400)
-    snip["tags"] = merged_tags
-    snip["categoryId"] = "22"
-    snip["defaultLanguage"] = "hi"
-    snip["defaultAudioLanguage"] = "hi"
-    
-    if "00:00" not in snip.get("description", ""):
-        key_moments = generate_key_moments_chapters(is_live=True, niche=niche)
-        snip["description"] = f"{snip.get('description', '')}\n\n{key_moments}"
-        
-    try:
-        yt.videos().update(part="snippet,status", body={"id": vid, "snippet": snip, "status": stat}).execute()
-        print(f"     🚀 [LONG/LIVE VIDEO REVIVAL ENGINE] Boosted SEO & Search Tags on {vid} ({current_views} views)")
-        return True
-    except Exception:
-        return False
+    # ❌ REMOVED: YouTube policy violation — false LIVE badge + clickbait ("[सुनकर रो पड़ेंगे 😭]")
+    return None
 
 def get_live_suggest_keywords(seed_query="khatu shyam"):
     """🔍 FEATURE: YouTube Live Suggest Autocomplete Harvester — Fetches real-time search queries."""
