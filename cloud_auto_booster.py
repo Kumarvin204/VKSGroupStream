@@ -78,7 +78,7 @@ VIRAL_TAGS_MOTIVATION = [
 ]
 
 POWER_HOOKS_BHAKTI = [
-    "बाबा श्याम का ऐसा अलौकिक रूप पहले कभी नहीं देखा 😭 1 लाइक श्याम के नाम 🙏 #Shorts #KhatuShyam #Viral",
+    "बाबा श्याम का ऐसा अलौकिक रूप पहले कभी नहीं देखा 😭 जय श्री श्याम 🙏 #Shorts #KhatuShyam #Viral",
     "देखते ही दिन बन जाएगा 🌸 खाटू श्याम जी का चमत्कारी दिव्य शृंगार दर्शन 🙏 #KhatuShyam #Shorts #Bhakti",
     "मोरपंखी मुकुट में बाबा श्याम का मनमोहक शृंगार 🌸 हारे के सहारे की जय 🙏 #Shorts #KhatuShyam #Trending",
     "जिसने भी सच्चे मन से दर्शन किए उसकी हर मनोकामना पूरी हुई 🌸 जय श्री श्याम 🙏 #Shorts #KhatuDham",
@@ -89,7 +89,7 @@ POWER_HOOKS_MOTIVATION = [
     "यह 10 सेकंड आपकी पूरी जिंदगी बदल देंगे 🌟 कभी हार मत मानो 💪 #Shorts #Motivation #LifeLessons",
     "ईश्वर का यह गुप्त संकेत कभी अनदेखा मत करना ✨ गीता सार 🌟 #Shorts #Motivation #PositiveVibes",
     "जब चारों तरफ अंधेरा दिखे तो यह बात हमेशा याद रखना 🌟 #Shorts #Success #Mindset #Trending",
-    "खाटू श्याम जी के दरबार में भक्तों का जनसैलाब 🌸 1 लाइक श्याम प्यारे के नाम 🙏 #KhatuShyam #Shorts",
+    "खाटू श्याम जी के दरबार में भक्तों का जनसैलाब 🌸 जय श्री श्याम 🙏 #KhatuShyam #Shorts",
     "काले पत्थर का सच्चा हीरा 😭 इस कहानी को सुनकर आपकी आँखें भर आएंगी 🌟 #Shorts #LifeChanging"
 ]
 
@@ -359,7 +359,7 @@ BHAKTI_L2 = [
 
 BHAKTI_L3 = [
     "🌸 देखते ही मन को असीम शांति मिले", "🌸 1 सेकंड निकालकर दर्शन ज़रूर करें", "🌸 सांवरे के दर्शन से संवर जाएगी जिंदगी", "🌸 जिसने सच्चे मन से दर्शन किए संकट दूर हुए", "🌸 आपके घर में सुख-समृद्धि और खुशहाली आए",
-    "🌸 जीवन का हर कष्ट व दुख दूर होगा", "🌸 1 लाइक श्याम प्यारे के नाम", "🌸 कमेंट में जय श्री श्याम लिखें", "🌸 यह दर्शन आपका पूरा दिन बना देगा", "🌸 सांवरे का आशीर्वाद हमेशा आपके साथ रहे",
+    "🌸 जीवन का हर कष्ट व दुख दूर होगा", "🌸 जय श्री श्याम", "🌸 कमेंट में जय श्री श्याम लिखें", "🌸 यह दर्शन आपका पूरा दिन बना देगा", "🌸 सांवरे का आशीर्वाद हमेशा आपके साथ रहे",
     "🌸 सच्चे दिल से जो भी मांगा सब मिला", "🌸 आज का दिन आपके लिए मंगलमय हो", "🌸 बाबा श्याम हर विपदा से रक्षा करें", "🌸 सांवरे की कृपा आप पर सदा बनी रहे", "🌸 घर-परिवार में खुशियों की बरसात हो",
     "🌸 मन की हर अधूरी मुराद पूरी होगी", "🌸 सच्चे मन से शीश झुकाएं और कृपा पाएं", "🌸 बाबा के पावन दर्शन से हर बिगड़ा काम बने", "🌸 कलयुग में केवल श्याम नाम ही सच्चा सहारा है", "🌸 हर भक्त की झोली खुशियों से भर जाए",
     "🌸 आज का यह अलौकिक रूप दिल छू लेगा", "🌸 बाबा की दिव्य मुस्कान से मन प्रफुल्लित हो जाए", "🌸 सांवरे की पावन छवि को निहारते रह जाएंगे", "🌸 1 शेयर करके पुण्य के भागी बनें", "🌸 बाबा का यह रूप आपकी हर चिंता हर लेगा",
@@ -440,23 +440,23 @@ def get_video_localizations(base_title, niche="bhakti", hindi_desc=""):
                 "description": hindi_desc if hindi_desc else "खाटू धाम राजस्थान से 24x7 पावन अमृतमयी कथा व भजन लाइव दर्शन।\n\n#KhatuShyam #JaiShreeShyam #KhatuDham"
             },
             "en-US": {
-                "title": "🔴 LIVE: Shyam... Calling Your Name With Tears 😭💔 Emotional Khatu Shyam Bhajan 2026",
+                "title": "Shyam... Calling Your Name With Tears 😭💔 Emotional Khatu Shyam Bhajan 2026",
                 "description": "Daily 24x7 live darshan, emotional bhajan and sacred katha from Khatu Dham Rajasthan. Seek blessings of Baba Shyam!\n\n#KhatuShyam #JaiShreeShyam #KhatuDham #LiveStream #ShyamBhajan"
             },
             "en-GB": {
-                "title": "🔴 LIVE: Shyam... Calling Your Name With Tears 😭💔 Emotional Khatu Shyam Bhajan 2026",
+                "title": "Shyam... Calling Your Name With Tears 😭💔 Emotional Khatu Shyam Bhajan 2026",
                 "description": "Daily 24x7 live darshan, emotional bhajan and sacred katha from Khatu Dham Rajasthan. Seek blessings of Baba Shyam!\n\n#KhatuShyam #JaiShreeShyam #KhatuDham #LiveStream #ShyamBhajan"
             },
             "en": {
-                "title": "🔴 LIVE: Shyam... Calling Your Name With Tears 😭💔 Emotional Khatu Shyam Bhajan 2026",
+                "title": "Shyam... Calling Your Name With Tears 😭💔 Emotional Khatu Shyam Bhajan 2026",
                 "description": "Daily 24x7 live darshan, emotional bhajan and sacred katha from Khatu Dham Rajasthan. Seek blessings of Baba Shyam!\n\n#KhatuShyam #JaiShreeShyam #KhatuDham #LiveStream #ShyamBhajan"
             },
             "gu": {
-                "title": "🔴 LIVE: શ્યામ... હવે રડતાં રડતાં તારું નામ લીધું છે 😭 દર્દભર્યું ખાટુ શ્યામ ભજન લાઈવ 2026",
+                "title": "શ્યામ... હવે રડતાં રડતાં તારું નામ લીધું છે 😭 દર્દભર્યું ખાટુ શ્યામ ભજન લાઈવ 2026",
                 "description": "ખાટુ ધામ રાજસ્થાન થી 24x7 લાઈવ શ્રી શ્યામ દર્શન અને અમૃતમય કથા ભજન. સબ્સ્ક્રાઇબ કરો અને આશીર્વાદ મેળવો!\n\n#KhatuShyam #JaiShreeShyam #LiveStream"
             },
             "mr": {
-                "title": "🔴 LIVE: श्याम... आता रडत रडत तुझे नाव घेतले आहे 😭 भावुक खाटू श्याम भजन लाईव्ह 2026",
+                "title": "श्याम... आता रडत रडत तुझे नाव घेतले आहे 😭 भावुक खाटू श्याम भजन लाईव्ह 2026",
                 "description": "खाटू धाम राजस्थान येथून 24x7 थेट खाटू श्याम दर्शन आणि भावुक भजन. सबस्क्राईब करा व आशीर्वाद मिळवा!\n\n#KhatuShyam #JaiShreeShyam #Live"
             }
         }
@@ -753,7 +753,7 @@ def get_social_preview_card_header(niche="bhakti", raw_title=""):
         cards = [
             "🦚 [बाबा श्याम का दिव्य पावन दर्शन] 🌸 आज का विशेष आशीर्वाद: 10 सेकंड में मनोकामना पूर्ण हो 🙏 | हाथ जोड़कर दर्शन करें ✨\n",
             "🌸 [हारे का सहारा बाबा श्याम] 💫 आज की पावन कथा व शृंगार: जो सच्चे मन से देखेगा उसके सब संकट दूर होंगे 🙏\n",
-            "🦚 [शीश के दानी का अलौकिक रूप] 🌟 1 लाइक = 1 हाजिरी बाबा के चरणों में | पावन दर्शन का पुण्य लाभ उठाएं 🙏✨\n"
+            "🦚 [शीश के दानी का अलौकिक रूप] 🌟 जय श्री श्याम बाबा के चरणों में | पावन दर्शन का पुण्य लाभ उठाएं 🙏✨\n"
         ]
         return random.choice(cards)
     return "🌟 [Life Changing Wisdom] 💫 10 Seconds that can change your mindset forever! Watch now ✨\n"
@@ -1374,7 +1374,7 @@ def generate_unique_vod_package(vid, exact_hours, existing_titles=None, niche="b
     selected_title = ""
     
     for theme in THEMES_VOD_BHAKTI:
-        candidate_title = f"🔴 LIVE: {theme['title_hook']} {exact_hours} {theme['title_tail']}"[:95]
+        candidate_title = f"{theme['title_hook']} {exact_hours} {theme['title_tail']}"[:95]
         if candidate_title not in existing_titles:
             selected_theme = theme
             selected_title = candidate_title
@@ -1387,7 +1387,7 @@ def generate_unique_vod_package(vid, exact_hours, existing_titles=None, niche="b
         except Exception:
             pick_idx = 0
         selected_theme = THEMES_VOD_BHAKTI[pick_idx]
-        selected_title = f"🔴 LIVE: {selected_theme['title_hook']} {exact_hours} {selected_theme['title_tail']} | #{vid[-4:]}"[:95]
+        selected_title = f"{selected_theme['title_hook']} {exact_hours} {selected_theme['title_tail']} | #{vid[-4:]}"[:95]
 
     # Generate matching 100% unique description
     t = selected_theme
@@ -1408,10 +1408,7 @@ def generate_unique_vod_package(vid, exact_hours, existing_titles=None, niche="b
 ⏱️ Key Moments & पावन दर्शन प्रवाह (Chapters):
 {chapters_str}
 
-🔍 Your Queries / Search Topics Covered:
-{keywords_str}
-- nandini vinod soni
-- khatu shyam live
+
 
 🎯 [10,000 पावन श्याम परिवार संकल्प]: 92% भक्त रोज़ दर्शन तो करते हैं लेकिन सब्सक्राइब करना भूल जाते हैं — आज ही SUBSCRIBE करके बाबा के 10K परिवार का पावन हिस्सा बनें! 🙏🌸
 
@@ -2027,7 +2024,9 @@ def run_cloud_cycle():
                         try:
                             yt.videos().update(part="snippet,status", body={"id": vid, "snippet": snip, "status": stat}).execute()
                             celebration_msg = f"🎉 आज {current_views}+ श्याम भक्तों ने पावन दर्शन किए! अपनी मनोकामना कमेंट में लिखकर 'जय श्री श्याम' ज़रूर बोलें! 🌸🙏" if niche == "bhakti" else f"🔥 {current_views}+ लोगों ने यह सीख देखी! आप भी कमेंट में अपना विचार ज़रूर साझा करें! 💫"
-                            safe_comment_insert(yt, vid, celebration_msg, state=state, action_name="Milestone Celebration Comment")
+                            # ❌ REMOVED: YouTube policy violation
+
+                            # safe_comment_insert(yt, vid, celebration_msg, state=state, action_name="Milestone Celebration Comment")
                         except Exception:
                             pass
 
@@ -2076,10 +2075,12 @@ def run_cloud_cycle():
                             
                             if any(w in c_text for w in devotee_words) or len(c_text.strip()) > 3:
                                 reply_text = "❤️ बाबा श्याम आपकी हर सच्ची मनोकामना व अर्जी स्वीकार करें! 🌸🙏 जय श्री श्याम!" if niche == "bhakti" else "❤️ ईश्वर आप पर सदैव कृपा बनाए रखें और जीवन में सफलता दें! 💫🌟"
-                                yt.comments().insert(
-                                    part="snippet",
-                                    body={"snippet": {"parentId": c_id, "textOriginal": reply_text}}
-                                ).execute()
+                                # ❌ REMOVED: YouTube policy violation
+
+                                # yt.comments().insert(
+#                                     part="snippet",
+#                                     body={"snippet": {"parentId": c_id, "textOriginal": reply_text}}
+#                                 ).execute()
                                 replied_comments.append(c_id)
                                 print(f"     ❤️ [CLOUD GENUINE DEVOTEE REPLY SENT] to {c_snippet.get('authorDisplayName', 'Public User')} on {vid}")
                                 break
@@ -2136,7 +2137,9 @@ def run_cloud_cycle():
                 if comments_cnt == 0:
                     pin_msg = "👑 बाबा श्याम के पावन स्वरूप: 1. लखदातार 2. शीश के दानी 3. हारे के सहारे — अपनी मनोकामना कमेंट में लिखकर 'जय श्री श्याम' ज़रूर बोलें! (अंतिम 3 सेकंड में मोरपंख ध्यान से देखें 🦚✨)" if niche == "bhakti" else "🌟 जिंदगी में आगे बढ़ने का आपका #1 नियम क्या है: 1. कभी हार न मानना 2. खुद पर भरोसा 3. ईश्वर का साथ? कमेंट में लिखें! (अंतिम सीख दोबारा सुनें 💫)"
                     try:
-                        safe_comment_insert(yt, vid, pin_msg, state=state, action_name="Auto-Pinned Comment")
+                        # ❌ REMOVED: YouTube policy violation
+
+                        # safe_comment_insert(yt, vid, pin_msg, state=state, action_name="Auto-Pinned Comment")
                         print(f"     📌 [CLOUD AUTO-PINNED COMMENT POSTED] on {vid}")
                     except Exception:
                         pass
