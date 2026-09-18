@@ -79,7 +79,7 @@ VIRAL_TAGS_MOTIVATION = [
 
 POWER_HOOKS_BHAKTI = [
     "बाबा श्याम का ऐसा अलौकिक रूप पहले कभी नहीं देखा 😭 जय श्री श्याम 🙏 #Shorts #KhatuShyam #Viral",
-    "देखते ही दिन बन जाएगा 🌸 खाटू श्याम जी का चमत्कारी दिव्य शृंगार दर्शन 🙏 #KhatuShyam #Shorts #Bhakti",
+    "देखते ही दिन बन जाएगा 🌸 खाटू श्याम जी का अलौकिक दिव्य शृंगार दर्शन 🙏 #KhatuShyam #Shorts #Bhakti",
     "मोरपंखी मुकुट में बाबा श्याम का मनमोहक शृंगार 🌸 हारे के सहारे की जय 🙏 #Shorts #KhatuShyam #Trending",
     "जिसने भी सच्चे मन से दर्शन किए उसकी हर मनोकामना पूरी हुई 🌸 जय श्री श्याम 🙏 #Shorts #KhatuDham",
     "हारे के सहारे बाबा श्याम हमारे 🌸 1 सेकंड निकालकर दर्शन ज़रूर करें 🙏 #Shorts #KhatuShyam #ViralShorts"
@@ -234,43 +234,9 @@ def session_duration_maximizer(yt, current_vid, niche="bhakti"):
         pass
 
 def smart_comment_traffic_funnel(yt, hot_vid, hot_views, niche, state):
-    """🌊 FEATURE: Smart Comment Traffic Funnel — 1-Unit Scanner (99% Quota Saved)."""
-    try:
-        if hot_views < 5000:
-            return
-        
-        funnel_key = f"funnel_{hot_vid}"
-        if state.get(funnel_key):
-            return
+    # ❌ DISABLED per YouTube API & Spam Guidelines (Automated Link Injection Prohibited)
+    return None
 
-        ch_resp = yt.channels().list(part="contentDetails", mine=True).execute()
-        uploads_id = ch_resp["items"][0]["contentDetails"]["relatedPlaylists"]["uploads"]
-        pl_resp = yt.playlistItems().list(part="snippet", playlistId=uploads_id, maxResults=10).execute()
-
-        target_vid = None
-        for item in pl_resp.get("items", []):
-            vid_id = item["snippet"]["resourceId"].get("videoId")
-            if vid_id and vid_id != hot_vid:
-                prev = state.get(vid_id, {})
-                v_views = prev.get("views", 0)
-                if v_views < hot_views // 5:
-                    target_vid = vid_id
-                    break
-
-        if target_vid:
-            if niche == "bhakti":
-                funnel_comment = f"🌸 बाबा श्याम का और भी अलौकिक दर्शन यहाँ देखें 👉 https://www.youtube.com/shorts/{target_vid} 🙏 जय श्री श्याम!"
-            else:
-                funnel_comment = f"✨ एक और जीवन बदलने वाली सीख यहाँ देखें 👉 https://www.youtube.com/shorts/{target_vid} 💫"
-
-            yt.commentThreads().insert(
-                part="snippet",
-                body={"snippet": {"videoId": hot_vid, "topLevelComment": {"snippet": {"textOriginal": funnel_comment}}}}
-            ).execute()
-            state[funnel_key] = True
-            print(f"     🌊 [TRAFFIC FUNNEL] Routed viewers from {hot_vid} ({hot_views} views) → {target_vid}")
-    except Exception:
-        pass
 
 def competitor_spy_tag_hijacker(yt=None, niche="bhakti", state=None):
     """🕵️ FEATURE: Competitor Spy & Tag Hijacker — 100% Zero-Quota Public Suggest Harvester (0 Units Cost)."""
@@ -342,26 +308,26 @@ BHAKTI_L1 = [
     "हारे के सहारे", "कलयुग के देव", "मोरछड़ी वाले सांवरे", "श्याम बिहारी", "खाटू धाम वाले सांवरिया",
     "तीन बाण धारी", "सेठों के सेठ", "मण्डफिया वाले साँवरिया सेठ", "सांवरे सरकार", "भक्तों के रखवाले बाबा श्याम",
     "श्री खाटू वाले श्याम", "दीनदयाल बाबा श्याम", "कृपानिधान सांवरे", "अमृतमयी बाबा श्याम", "परम दयालु खाटू नरेश",
-    "मनोकामना पूर्ण कर्ता श्याम", "संकटमोचन बाबा श्याम", "सर्वशक्तिमान खाटू नरेश", "कल्याणकारी सांवरे", "भक्तवत्सल श्याम बाबा",
+    "कृपानिधान बाबा श्याम", "संकटमोचन बाबा श्याम", "सर्वशक्तिमान खाटू नरेश", "कल्याणकारी सांवरे", "भक्तवत्सल श्याम बाबा",
     "आनंददाता बाबा श्याम", "अलौकिक खाटू नरेश", "भव्य रूप धारी सांवरे", "तेजस्वी बाबा श्याम", "महिमावान खाटू धाम सरकार",
     "श्याम धणी", "सच्चे दरबार वाले श्याम", "सांवरिया प्यारे", "दीनों के नाथ", "अद्भुत रूप धारी श्याम",
-    "नीले घोड़े वाले बाबा", "स्वर्ण मुकुट धारी सांवरे", "पावन खाटू नरेश", "चमत्कारी बाबा श्याम", "अनंत कृपालु सांवरे"
+    "नीले घोड़े वाले बाबा", "स्वर्ण मुकुट धारी सांवरे", "पावन खाटू नरेश", "दयालु बाबा श्याम", "अनंत कृपालु सांवरे"
 ]
 
 BHAKTI_L2 = [
     "का दिव्य अलौकिक शृंगार दर्शन", "का प्रातः मंगल दर्शन", "की जगमगाती पावन संध्या आरती", "का मनमोहक मोरपंखी रूप", "का लाल गुलाब शृंगार दर्शन",
-    "का भव्य स्वर्ण मुकुट शृंगार", "का चमत्कारी पावन दरबार", "का मनभावन चमेली पुष्प शृंगार", "का अलौकिक राजसी स्वरूप", "के मनमोहक नैना व दिव्य दर्शन",
+    "का भव्य स्वर्ण मुकुट शृंगार", "का मनमोहक पावन दरबार", "का मनभावन चमेली पुष्प शृंगार", "का अलौकिक राजसी स्वरूप", "के मनमोहक नैना व दिव्य दर्शन",
     "का अद्भुत पंचामृत अभिषेक दर्शन", "की भव्य मंगला आरती", "का नयनाभिराम शृंगार दर्शन", "का पावन दिव्य शृंगार रूप", "की प्रातःकालीन दिव्य ज्योत आरती",
     "का पुष्प वर्षा शृंगार दर्शन", "का पावन व अलौकिक दरबार", "का तेजस्वी स्वर्ण शृंगार दर्शन", "की महाआरती व दिव्य दर्शन", "का मनमोहक इत्र सेवा शृंगार",
     "का पावन शीश दर्शन", "का मनोरम गुलाब व गेंदा शृंगार", "का अनुपम दिव्य स्वरूप", "का स्वर्णिम छत्र शृंगार", "का पावन अमृतमय दर्शन",
-    "का दिव्य छप्पन भोग दर्शन", "का अद्भुत व चमत्कारी रूप", "का मनभावन प्रातः शृंगार", "की पावन संध्या शयन आरती", "का मनमोहक शृंगार व दर्शन"
+    "का दिव्य छप्पन भोग दर्शन", "का अद्भुत व अलौकिक रूप", "का मनभावन प्रातः शृंगार", "की पावन संध्या शयन आरती", "का मनमोहक शृंगार व दर्शन"
 ]
 
 BHAKTI_L3 = [
-    "🌸 देखते ही मन को असीम शांति मिले", "🌸 1 सेकंड निकालकर दर्शन ज़रूर करें", "🌸 सांवरे के दर्शन से संवर जाएगी जिंदगी", "🌸 जिसने सच्चे मन से दर्शन किए संकट दूर हुए", "🌸 आपके घर में सुख-समृद्धि और खुशहाली आए",
+    "🌸 देखते ही मन को असीम शांति मिले", "🌸 1 सेकंड निकालकर दर्शन ज़रूर करें", "🌸 सांवरे के दर्शन से संवर जाएगी जिंदगी", "🌸 सच्चे मन से दर्शन कर पुण्य लाभ प्राप्त करें", "🌸 आपके घर में सुख-समृद्धि और खुशहाली आए",
     "🌸 जीवन का हर कष्ट व दुख दूर होगा", "🌸 जय श्री श्याम", "🌸 कमेंट में जय श्री श्याम लिखें", "🌸 यह दर्शन आपका पूरा दिन बना देगा", "🌸 सांवरे का आशीर्वाद हमेशा आपके साथ रहे",
     "🌸 सच्चे दिल से जो भी मांगा सब मिला", "🌸 आज का दिन आपके लिए मंगलमय हो", "🌸 बाबा श्याम हर विपदा से रक्षा करें", "🌸 सांवरे की कृपा आप पर सदा बनी रहे", "🌸 घर-परिवार में खुशियों की बरसात हो",
-    "🌸 मन की हर अधूरी मुराद पूरी होगी", "🌸 सच्चे मन से शीश झुकाएं और कृपा पाएं", "🌸 बाबा के पावन दर्शन से हर बिगड़ा काम बने", "🌸 कलयुग में केवल श्याम नाम ही सच्चा सहारा है", "🌸 हर भक्त की झोली खुशियों से भर जाए",
+    "🌸 बाबा का आशीर्वाद सदा आपके साथ रहे", "🌸 सच्चे मन से शीश झुकाएं और कृपा पाएं", "🌸 बाबा के पावन दर्शन से हर बिगड़ा काम बने", "🌸 कलयुग में केवल श्याम नाम ही सच्चा सहारा है", "🌸 हर भक्त की झोली खुशियों से भर जाए",
     "🌸 आज का यह अलौकिक रूप दिल छू लेगा", "🌸 बाबा की दिव्य मुस्कान से मन प्रफुल्लित हो जाए", "🌸 सांवरे की पावन छवि को निहारते रह जाएंगे", "🌸 1 शेयर करके पुण्य के भागी बनें", "🌸 बाबा का यह रूप आपकी हर चिंता हर लेगा",
     "🌸 श्याम कृपा से हर अंधेरा दूर होगा", "🌸 सांवरे के चरणों में ही सच्चा सुख है", "🌸 मन में सच्चा विश्वास रखो सब अच्छा होगा", "🌸 बाबा श्याम की महिमा सबसे निराली है", "🌸 श्याम नाम लेने से ही बेड़ा पार हो जाए"
 ]
@@ -518,7 +484,7 @@ def get_panchang_festival_boost():
         fest_title_prefix = "एकादशी विशेष 🌸 [अलौकिक] "
         extra_tags.extend(["khatu shyam ekadashi darshan", "gyas khatu shyam", "ekadashi bhajan live", "khatu dham ekadashi"])
     elif weekday == 5:
-        fest_title_prefix = "शनिवार विशेष 🌸 [चमत्कारिक] "
+        fest_title_prefix = "शनिवार विशेष 🌸 [अलौकिक] "
         extra_tags.extend(["shanivar khatu shyam darshan", "shani shyam darshan", "shanivar live darshan"])
     elif weekday == 6:
         fest_title_prefix = "रविवार पावन 🌸 [दिव्य दर्शन] "
@@ -636,7 +602,7 @@ def competitor_suggested_video_hijacker(yt=None, niche="bhakti", state=None):
     suggested_tags = []
     try:
         seed_queries = [
-            "khatu shyam viral bhajan", "khatu shyam trending status", "khatu shyam chamatkar video",
+            "khatu shyam viral bhajan", "khatu shyam trending status", "khatu shyam aarti video",
             "shyam baba live kirtan", "khatu dham darshan live"
         ] if niche == "bhakti" else ["motivational shorts viral", "life lessons trending", "geeta updesh hindi"]
         
@@ -660,28 +626,8 @@ def competitor_suggested_video_hijacker(yt=None, niche="bhakti", state=None):
 
     return suggested_tags[:6]
 def live_chat_prayer_sentiment_responder(yt, live_chat_id):
-    """💬 FEATURE: Live Chat Sentiment & Prayer Loyalty Engine — Posts dynamic blessings to maximize Live Chat Velocity."""
-    if not live_chat_id:
-        return
-    blessings = [
-        "🌸 जय श्री श्याम! जो भी भक्त सच्ची श्रद्धा से बाबा के चरणों में शीश नवाते हैं, उनके सभी कष्ट दूर होते हैं! 🙏",
-        "🦚 हारे का सहारा, बाबा श्याम हमारा! कमेंट/चैट में 'जय श्री श्याम' लिखकर अपनी हाजिरी लगाएं! ✨",
-        "💫 ॐ श्री श्याम देवाय नमः! बाबा श्याम आपके परिवार पर सदा सुख-शांति व समृद्धि की वर्षा करें! 🌸"
-    ]
-    try:
-        yt.liveChatMessages().insert(
-            part="snippet",
-            body={
-                "snippet": {
-                    "liveChatId": live_chat_id,
-                    "type": "textMessageEvent",
-                    "textMessageDetails": {"messageText": random.choice(blessings)}
-                }
-            }
-        ).execute()
-        print(f"     💬 [LIVE CHAT PRAYER BOT] Live prayer message broadcasted to active chat!")
-    except Exception:
-        pass
+    # ❌ DISABLED per YouTube API Policy (Automated Live Chat Bots Prohibited)
+    return None
 
 
 def get_shorts_remix_bait_metadata(niche="bhakti"):
@@ -707,13 +653,12 @@ def get_geographic_devotee_surge_tags(niche="bhakti"):
     elif 18 <= hour <= 21:
         return ["sandhya aarti khatu shyam live", "up bihar shyam bhajan"]
     else:
-        return ["khatu shyam darshan usa nri", "global devotee shyam live"]
+        return ["khatu dham nitya darshan", "baba shyam aarti live"]
 
 def get_golden_timestamp_deep_link(niche="bhakti"):
-    """⏱️ FEATURE: Golden Timestamp Deep-Link Magnet — Injects direct miracle time-anchor to 1-hour katha."""
-    if niche == "bhakti":
-        return "✨ पावन अमर कथा का सबसे चमत्कारी प्रसंग (14:20 मिनट से देखें): https://www.youtube.com/watch?v=M2cMgrvelqk&t=860s 🙏"
-    return "✨ Watch the Life Changing Climax (05:10 mins): https://www.youtube.com/watch?v=FvM23bYgeWI&t=310s 🌟"
+    # ❌ DISABLED per YouTube Misleading Metadata Policy (No deceptive linking or fake timestamps)
+    return ""
+
 
 def generate_community_tab_viral_polls(niche="bhakti"):
     """📊 FEATURE: Community Tab Viral Poll Engine — Prepares high-converting viral voting polls."""
@@ -763,10 +708,9 @@ def get_devotee_subscriber_loyalty_hook(niche="bhakti"):
     return "🌟 If you want daily life-changing wisdom, SUBSCRIBE and hit the 🔔 icon now! 💪"
 
 def get_emotional_crescendo_comment_trigger(niche="bhakti"):
-    """😭 FEATURE: Emotional Crescendo Comment Trigger — Maximizes comment velocity at emotional high points."""
     if niche == "bhakti":
-        return "👉 00:15 सेकंड पर जब बाबा के नयनों की दिव्य चमक दिखे, तो कमेंट में 'जय श्री श्याम' लिखकर अपनी हाजिरी ज़रूर लगाएं! 🌸🙏"
-    return "👉 Note down the insight at 00:15 and share your honest thoughts in the comments below! 🌟"
+        return "🌸 बाबा श्याम के पावन स्वरूप का श्रद्धापूर्वक दर्शन करें और प्रभु के चरणों में अपना नमन समर्पित करें 🙏"
+    return "🌟 Watch mindfully and reflect on this insight in your daily routine! 💫"
 
 
 def get_festival_prewarm_keywords(niche="bhakti"):
@@ -789,13 +733,13 @@ def get_three_way_search_intent_blocks(niche="bhakti"):
         return """🎯 3-Way Devotional Search Intent:
 • पावन अर्जी व मनोकामना: सच्चे मन से 'जय श्री श्याम' लिखकर अपनी मनोकामना का स्मरण करें 🙏
 • प्रातः दिव्य शृंगार दर्शन: मंगला व शृंगार दर्शन से दिन मंगलमय बनाएं 🦚
-• सत्य अमर कथा व लीला: बाबा के अलौकिक चमत्कारों का पुण्य श्रवण करें ✨"""
+• सत्य अमर कथा व लीला: बाबा श्याम की पावन महिमा व अमृत लीला का श्रवण करें ✨"""
     return """🎯 3-Way Intent: Daily Motivation, Success Lessons & Mindset Transformation 🌟"""
 
 def get_cliffhanger_retention_anchors(niche="bhakti"):
     """⏱️ FEATURE: Zero-Drop Cliffhanger Retention Anchor — Maximizes long video watch-time to 90%+."""
     if niche == "bhakti":
-        return "👉 08:45 मिनट पर वह पावन प्रसंग हुआ जिसकी किसी ने कल्पना नहीं की थी... (अलौकिक चमत्कार अवश्य देखें ✨)"
+        return "👉 08:45 मिनट पर वह पावन प्रसंग हुआ जिसकी किसी ने कल्पना नहीं की थी... (पावन प्रसंग अवश्य देखें ✨)"
     return "👉 Note down the breakthrough realization at 04:30 mins! 🌟"
 
 def get_infinite_loop_boundary_smoother(niche="bhakti"):
@@ -825,7 +769,7 @@ def get_live_stream_pulse_resync_description(active_live_id, niche="bhakti"):
         status = "संध्या आरती व पावन संकीर्तन LIVE 🌸"
     else:
         status = "24x7 पावन भावुक व अमृतमयी कथा व भजन LIVE 🌸"
-    return f"🔴 LIVE NOW [{now_ist.strftime('%I:%M %p')} IST]: {status}\n🔗 Watch Live: https://www.youtube.com/watch?v={active_live_id}\n\n"
+    return f"🔴 LIVE STREAM [{now_ist.strftime('%I:%M %p')} IST]: {status}\n🔗 Watch Live: https://www.youtube.com/watch?v={active_live_id}\n\n"
 
 def get_nitya_niyam_habit_prompt(niche="bhakti"):
     """📿 FEATURE: Daily Nitya-Niyam Habit Former — Builds repeat daily morning search & view habit."""
@@ -923,10 +867,9 @@ def get_realtime_10k_family_goal_banner(sub_count=5821, niche="bhakti"):
     return f"🎯 [10,000 Family Milestone]: Just {remaining} members left to reach our 10K goal — Subscribe now! 🌟\n"
 
 def get_cross_deity_bridge_tags(niche="bhakti"):
-    """🛕 FEATURE: Cross-Deity Devotee Bridge Syndicate — Bridges Salasar Balaji, Banke Bihari & Radha Krishna devotee search traffic."""
-    if niche == "bhakti":
-        return ["khatu shyam salasar balaji darshan", "banke bihari khatu shyam bhajan", "radha krishna shyam bhajan", "mehandipur balaji khatu dham"]
-    return ["stoic wisdom bhagavad gita mindset", "deep work focus psychology"]
+    # ❌ DISABLED per YouTube Misleading Metadata Policy (No unrelated deity tags)
+    return []
+
 
 def get_community_visual_quiz_metadata(niche="bhakti"):
     """🖼️ FEATURE: Community Tab Visual Quiz & Shringar Syndicate — Formats weekly image quiz for 50k+ non-video impressions."""
@@ -942,15 +885,14 @@ def get_community_visual_quiz_metadata(niche="bhakti"):
 
 
 def get_12sec_comment_apv_multiplier_prompt(niche="bhakti"):
-    """⏱️ FEATURE: 12-Second Comment-Typing APV Multiplier — Generates 10-12s typing prompt for >250% APV loops."""
-    if niche == "bhakti":
-        return "🌸 [पावन हाजिरी संकल्प]: आप भारत के किस पावन शहर / गाँव से बाबा श्याम के दर्शन कर रहे हैं? कमेंट में अपने शहर का नाम लिखकर हाजिरी लगाएं 🙏✨ (हाजिरी स्वीकार होगी 🦚)"
-    return "💡 [City Wisdom Challenge]: Which city are you watching from? Comment below with your 1 actionable insight for today! 🌟"
+    # ❌ DISABLED per YouTube Fake Engagement Policy (No comment solicitation games)
+    return ""
+
 
 def get_ghost_cache_trigram_stems(niche="bhakti"):
     """🔍 FEATURE: Predictive Search Ghost-Cache Tri-Gram Inserter — Pre-caches YouTube search auto-complete dropdowns."""
     if niche == "bhakti":
-        return ["खाटू श्याम का लाइव दर्शन", "आज का पावन शृंगार दर्शन", "बाबा श्याम के चमत्कार प्रसंग", "खाटू धाम आरती लाइव 2026"]
+        return ["खाटू श्याम का लाइव दर्शन", "आज का पावन शृंगार दर्शन", "बाबा श्याम के पावन अमृत भजन", "खाटू धाम आरती लाइव 2026"]
     return ["mindset psychology growth habits", "stoic morning daily routine"]
 
 def get_neural_cowatch_graph_seeds(niche="bhakti"):
@@ -960,7 +902,7 @@ def get_neural_cowatch_graph_seeds(niche="bhakti"):
 def get_indic_nlp_semantic_weight_tokens(niche="bhakti"):
     """🕉️ FEATURE: Indic NLP Devanagari Semantic Weight Booster — High-weight Devanagari ligatures for Google Indic NLP scoring."""
     if niche == "bhakti":
-        return "अलौकिक पावन शृंगार दर्शन 🌸 अमृतमयी अमर सत्य कथा 🦚 मनोकामना सिद्धि पावन संकल्प 🙏 संकटमोचन महा-आशीर्वाद ✨"
+        return "अलौकिक पावन शृंगार दर्शन 🌸 अमृतमयी अमर सत्य कथा 🦚 पावन भक्ति संकल्प 🙏 संकटमोचन महा-आशीर्वाद ✨"
     return "Self Mastery & Focus Psychology 🌟 Unstoppable Daily Habits 💡"
 
 def get_push_notification_resurrection_anchor(niche="bhakti"):
@@ -1075,18 +1017,12 @@ def safe_video_update(yt, vid, snip, stat, localizations=None, state=None, actio
         print(f"     ⚠️ Video update error on {vid}: {e}")
         return False
 
-def safe_comment_insert(yt, vid, comment_text, state=None, action_name="Comment"):
-    """Safely inserts comment thread only if quota governor approves."""
-    if state is not None and not can_spend_quota(50, "WRITE", state):
-        return False
-    try:
-        yt.commentThreads().insert(
-            part="snippet",
-            body={"snippet": {"videoId": vid, "topLevelComment": {"snippet": {"textOriginal": comment_text}}}}
-        ).execute()
-        return True
-    except Exception as e:
-        return False
+def safe_comment_disabled(yt=None, vid=None, comment_text="", state=None, action_name="Comment"):
+    # ❌ DISABLED per YouTube API & Community Guidelines (Automated Bot Comments Prohibited)
+    return False
+
+safe_comment_insert = safe_comment_disabled
+
 
 def safe_playlist_item_insert(yt, playlist_id, vid, position=0, state=None, action_name="Playlist Item"):
     """Safely inserts video into playlist only if quota governor approves."""
@@ -1126,7 +1062,7 @@ THEMES_VOD_BHAKTI = [
             "00:00 - 🔴 पावन मंगला शुरुआत व भावुक दर्शन",
             "30:00 - 😭 रोते-रोते पुकारा तो दौड़े आए बाबा श्याम (भावुक प्रसंग)",
             "01:15:00 - 🌸 हारे का सहारा बाबा श्याम हमारा (अमृतमयी भजन)",
-            "02:30:00 - 📿 महा-चमत्कारी अर्जी व संकट निवारण मंत्र जाप",
+            "02:30:00 - 📿 पावन अर्जी व संकट निवारण मंत्र जाप",
             "03:45:00 - 🦚 सेठ करमसी की अमर सत्य कथा व साक्षात दर्शन",
             "04:45:00 - 🌺 शयन आरती व अखंड पावन आशीर्वाद",
             "05:30:00 - 🦚 सम्पूर्ण दर्शन महा-आरती व पावन मंगल कामना"
@@ -1149,7 +1085,7 @@ THEMES_VOD_BHAKTI = [
         "arji_prompt": "कमेंट में 'ॐ श्री श्याम देवाय नमः' लिखकर अपनी मनोकामना व्यक्त करें, बाबा कृपा करेंगे।",
         "chapters": [
             "00:00 - ✨ अलौकिक प्रातः शृंगार व पुष्प दर्शन",
-            "30:00 - 🦚 बिगड़ी किस्मत संवारने वाले चमत्कारी भजन",
+            "30:00 - 🦚 पावन भावुक अमृतमयी श्याम भजन",
             "01:15:00 - 🌸 सांवरिया सेठ की अमृतमयी कृपा धारा",
             "02:30:00 - 📿 सुख-समृद्धि व सौभाग्य प्राप्ति जाप",
             "03:45:00 - 🌺 खाटू नरेश की पावन अमृत लीला",
@@ -1157,25 +1093,25 @@ THEMES_VOD_BHAKTI = [
             "05:30:00 - 🦚 नित्य मंगल कामना व पावन दर्शन"
         ],
         "keywords": [
-            "sunte hi badal jayegi kismat", "khatu shyam chamatkar", "alaukik shyam darshan",
+            "sunte hi badal jayegi kismat", "khatu shyam live darshan", "alaukik shyam darshan",
             "khatu shyam live stream", "khatu shyam new bhajan 2026", "shyam darshan live",
             "khatu naresh bhajan", "किस्मत बदलने वाला भजन", "खाटू श्याम दर्शन", "अलौकिक भजन"
         ]
     },
     {
         "id": 2,
-        "title_hook": "आज घर में चलाकर छोड़ दें, सारे कष्ट कटेंगे 🙏",
-        "title_tail": "घंटे का महा-चमत्कारी श्याम भजन",
+        "title_hook": "घर में शांति व सकारात्मक ऊर्जा के लिए 🌸",
+        "title_tail": "घंटे का अमृतमयी पावन श्याम भजन",
         "poetry": """जिस घर में गूंजे बाबा श्याम का पावन नाम,
 उस घर में कभी न आए कोई संकट या क्लेश का काम। 📿🙏
-सुख, शांति और बरकत की होगी सदा बौछार,
+सुख, शांति और खुशियों की होगी सदा बौछार,
 जब साक्षात कृपा करेंगे हमारे लखदातार। 🌸""",
-        "reflection": "घर और दुकान में नकारात्मक ऊर्जा दूर करने, सुख-शांति व कर्ज मुक्ति के लिए इस महा-चमत्कारी भजन प्रवाह को चलाकर छोड़ दें। बाबा की कृपा से घर में बरकत और शांति का वास होगा।",
+        "reflection": "घर और परिवार में शांति, सद्भाव और सकारात्मक ऊर्जा के संचार के लिए इस अमृतमयी भजन प्रवाह का श्रद्धापूर्वक श्रवण करें। बाबा की कृपा से घर में सुख और शांति का वास होगा।",
         "arji_prompt": "अपने घर में सुख-शांति की कामना के साथ कमेंट में 'जय लखदातार की' लिखें।",
         "chapters": [
             "00:00 - 📿 घर-दुकान संकट निवारण पावन मंगला",
-            "30:00 - 🌸 सुख, शांति व बरकत प्रदाता श्याम भजन",
-            "01:15:00 - 🦚 कर्ज मुक्ति व व्यापार वृद्धि महामंत्र",
+            "30:00 - 🌸 सुख, शांति व खुशहाली प्रदाता श्याम भजन",
+            "01:15:00 - 🦚 सुख, शांति व सद्भाव महामंत्र",
             "02:30:00 - 🌺 नकारात्मक ऊर्जा नाशक अमृतवाणी",
             "03:45:00 - 🕯️ पावन भोग आरती व संकटमोचन दर्शन",
             "04:45:00 - 📿 शांति व समृद्धि पावन आशीर्वाद",
@@ -1183,8 +1119,8 @@ THEMES_VOD_BHAKTI = [
         ],
         "keywords": [
             "aaj ghar me chalakar chhod de", "sare kasht katenge", "sukh shanti shyam bhajan",
-            "karj mukti shyam mantra", "khatu shyam live", "barkat shyam bhajan",
-            "khatu dham live today", "घर में सुख शांति भजन", "सारे कष्ट दूर होंगे", "महा चमत्कारी भजन"
+            "shyam shanti mantra", "khatu shyam live", "shyam amrit bhajan",
+            "khatu dham live today", "घर में सुख शांति भजन", "सुख शांति भजन", "अमृतमयी भजन"
         ]
     },
     {
@@ -1196,7 +1132,7 @@ THEMES_VOD_BHAKTI = [
 दुनिया के झूठे वादों से जब थक जाए मन,
 बाबा के चरणों में पा लो जीवन का हर धन। 🌸""",
         "reflection": "रिश्ते-नाते जब मुँह मोड़ लें और अकेलापन सताए, तब एक बार हारे के सहारे श्याम प्यारे को सच्चे मन से याद करें। बाबा अपने भक्त का हाथ कभी नहीं छोड़ते।",
-        "arji_prompt": "कमेंट में सच्चे दिल से 'हारे का सहारा बाबा श्याम हमारा' लिखकर हाजिरी लगाएं।",
+        "arji_prompt": "कमेंट में सच्चे दिल से 'हारे का सहारा बाबा श्याम हमारा' लिखकर प्रभु चरणों में नमन करें।",
         "chapters": [
             "00:00 - 😭 भावुक हृदय पुकार व पावन शुरुआत",
             "30:00 - 🦚 जब दुनिया साथ छोड़ दे (अमृतमयी संकीर्तन)",
@@ -1226,7 +1162,7 @@ THEMES_VOD_BHAKTI = [
             "00:00 - 📿 पावन अर्जी संकल्प व मंगला दर्शन",
             "30:00 - 🌸 संकटमोचन श्याम भजन अमृत धारा",
             "01:15:00 - 🦚 शीश के दानी का अद्भुत पावन प्रसंग",
-            "02:30:00 - 🌺 मनोकामना सिद्धि महामंत्र व जाप",
+            "02:30:00 - 🌺 पावन भक्ति भाव महामंत्र व जाप",
             "03:45:00 - 🕯️ धूप-दीप पावन आरती व दर्शन",
             "04:45:00 - 📿 संकट निवारण अमृत आशीर्वाद",
             "05:30:00 - 🌸 अखंड अर्जी स्वीकार मंगल कामना"
@@ -1249,7 +1185,7 @@ THEMES_VOD_BHAKTI = [
         "arji_prompt": "कमेंट में 'सच्चे दरबार की जय' लिखकर करमसी जैसी सच्ची निष्ठा का संकल्प लें।",
         "chapters": [
             "00:00 - 🦚 सेठ करमसी कथा प्रारम्भ व पावन दर्शन",
-            "30:00 - 🌸 बाबा श्याम का साक्षात चमत्कार व सहायता",
+            "30:00 - 🌸 भक्त पर बाबा श्याम की असीम कृपा",
             "01:15:00 - 📿 भक्त और भगवान के अमर प्रेम का प्रसंग",
             "02:30:00 - 🌺 संकट में बाबा का अद्भुत सहयोग",
             "03:45:00 - 🕯️ पावन राजभोग आरती व कीर्तन",
@@ -1257,14 +1193,14 @@ THEMES_VOD_BHAKTI = [
             "05:30:00 - 🌸 सम्पूर्ण कथा पूर्णाहुति दर्शन"
         ],
         "keywords": [
-            "seth karamsi ki amar katha", "khatu shyam ki katha", "khatu shyam chamatkar katha",
+            "seth karamsi ki amar katha", "khatu shyam ki katha", "khatu shyam satya katha",
             "khatu shyam live", "shyam baba ki satya katha", "khatu dham katha",
             "akhand shyam pravah", "सेठ करमसी की कथा", "खाटू श्याम सत्य कथा", "साक्षात दर्शन"
         ]
     },
     {
         "id": 6,
-        "title_hook": "घर में सुख, शांति व बरकत का महा-उपाय 🌸",
+        "title_hook": "घर में सुख, शांति व सद्भाव के लिए 🌸",
         "title_tail": "घंटे का अखंड श्याम भजन अमृतवाणी",
         "poetry": """श्याम नाम की ज्योति जगाओ, हर संकट से मुक्ति पाओ,
 हारे का जो बने सहारा, उस दाता के गुण तुम गाओ। 🌸🙏
@@ -1275,7 +1211,7 @@ THEMES_VOD_BHAKTI = [
         "chapters": [
             "00:00 - 🌸 अमृतवाणी प्रारम्भ व मंगल दर्शन",
             "30:00 - 📿 पारिवारिक सुख-शांति प्रदाता भजन",
-            "01:15:00 - 🦚 बरकत व खुशहाली महामंत्र संकीर्तन",
+            "01:15:00 - 🦚 सुख, शांति व खुशहाली संकीर्तन",
             "02:30:00 - 🌺 मन की शांति व चिंता मुक्ति दर्शन",
             "03:45:00 - 🕯️ संध्या महाआरती व पावन आशीर्वाद",
             "04:45:00 - 📿 अखंड श्याम नाम अमृत रस",
@@ -1284,7 +1220,7 @@ THEMES_VOD_BHAKTI = [
         "keywords": [
             "ghar me sukh shanti shyam bhajan", "khatu shyam amritwani", "shyam bhajan non stop",
             "khatu shyam live today", "peace of mind bhakti", "shyam baba darshan",
-            "barkat ka upaye bhajan", "सुख शांति अमृतवाणी", "खाटू श्याम भजन लाइव", "बरकत भजन"
+            "shanti ka upaye bhajan", "सुख शांति अमृतवाणी", "खाटू श्याम भजन लाइव", "सद्भाव भजन"
         ]
     },
     {
@@ -1383,8 +1319,8 @@ def generate_unique_vod_package(vid, exact_hours, existing_titles=None, niche="b
 
 🎯 [10,000 पावन श्याम परिवार संकल्प]: 92% भक्त रोज़ दर्शन तो करते हैं लेकिन सब्सक्राइब करना भूल जाते हैं — आज ही SUBSCRIBE करके बाबा के 10K परिवार का पावन हिस्सा बनें! 🙏🌸
 
-🔔 नित्य पावन दर्शन व चमत्कारी भजनों के लिए चैनल को अभी SUBSCRIBE करें:
-👉 https://www.youtube.com/@vinodtech4975?sub_confirmation=1
+🔔 नित्य पावन दर्शन व अमृत भजनों के लिए चैनल को अभी SUBSCRIBE करें:
+👉 https://www.youtube.com/@NandiniVinodSoniOfficial?sub_confirmation=1
 
 ==================================================
 🛡️ Content Notice & Transformative Value:
@@ -1461,8 +1397,8 @@ def get_working_age_resonance_tokens(niche="bhakti"):
     """💼 FEATURE 98: 25–44 Working-Age Devotional Resonance Engine — Targeted for 73.4% 25-44 year working adults."""
     if niche == "bhakti":
         return [
-            "vyapar me barkat khatu shyam", "naukri sankat nivaran shyam mantra",
-            "parivar sukh shanti darshan", "karj mukti shyam bhajan", "mansik shanti shyam darshan"
+            "khatu shyam mandir darshan", "khatu shyam nitya aarti",
+            "parivar sukh shanti darshan", "khatu shyam bhakti pravah", "mansik shanti shyam darshan"
         ]
     return ["career growth tips hindi", "mindset for success hindi", "daily life motivation"]
 
@@ -1516,7 +1452,7 @@ def generate_seo_package(raw_title, niche="bhakti", existing_titles=None):
     devotional_ctas = [
         "👑 चैनल SUBSCRIBE करके पावन श्याम परिवार का हिस्सा बनें व 🔔 घंटी दबाएं ताकि प्रतिदिन सबसे पहले दर्शन मिलें!",
         "🌸 1 शेयर करके पुण्य के भागी बनें और अपने परिवार के साथ यह पावन दर्शन साझा करें! 🔔 SUBSCRIBE अवश्य करें!",
-        "✨ बाबा श्याम के नित्य पावन दर्शन और कृपा पाने के लिए चैनल SUBSCRIBE करें और कमेंट में हाजिरी लगाएं! 🔔"
+        "✨ बाबा श्याम के नित्य पावन दर्शन और कृपा पाने के लिए चैनल SUBSCRIBE करें और कमेंट में प्रभु का स्मरण करें! 🔔"
     ]
     chosen_cta = random.choice(devotional_ctas)
 
@@ -1582,7 +1518,7 @@ All devotional footage & darshan visuals are creatively curated, color-graded, a
         raw_tags = VIRAL_TAGS_BHAKTI + extra_tags
         tags = sanitize_tags(raw_tags, max_total_chars=400)
         # 📿 FEATURE: Mano-Kamna Sankalp 300%+ Pinned Loop Prompt
-        pin = "🌸 आज बाबा श्याम के दरबार में अपनी अर्जी लगाने के लिए 'श्री श्याम देवाय नमः' का 11 बार मन में स्मरण करें और कमेंट में 'हाजिरी' लगाएं! (अंतिम 3 सेकंड में मोरपंख ध्यान से देखें 🦚✨) 🙏"
+        pin = "🌸 ॐ श्री श्याम देवाय नमः | ॐ श्री खाटू नरेशाय नमः | बाबा श्याम के पावन दर्शन से आपका दिन मंगलमय हो! 🙏"
 
     else:
         title = generate_dynamic_unique_title("motivation", existing_titles)
@@ -1688,16 +1624,9 @@ def get_live_suggest_keywords(seed_query="khatu shyam"):
     return suggested
 
 def get_nri_global_tags(niche="bhakti"):
-    """🌍 FEATURE: NRI & Multi-Timezone Global Devotee Targeter — Catches US/UK/Canada/Dubai search traffic."""
-    now_utc = datetime.now(timezone.utc)
-    utc_hour = now_utc.hour
-    global_tags = []
-    if niche == "bhakti":
-        if 13 <= utc_hour or utc_hour <= 2:
-            global_tags.extend(["khatu shyam live usa", "shyam baba darshan usa today", "khatu dham usa timing", "global shyam parivar live", "khatu shyam temple uk darshan"])
-        if 4 <= utc_hour <= 18:
-            global_tags.extend(["khatu shyam dubai", "khatu shyam live stream global", "khatu shyam international"])
-    return global_tags
+    # ❌ DISABLED per YouTube Misleading Metadata Policy (No unrelated geo-tag stuffing)
+    return []
+
 
 def generate_key_moments_chapters(is_live=False, niche="bhakti"):
     """⏱️ FEATURE: Key Moments Chapter Stamp Engine — Awards Google/YouTube Search Key Moments rich badge."""
@@ -1957,34 +1886,13 @@ def run_cloud_cycle():
                 for ms in [250, 500, 1000, 2000, 5000]:
                     if current_views >= ms and ms not in milestones:
                         milestones.append(ms)
-                        print(f"     🏆 [CLOUD MILESTONE {ms}+ VIEWS REACHED] Upgrading tags on {vid}...")
-                        broad_tags = ["khatu shyam status 2026", "viral shorts today", "trending reels hindi", "bhakti live", "khatu dham"]
-                        snip["tags"] = list(set((snip.get("tags") or []) + broad_tags))
-                        try:
-                            yt.videos().update(part="snippet,status", body={"id": vid, "snippet": snip, "status": stat}).execute()
-                            celebration_msg = f"🎉 आज {current_views}+ श्याम भक्तों ने पावन दर्शन किए! अपनी मनोकामना कमेंट में लिखकर 'जय श्री श्याम' ज़रूर बोलें! 🌸🙏" if niche == "bhakti" else f"🔥 {current_views}+ लोगों ने यह सीख देखी! आप भी कमेंट में अपना विचार ज़रूर साझा करें! 💫"
-                            # ❌ REMOVED: YouTube policy violation
-
-                            # safe_comment_insert(yt, vid, celebration_msg, state=state, action_name="Milestone Celebration Comment")
-                        except Exception:
-                            pass
+                        print(f"     🏆 [CLOUD MILESTONE {ms}+ VIEWS REACHED] Upgrading tags on {vid}...")                        # Preserving authentic video tags on milestones per YouTube Policy
+                        pass
 
                 # 3️⃣ Auto A/B Dynamic Title Switcher (CTR Boost)
                 if is_short and not ab_tested and time_diff_mins >= 15 and current_views < 40:
-                    new_unique_title = generate_dynamic_unique_title(niche, existing_channel_titles)
-                    if new_unique_title and new_unique_title != title_curr:
-                        snip["title"] = new_unique_title
-                        snip["tags"] = tags
-                        snip["categoryId"] = "22"
-                        try:
-                            yt.videos().update(part="snippet,status", body={"id": vid, "snippet": snip, "status": stat}).execute()
-                            print(f"     🎯 [CLOUD A/B TITLE SWITCHED] -> {new_unique_title[:45]}...")
-                            if title_curr in existing_channel_titles:
-                                existing_channel_titles.remove(title_curr)
-                            existing_channel_titles.append(new_unique_title)
-                            ab_tested = True
-                        except Exception:
-                            pass
+                    # Preserving authentic video title & tags per YouTube Policy (No blind random metadata swapping)
+                    ab_tested = True
 
                 # 4️⃣ FEATURE: Auto-Hearting Push & Devotee Engagement Reply Booster (GENUINE PUBLIC ONLY)
                 if comments_cnt > 0 and len(replied_comments) < 10:
@@ -2007,7 +1915,7 @@ def run_cloud_cycle():
                             # 🧲 Match genuine devotee faith, prayers, greetings, or questions
                             devotee_words = [
                                 "जय श्री श्याम", "जय बाबा श्याम", "खाटू श्याम", "श्याम प्यारे",
-                                "चमत्कार", "अर्जी", "कृपा", "मनोकामना", "सुख", "श्याम कृपा",
+                                "दर्शन", "अर्जी", "कृपा", "भक्ति", "सुख", "श्याम कृपा",
                                 "दर्शन", "जय लखदातार", "सांवरिया", "राधे राधे", "हर हर महादेव",
                                 "जय श्री कृष्णा", "जय हो", "जय माता दी", "सुंदर", "अमृत", "shyam"
                             ] if niche == "bhakti" else ["great", "nice", "motivation", "true", "sahi", "super", "life", "seekh"]
@@ -2016,10 +1924,7 @@ def run_cloud_cycle():
                                 reply_text = "❤️ बाबा श्याम आपकी हर सच्ची मनोकामना व अर्जी स्वीकार करें! 🌸🙏 जय श्री श्याम!" if niche == "bhakti" else "❤️ ईश्वर आप पर सदैव कृपा बनाए रखें और जीवन में सफलता दें! 💫🌟"
                                 # ❌ REMOVED: YouTube policy violation
 
-                                # yt.comments().insert(
-#                                     part="snippet",
-#                                     body={"snippet": {"parentId": c_id, "textOriginal": reply_text}}
-#                                 ).execute()
+                                #                                 ).execute()
                                 replied_comments.append(c_id)
                                 print(f"     ❤️ [CLOUD GENUINE DEVOTEE REPLY SENT] to {c_snippet.get('authorDisplayName', 'Public User')} on {vid}")
                                 break
@@ -2047,39 +1952,22 @@ def run_cloud_cycle():
 
                 # Momentum Catcher
                 elif views_gained >= 5 and velocity_per_min >= 0.5:
-                    if is_short:
-                        snip["tags"] = tags
-                    snip["categoryId"] = "22"
-                    try:
-                        yt.videos().update(part="snippet,status", body={"id": vid, "snippet": snip, "status": stat}).execute()
-                    except Exception:
-                        pass
+                    # Momentum tracked; authentic tags preserved per YouTube Policy
+                    pass
 
                 # Slowdown Revival
                 elif is_short and ((time_diff_mins >= 25 and views_gained < 5) or (current_views < 50 and time_diff_mins >= 20)):
                     algorithmic_plateau_breaker(yt, vid, snip, stat, current_views, state)
-                    new_unique_title = generate_dynamic_unique_title(niche, existing_channel_titles)
-                    if new_unique_title and new_unique_title != title_curr:
-                        snip["title"] = new_unique_title
-                        snip["tags"] = tags
-                        snip["categoryId"] = "22"
-                        try:
-                            yt.videos().update(part="snippet,status", body={"id": vid, "snippet": snip, "status": stat}).execute()
-                            print(f"     🔥 [CLOUD SHORTS HOOK ROTATED] -> {snip['title'][:40]}...")
-                            if title_curr in existing_channel_titles:
-                                existing_channel_titles.remove(title_curr)
-                            existing_channel_titles.append(new_unique_title)
-                        except Exception:
-                            pass
+                    # Preserving authentic video title & tags per YouTube Policy (No blind random metadata swapping)
+                    pass
 
                 # Auto Pinned Comment on Live Release
                 if comments_cnt == 0:
-                    pin_msg = "👑 बाबा श्याम के पावन स्वरूप: 1. लखदातार 2. शीश के दानी 3. हारे के सहारे — अपनी मनोकामना कमेंट में लिखकर 'जय श्री श्याम' ज़रूर बोलें! (अंतिम 3 सेकंड में मोरपंख ध्यान से देखें 🦚✨)" if niche == "bhakti" else "🌟 जिंदगी में आगे बढ़ने का आपका #1 नियम क्या है: 1. कभी हार न मानना 2. खुद पर भरोसा 3. ईश्वर का साथ? कमेंट में लिखें! (अंतिम सीख दोबारा सुनें 💫)"
+                    pin_msg = "👑 बाबा श्याम के पावन स्वरूप: 1. लखदातार 2. शीश के दानी 3. हारे के सहारे — अपनी मनोकामना कमेंट में लिखकर 'जय श्री श्याम' ज़रूर बोलें! बाबा का आशीर्वाद सदा बना रहे 🙏" if niche == "bhakti" else "🌟 जिंदगी में आगे बढ़ने का आपका #1 नियम क्या है: 1. कभी हार न मानना 2. खुद पर भरोसा 3. ईश्वर का साथ? कमेंट में लिखें! (अंतिम सीख दोबारा सुनें 💫)"
                     try:
                         # ❌ REMOVED: YouTube policy violation
 
-                        # safe_comment_insert(yt, vid, pin_msg, state=state, action_name="Auto-Pinned Comment")
-                        print(f"     📌 [CLOUD AUTO-PINNED COMMENT POSTED] on {vid}")
+                                                print(f"     📌 [CLOUD AUTO-PINNED COMMENT POSTED] on {vid}")
                     except Exception:
                         pass
 
@@ -2092,16 +1980,8 @@ def run_cloud_cycle():
                         print(f"     🧠 [ANALYTICS BRAIN] HIGH RETENTION {avg_pct:.1f}% — Title is PERFECT!")
                     elif avg_pct < 30 and not ab_tested and current_views > 100:
                         print(f"     🧠 [ANALYTICS BRAIN] LOW RETENTION {avg_pct:.1f}% — Force A/B title test...")
-                        new_unique_title = generate_dynamic_unique_title(niche, existing_channel_titles)
-                        if new_unique_title and new_unique_title != title_curr:
-                            snip["title"] = new_unique_title
-                            snip["categoryId"] = "22"
-                            try:
-                                yt.videos().update(part="snippet,status", body={"id": vid, "snippet": snip, "status": stat}).execute()
-                                print(f"     🧠 [ANALYTICS-DRIVEN TITLE CHANGE] -> {new_unique_title[:45]}...")
-                                ab_tested = True
-                            except Exception:
-                                pass
+                        # Preserving authentic video title per YouTube Policy (No blind random metadata swapping)
+                        ab_tested = True
 
                 # 7️⃣ Session Duration Maximizer
                 session_done = prev_record.get("session_chained", False)
