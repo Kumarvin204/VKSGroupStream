@@ -1416,7 +1416,7 @@ def get_devotional_audio_clarity_tokens():
         "original shyam bhajan audio"
     ]
 
-def generate_seo_package(raw_title, niche="bhakti", existing_titles=None):
+def generate_seo_package(raw_title, niche="bhakti", existing_titles=None, active_live_id=None):
 
     if existing_titles is None:
         existing_titles = []
@@ -1444,9 +1444,10 @@ def generate_seo_package(raw_title, niche="bhakti", existing_titles=None):
     comment_apv = get_12sec_comment_apv_multiplier_prompt(niche)
     hold_hook = get_shorts_3sec_hold_rate_hook(niche, is_short=bool(is_short if "is_short" in locals() else True))
     goal_banner = get_realtime_10k_family_goal_banner(5821, niche)
-    hype_prompt = get_hype_leaderboard_prompt(niche, is_long=not bool(active_live_id))
+    is_live_active = bool(active_live_id)
+    hype_prompt = get_hype_leaderboard_prompt(niche, is_long=not is_live_active)
     prayer_chain = get_prayer_chain_cascade_prompt(niche)
-    dvr_rewind = get_live_dvr_rewind_catchup_anchor(bool(active_live_id), niche)
+    dvr_rewind = get_live_dvr_rewind_catchup_anchor(is_live_active, niche)
 
     # 🎯 FEATURE: High-Conversion Devotional CTA Switcher
     devotional_ctas = [
@@ -1816,7 +1817,7 @@ def run_cloud_cycle():
                 # TRIGGER CHECK
                 if re.search(r'\bseo\s*(kr\s*do|kardo|kar\s*do|krdo|kro\s*do|krodo|kr\s*de|karde)\b', title_curr, re.IGNORECASE):
                     print(f"\n🚨 [CLOUD TRIGGER DETECTED] Video {vid}: '{title_curr}'!")
-                    new_title, new_desc, new_tags, pin_comment = generate_seo_package(title_curr, niche, existing_channel_titles)
+                    new_title, new_desc, new_tags, pin_comment = generate_seo_package(title_curr, niche, existing_channel_titles, active_live_id=active_live_id)
                     existing_channel_titles.append(new_title)
                     slot_utc_str, slot_ist_str = get_next_available_slot(existing_scheduled_utc)
                     existing_scheduled_utc.append(slot_utc_str)
@@ -1840,7 +1841,17 @@ def run_cloud_cycle():
                         ).execute()
                         print(f"  ✅ [CLOUD SEO, SMART SCHEDULE & LOCALIZATIONS APPLIED] -> {slot_ist_str}")
                     except Exception as e:
-                        print(f"  ⚠️ Cloud Error applying SEO to {vid}: {e}")
+                        print(f"  ⚠️ Cloud Error applying full SEO to {vid}: {e}, retrying without localizations...")
+                        try:
+                            clean_tags = [t for t in new_tags if isinstance(t, str) and len(t) < 40]
+                            snip["tags"] = clean_tags
+                            yt.videos().update(
+                                part="snippet,status",
+                                body={"id": vid, "snippet": snip, "status": stat}
+                            ).execute()
+                            print(f"  ✅ [CLOUD SEO & SMART SCHEDULE APPLIED ON RETRY] -> {slot_ist_str}")
+                        except Exception as e2:
+                            print(f"  ❌ Final error applying SEO to {vid}: {e2}")
                     continue
 
                 # PUBLIC MONITORING
