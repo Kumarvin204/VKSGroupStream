@@ -32,15 +32,13 @@ CHANNELS = [
         "name": "Nandini & Vinod Soni Official",
         "env_var": "TOKEN_NANDINI_JSON",
         "niche": "bhakti",
-        "default_tags": VIRAL_KEYWORDS_BHAKTI,
-        "comment_prompt": "🌸 बाबा श्याम सबकी मनोकामना पूरी करेंगे! सच्चे मन से कमेंट में 'जय श्री श्याम' लिखकर अपनी हाजिरी ज़रूर लगाएं 🙏✨"
+        "default_tags": VIRAL_KEYWORDS_BHAKTI
     },
     {
         "name": "Learning of life",
         "env_var": "TOKEN_LEARNING_JSON",
         "niche": "motivation",
-        "default_tags": VIRAL_KEYWORDS_MOTIVATION,
-        "comment_prompt": "✨ जो लोग सकारात्मक सोच के साथ आगे बढ़ना चाहते हैं — कमेंट में 'YES' लिखकर संकल्प लें! 🙏🌟"
+        "default_tags": VIRAL_KEYWORDS_MOTIVATION
     }
 ]
 
@@ -55,7 +53,6 @@ def run_cloud_sentinel():
         ch_name = ch["name"]
         env_var = ch["env_var"]
         def_tags = ch["default_tags"]
-        comment_prompt = ch["comment_prompt"]
 
         print(f"\n📡 [CLOUD SCAN] Channel: {ch_name}...")
 
@@ -127,23 +124,6 @@ def run_cloud_sentinel():
                     except Exception as e:
                         print(f"   ⚠️ Update Notice for {vid}: {e}")
 
-                # 3. If comments are 0, auto-inject high-engagement pinned comment
-                if comments == 0:
-                    try:
-                        yt.commentThreads().insert(
-                            part="snippet",
-                            body={
-                                "snippet": {
-                                    "videoId": vid,
-                                    "topLevelComment": {
-                                        "snippet": {"textOriginal": comment_prompt}
-                                    }
-                                }
-                            }
-                        ).execute()
-                        print(f"   💬 [PINNED COMMENT INJECTED] for {vid}")
-                    except Exception:
-                        pass
 
         except Exception as e:
             print(f"❌ Error scanning {ch_name}: {e}")

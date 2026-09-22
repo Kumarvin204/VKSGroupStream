@@ -137,23 +137,6 @@ def run_2min_velocity_cycle():
                     except Exception as e:
                         print(f"   ⚠️ Boost Notice for {vid}: {e}")
 
-                if comments == 0:
-                    try:
-                        prompt = "🌸 बाबा श्याम सबकी मनोकामना पूरी करेंगे! सच्चे मन से कमेंट में 'जय श्री श्याम' लिखकर अपनी हाजिरी ज़रूर लगाएं 🙏✨" if ch["niche"] == "bhakti" else "✨ जो लोग सकारात्मक सोच के साथ आगे बढ़ना चाहते हैं — कमेंट में 'YES' लिखकर संकल्प लें! 🙏🌟"
-                        yt.commentThreads().insert(
-                            part="snippet",
-                            body={
-                                "snippet": {
-                                    "videoId": vid,
-                                    "topLevelComment": {
-                                        "snippet": {"textOriginal": prompt}
-                                    }
-                                }
-                            }
-                        ).execute()
-                        print(f"   💬 [PINNED RETENTION COMMENT INJECTED] for {vid}")
-                    except Exception:
-                        pass
 
         except Exception as e:
             print(f"❌ Error scanning {ch_name}: {e}")
