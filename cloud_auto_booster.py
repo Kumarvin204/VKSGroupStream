@@ -66,15 +66,15 @@ VIRAL_TAGS_BHAKTI = [
     "khatu shyam", "khatu shyam live", "khatu shyam shorts", "khatu shyam status 2026",
     "jai shree shyam", "khatu shyam ji", "haare ka sahara", "shyam baba", "khatu naresh",
     "khatu dham", "morpankhi mukut", "khatu shyam darshan today", "khatu shyam shringar",
-    "bhakti shorts", "tuesday darshan", "mangalwar darshan", "shorts feed", "viral shorts",
-    "trending shorts", "daily darshan", "nandini vinod soni", "explore", "explore page", "viral video"
+    "bhakti shorts", "tuesday darshan", "mangalwar darshan", "sheesh ke dani", "lakhdatar",
+    "teen baan dhari", "daily darshan", "nandini vinod soni", "shyam kund", "shyam aarti"
 ]
 
 VIRAL_TAGS_MOTIVATION = [
     "learning of life", "life changing lesson", "motivational shorts", "dhyan ke fayde",
     "meditation in hindi", "mind peace status", "peace of mind", "overthinking kaise roke",
-    "positive vibes status", "success motivation", "mind power", "shorts feed",
-    "trending shorts", "viral shorts", "explore", "explore page", "daily motivation"
+    "positive vibes status", "success motivation", "mind power", "inner peace",
+    "self growth", "mental strength", "daily wisdom", "inspirational thoughts", "daily motivation"
 ]
 
 POWER_HOOKS_BHAKTI = [
