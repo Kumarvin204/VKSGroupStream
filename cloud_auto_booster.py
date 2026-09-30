@@ -1905,43 +1905,6 @@ def run_cloud_cycle():
                     # Preserving authentic video title & tags per YouTube Policy (No blind random metadata swapping)
                     ab_tested = True
 
-                # 4️⃣ FEATURE: Auto-Hearting Push & Devotee Engagement Reply Booster (GENUINE PUBLIC ONLY)
-                if comments_cnt > 0 and len(replied_comments) < 10:
-                    try:
-                        cmt_resp = yt.commentThreads().list(part="snippet", videoId=vid, maxResults=20).execute()
-                        our_channel_id = ch_resp["items"][0]["id"] if ("items" in ch_resp and ch_resp["items"]) else ""
-
-                        for c_item in cmt_resp.get("items", []):
-                            c_snippet = c_item["snippet"]["topLevelComment"]["snippet"]
-                            c_id = c_item["id"]
-                            c_author_id = c_snippet.get("authorChannelId", {}).get("value", "")
-                            c_text = c_snippet.get("textOriginal", "").lower()
-                            
-                            # 🚫 STRICT RULE: NEVER reply to our own comments (Pinned or Channel Owner comments)
-                            if c_author_id and c_author_id == our_channel_id:
-                                continue
-                            if c_id in replied_comments:
-                                continue
-                                
-                            # 🧲 Match genuine devotee faith, prayers, greetings, or questions
-                            devotee_words = [
-                                "जय श्री श्याम", "जय बाबा श्याम", "खाटू श्याम", "श्याम प्यारे",
-                                "दर्शन", "अर्जी", "कृपा", "भक्ति", "सुख", "श्याम कृपा",
-                                "दर्शन", "जय लखदातार", "सांवरिया", "राधे राधे", "हर हर महादेव",
-                                "जय श्री कृष्णा", "जय हो", "जय माता दी", "सुंदर", "अमृत", "shyam"
-                            ] if niche == "bhakti" else ["great", "nice", "motivation", "true", "sahi", "super", "life", "seekh"]
-                            
-                            if any(w in c_text for w in devotee_words) or len(c_text.strip()) > 3:
-                                reply_text = "❤️ बाबा श्याम आपकी हर सच्ची मनोकामना व अर्जी स्वीकार करें! 🌸🙏 जय श्री श्याम!" if niche == "bhakti" else "❤️ ईश्वर आप पर सदैव कृपा बनाए रखें और जीवन में सफलता दें! 💫🌟"
-                                # ❌ REMOVED: YouTube policy violation
-
-                                #                                 ).execute()
-                                replied_comments.append(c_id)
-                                print(f"     ❤️ [CLOUD GENUINE DEVOTEE REPLY SENT] to {c_snippet.get('authorDisplayName', 'Public User')} on {vid}")
-                                break
-                    except Exception:
-                        pass
-
                 # 5️⃣ FEATURE: Algorithmic Impression Re-Indexing Ping & Rank-1 Search Lock
                 reindexed = prev_record.get("reindexed", False)
                 if is_short and not reindexed and time_diff_mins >= 90 and current_views < 30:
@@ -1971,16 +1934,6 @@ def run_cloud_cycle():
                     algorithmic_plateau_breaker(yt, vid, snip, stat, current_views, state)
                     # Preserving authentic video title & tags per YouTube Policy (No blind random metadata swapping)
                     pass
-
-                # Auto Pinned Comment on Live Release
-                if comments_cnt == 0:
-                    pin_msg = "👑 बाबा श्याम के पावन स्वरूप: 1. लखदातार 2. शीश के दानी 3. हारे के सहारे — अपनी मनोकामना कमेंट में लिखकर 'जय श्री श्याम' ज़रूर बोलें! बाबा का आशीर्वाद सदा बना रहे 🙏" if niche == "bhakti" else "🌟 जिंदगी में आगे बढ़ने का आपका #1 नियम क्या है: 1. कभी हार न मानना 2. खुद पर भरोसा 3. ईश्वर का साथ? कमेंट में लिखें! (अंतिम सीख दोबारा सुनें 💫)"
-                    try:
-                        # ❌ REMOVED: YouTube policy violation
-
-                                                print(f"     📌 [CLOUD AUTO-PINNED COMMENT POSTED] on {vid}")
-                    except Exception:
-                        pass
 
                 # 6️⃣ Analytics API Brain
                 analytics_data = get_analytics_data(yt, vid)
