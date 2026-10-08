@@ -9,10 +9,10 @@ on:
         type: string
         default: 'bqgr-fqwk-0mdc-e0fm-5pxk'
       video_name:
-        description: '📹 Video File Name in Releases v1.0 (e.g. seth_karamsi_khatu_shyam_1hr_movie.mp4)'
+        description: '📹 Video File Name in Releases v1.0 (e.g. ek_hi_names_hyam.mp4)'
         required: false
         type: string
-        default: 'seth_karamsi_khatu_shyam_1hr_movie.mp4'
+        default: 'ek_hi_names_hyam.mp4'
       duration:
         description: '⏱️ Target Duration (11h = 2 Legs Relay Marathon, 5.5h = Single Leg)'
         required: true

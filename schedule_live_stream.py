@@ -26,6 +26,7 @@ if sys.platform.startswith('win'):
 DEFAULT_STREAM_KEY = "bqgr-fqwk-0mdc-e0fm-5pxk"
 
 POPULAR_VIDEOS = [
+    ("ek_hi_names_hyam.mp4", "एक ही नाम श्याम (Hypnotic New Trance Bhajan)"),
     ("seth_karamsi_khatu_shyam_1hr_movie.mp4", "1-घंटा सेठ करमसी अमर कथा (Best for Marathon)"),
     ("isdrdmaikhojanedde.mp4", "इस दर्द में खो जाने दे (Top Bhajan)"),
     ("darwaja_khula_haai.mp4", "दरवाजा खुला है (Popular Bhajan)"),
