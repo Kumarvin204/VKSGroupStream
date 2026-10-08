@@ -22,7 +22,7 @@ on:
           - '5.5h'
         default: '11h'
       delay_minutes:
-        description: '⏳ Schedule Start Delay (in Minutes, 0 = Start Immediately)'
+        description: '⏳ Quick Start Delay (in Minutes, 0 = Start Now, Max 20 min)'
         required: false
         type: string
         default: '0'
@@ -81,6 +81,18 @@ jobs:
             DELAY="${{ github.event.inputs.delay_minutes }}"
             DELAY=$(echo "$DELAY" | tr -cd '0-9')
             if [ -z "$DELAY" ]; then DELAY=0; fi
+            
+            # 🛑 CRITICAL SAFETY GUARD: GitHub Actions kills ANY runner after 360 minutes (6 hours).
+            # Live streaming needs 320 minutes (5h 20m). 360 - 320 = 40 minutes maximum buffer.
+            # If delay > 20 minutes, sleeping inside runner causes GitHub to kill the runner!
+            if [ "$DELAY" -gt 20 ]; then
+              echo "⚠️ [TIMEOUT SAFETY ALERT]: You requested a delay of $DELAY minutes."
+              echo "GitHub Actions has a HARD 6-hour (360-minute) maximum job limit."
+              echo "Since streaming needs 5 Hours 20 Mins (320m), sleeping $DELAY minutes would cause GitHub to KILL the stream!"
+              echo "Capping in-runner delay to safe maximum of 15 minutes."
+              DELAY=15
+            fi
+            
             if [ "$DELAY" -gt 0 ]; then
               echo "=========================================================================="
               echo "⏳ [SCHEDULED DELAY ACTIVE] Waiting $DELAY minute(s) before starting live stream..."

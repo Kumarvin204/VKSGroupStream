@@ -109,9 +109,9 @@ def choose_schedule():
     print(f"  Current Time (IST): {now_ist.strftime('%I:%M:%S %p')} ({now_ist.strftime('%H:%M:%S')})")
     print("  -------------------------------------------------------------")
     print("  [1] Start IMMEDIATELY (Abhi shuru karein)")
-    print("  [2] Schedule at specific Clock Time IST (e.g. 18:30, 21:00, 06:15)")
-    print("  [3] Schedule after Delay locally (e.g. In 30 minutes, 2 hours)")
-    print("  [4] Cloud Delay on GitHub (Workflow runs now but waits in cloud, PC can be turned off)")
+    print("  [2] Schedule in CLOUD (Set IST Clock Time, PC can be turned OFF! ☁️)")
+    print("  [3] Schedule with Countdown on this PC (Live timer bar on screen 💻)")
+    print("  [4] Quick In-Runner Delay (Max 15 minutes, e.g. 5 or 10 min)")
     print()
     
     while True:
@@ -119,7 +119,7 @@ def choose_schedule():
         if not choice or choice == "1":
             return ("immediate", 0, None)
         elif choice == "2":
-            time_str = input("👉 Enter target IST time (HH:MM in 24hr format, e.g. 18:30 or 06:00): ").strip()
+            time_str = input("👉 Enter target IST time (HH:MM in 24hr format, e.g. 21:00 or 06:30): ").strip()
             try:
                 parts = time_str.split(":")
                 target_hour = int(parts[0])
@@ -127,29 +127,35 @@ def choose_schedule():
                 
                 target_dt = now_ist.replace(hour=target_hour, minute=target_min, second=0, microsecond=0)
                 if target_dt <= now_ist:
-                    # Target is tomorrow!
+                    target_dt += timedelta(days=1)
+                
+                return ("cloud_schedule", 0, target_dt)
+            except Exception:
+                print("❌ Invalid time format! Please use HH:MM (e.g. 21:00).")
+        elif choice == "3":
+            time_str = input("👉 Enter target IST time (HH:MM in 24hr format, e.g. 21:00 or 06:30): ").strip()
+            try:
+                parts = time_str.split(":")
+                target_hour = int(parts[0])
+                target_min = int(parts[1]) if len(parts) > 1 else 0
+                
+                target_dt = now_ist.replace(hour=target_hour, minute=target_min, second=0, microsecond=0)
+                if target_dt <= now_ist:
                     target_dt += timedelta(days=1)
                 
                 diff_secs = (target_dt - now_ist).total_seconds()
                 return ("local_timer", diff_secs, target_dt)
             except Exception:
-                print("❌ Invalid time format! Please use HH:MM (e.g. 18:30).")
-        elif choice == "3":
-            mins_str = input("👉 Enter wait time in minutes (e.g. 15, 45, 120): ").strip()
-            try:
-                mins = float(mins_str)
-                if mins <= 0:
-                    return ("immediate", 0, None)
-                target_dt = now_ist + timedelta(minutes=mins)
-                return ("local_timer", mins * 60, target_dt)
-            except Exception:
-                print("❌ Invalid number.")
+                print("❌ Invalid time format! Please use HH:MM (e.g. 21:00).")
         elif choice == "4":
-            mins_str = input("👉 Enter cloud delay in minutes (Max 120 mins, e.g. 30): ").strip()
+            mins_str = input("👉 Enter quick delay in minutes (Max 15 mins, e.g. 5, 10): ").strip()
             try:
                 mins = int(mins_str)
                 if mins <= 0:
                     return ("immediate", 0, None)
+                if mins > 15:
+                    print("⚠️ For delays longer than 15 minutes, please use Option 2 (Cloud Schedule) to prevent runner timeouts!")
+                    mins = 15
                 return ("cloud_delay", mins, None)
             except Exception:
                 print("❌ Invalid number.")
@@ -221,6 +227,46 @@ def run_countdown(seconds, target_dt):
         print("\n\n🛑 Schedule cancelled by user.")
         return False
 
+def schedule_in_cloud(stream_key, video_name, duration, target_dt):
+    print()
+    print("=" * 72)
+    print("☁️ SAVING CLOUD SCHEDULE TO GITHUB (PC CAN BE TURNED OFF)...")
+    print(f"  Target IST: {target_dt.strftime('%d-%b %I:%M %p IST')}")
+    print(f"  Video:      {video_name}")
+    print(f"  Duration:   {duration}")
+    print("=" * 72)
+    
+    now_ist = get_ist_now()
+    diff_secs = (target_dt - now_ist).total_seconds()
+    target_epoch = int(time.time() + diff_secs)
+    
+    sched_data = {
+        "active": True,
+        "target_epoch": target_epoch,
+        "target_ist": target_dt.strftime("%Y-%m-%d %H:%M:%S IST"),
+        "stream_key": stream_key,
+        "video_name": video_name,
+        "duration": duration,
+        "dispatched_at": 0
+    }
+    
+    sched_file = "scheduled_stream.json"
+    with open(sched_file, "w", encoding="utf-8") as f:
+        json.dump(sched_data, f, indent=2)
+        
+    try:
+        subprocess.run(["git", "add", sched_file], check=True)
+        subprocess.run(["git", "commit", "-m", f"feat: schedule live stream for {target_dt.strftime('%I:%M %p IST')}"], check=True)
+        subprocess.run(["git", "push", "origin", "main"], check=True)
+        print()
+        print("✅ CLOUD SCHEDULE SUCCESSFULLY SYNCED TO GITHUB!")
+        print(f"👉 The 24/7 Cloud Runner will automatically launch this live stream at:")
+        print(f"   ⏰ {target_dt.strftime('%I:%M %p IST')} on {target_dt.strftime('%d-%b-%Y')}")
+        print("👉 You can safely TURN OFF YOUR PC now! Everything runs 100% in the cloud.")
+        print("=" * 72)
+    except Exception as e:
+        print(f"⚠️ Error syncing cloud schedule to GitHub: {e}")
+
 def main():
     print_banner()
     
@@ -238,6 +284,8 @@ def main():
     
     if sched_type == "immediate":
         trigger_workflow(stream_key, video_name, duration, delay_minutes=0)
+    elif sched_type == "cloud_schedule":
+        schedule_in_cloud(stream_key, video_name, duration, target_dt)
     elif sched_type == "cloud_delay":
         trigger_workflow(stream_key, video_name, duration, delay_minutes=sched_val)
     elif sched_type == "local_timer":

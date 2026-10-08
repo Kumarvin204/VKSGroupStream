@@ -2000,6 +2000,38 @@ def run_cloud_cycle():
 
     save_state(state)
 
+def check_scheduled_live_stream():
+    """Checks scheduled_stream.json and launches stream.yml when scheduled time arrives."""
+    sched_file = "scheduled_stream.json"
+    if not os.path.exists(sched_file):
+        return
+    try:
+        with open(sched_file, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        if not data.get("active", False):
+            return
+        
+        target_epoch = data.get("target_epoch", 0)
+        now_ts = int(time.time())
+        if now_ts >= target_epoch:
+            key = data.get("stream_key", "bqgr-fqwk-0mdc-e0fm-5pxk")
+            video = data.get("video_name", "ek_hi_names_hyam.mp4")
+            duration = data.get("duration", "11h")
+            print(f"🚀 [CLOUD SCHEDULER] Scheduled Time Arrived! Launching Live Stream: {video} ({duration})...")
+            
+            cmd = f'gh workflow run stream.yml -f stream_key="{key}" -f video_name="{video}" -f duration="{duration}" -f delay_minutes="0" -f relay_part="1"'
+            os.system(cmd)
+            
+            data["active"] = False
+            data["dispatched_at"] = now_ts
+            with open(sched_file, "w", encoding="utf-8") as f:
+                json.dump(data, f, indent=2)
+            
+            os.system('git add scheduled_stream.json && git commit -m "chore: mark scheduled stream dispatched" && git push origin main || true')
+            print("✅ [CLOUD SCHEDULER] Live Stream Dispatched Successfully & Marked Inactive!")
+    except Exception as e:
+        print(f"⚠️ Cloud Scheduler check error: {e}")
+
 def main():
     print("=" * 80)
     print("☁️ GITHUB CLOUD 24/7 ULTRA-VIRAL V16.0 STARTED (5.5 HOURS RUNNER)")
@@ -2017,7 +2049,10 @@ def main():
         except Exception as e:
             print(f"⚠️ Top-level cycle error: {e}")
 
-        time.sleep(900)
+        # Check for scheduled live stream every 60s during 15-min interval
+        for _ in range(15):
+            check_scheduled_live_stream()
+            time.sleep(60)
 
     print("\n✅ Runner completed 5.5 hours. Handing over to next relay...")
 
