@@ -1585,17 +1585,8 @@ def get_or_create_playlist(yt, title, niche="bhakti"):
             if title.lower() in item["snippet"]["title"].lower():
                 return item["id"]
         
-        new_pl = yt.playlists().insert(
-            part="snippet,status",
-            body={
-                "snippet": {
-                    "title": title,
-                    "description": f"Daily updated playlist for {niche} videos — watch continuously!"
-                },
-                "status": {"privacyStatus": "public"}
-            }
-        ).execute()
-        return new_pl["id"]
+        # 🛑 AUTO-CREATION DISABLED AS PER USER COMMAND
+        return None
     except Exception:
         return None
 

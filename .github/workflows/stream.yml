@@ -1,4 +1,4 @@
-name: 24/7 Multi-Stream 11-Hour Safe Auto-Stop Relay
+name: 24/7 Multi-Stream Safe Auto-Stop Relay & Scheduler
 
 on:
   workflow_dispatch:
@@ -13,8 +13,21 @@ on:
         required: false
         type: string
         default: 'seth_karamsi_khatu_shyam_1hr_movie.mp4'
+      duration:
+        description: '⏱️ Target Duration (11h = 2 Legs Relay Marathon, 5.5h = Single Leg)'
+        required: true
+        type: choice
+        options:
+          - '11h'
+          - '5.5h'
+        default: '11h'
+      delay_minutes:
+        description: '⏳ Schedule Start Delay (in Minutes, 0 = Start Immediately)'
+        required: false
+        type: string
+        default: '0'
       relay_part:
-        description: '🔄 Relay Part (1 = First 5.5h Leg, 2 = Second 5.5h Leg [Auto-Stops at 11h])'
+        description: '🔄 Relay Part (1 = First 5.5h Leg, 2 = Second 5.5h Leg [Internal])'
         required: false
         type: string
         default: '1'
@@ -28,7 +41,7 @@ permissions: write-all
 jobs:
   stream:
     runs-on: ubuntu-latest
-    timeout-minutes: 350
+    timeout-minutes: 360
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -61,7 +74,30 @@ jobs:
           echo "FINAL_VIDEO=$VIDEO" >> $GITHUB_ENV
           ls -lh "$VIDEO"
 
-      - name: Run Safe Live Stream (5 Hours 20 Mins x 2 Legs = Exactly 11 Hours, then Auto-Stop)
+      - name: Schedule Delay Wait
+        run: |
+          PART="${{ github.event.inputs.relay_part }}"
+          if [ "$PART" != "2" ]; then
+            DELAY="${{ github.event.inputs.delay_minutes }}"
+            DELAY=$(echo "$DELAY" | tr -cd '0-9')
+            if [ -z "$DELAY" ]; then DELAY=0; fi
+            if [ "$DELAY" -gt 0 ]; then
+              echo "=========================================================================="
+              echo "⏳ [SCHEDULED DELAY ACTIVE] Waiting $DELAY minute(s) before starting live stream..."
+              echo "Delay started at: $(date)"
+              echo "=========================================================================="
+              sleep $(( DELAY * 60 ))
+              echo "=========================================================================="
+              echo "✅ Scheduled delay completed! Launching stream now at $(date)!"
+              echo "=========================================================================="
+            else
+              echo "⚡ No schedule delay specified (0m). Starting live stream immediately!"
+            fi
+          else
+            echo "🔄 Part 2 (Hot-Handshake Relay) detected — skipping start delay to ensure zero-gap!"
+          fi
+
+      - name: Run Safe Live Stream (Looping Non-Stop for Target Duration)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -80,20 +116,31 @@ jobs:
             PART="1"
           fi
           
+          DURATION="${{ github.event.inputs.duration }}"
+          if [ -z "$DURATION" ]; then
+            DURATION="11h"
+          fi
+          
           # Exact 5 Hours 20 Mins = 19,200 seconds per leg (Leaves 40 mins safety buffer before GitHub 6h ceiling)
-          # Leg 1 (5h 20m) + Leg 2 (5h 20m) = ~10 Hours 45 Mins (Perfect Safe 11-Hour YouTube Stream)
+          # Leg 1 (5h 20m) + Leg 2 (5h 20m) = ~10 Hours 40 Mins (Perfect Safe 11-Hour YouTube Stream)
           PART_DURATION=19200
           
           echo "=========================================================================="
-          echo "🚀 11-HOUR SAFE YOUTUBE LIVE STREAMING (ZERO-GAP HOT HANDSHAKE PROTOCOL)"
-          echo "Current Leg: Part $PART of 2"
+          echo "🚀 YOUTUBE LIVE STREAMING ENGINE (SAFE AUTO-STOP PROTOCOL)"
+          echo "Target Duration Setting: $DURATION"
+          if [ "$DURATION" = "5.5h" ]; then
+            echo "Stream Mode: Single Leg (5.5 Hours Auto-Stop)"
+          else
+            echo "Stream Mode: 2-Leg Full Marathon (11 Hours Relay with Zero-Gap Hot Handshake)"
+          fi
+          echo "Current Leg: Part $PART"
           echo "Leg Duration: 5 Hours 20 Minutes ($PART_DURATION seconds)"
-          echo "Streaming Video: $VIDEO"
+          echo "Streaming Video: $VIDEO (Loop Mode: Continuous Non-Stop -stream_loop -1)"
           echo "=========================================================================="
           
           # 🔥 ZERO-GAP HOT HANDSHAKE: Auto-dispatch Part 2 exactly 2 minutes BEFORE Part 1 ends
-          # This allows Part 2 runner to boot, install FFmpeg & download video while Part 1 is STILL streaming!
-          if [ "$PART" -eq 1 ]; then
+          # Only if duration is '11h' and current leg is Part 1!
+          if [ "$PART" -eq 1 ] && [ "$DURATION" != "5.5h" ]; then
             (
               TRIGGER_DELAY=$(( PART_DURATION - 120 ))
               if [ $TRIGGER_DELAY -gt 0 ]; then
@@ -102,7 +149,7 @@ jobs:
                 echo "⚡ [ZERO-GAP HOT HANDSHAKE] Dispatching Part 2 in advance (2m buffer)!"
                 echo "Part 2 is booting up in parallel while Part 1 continues streaming uninterrupted..."
                 echo "=========================================================================="
-                gh workflow run stream.yml -f stream_key="$KEY" -f video_name="$VIDEO" -f relay_part="2" --repo ${{ github.repository }} || true
+                gh workflow run stream.yml -f stream_key="$KEY" -f video_name="$VIDEO" -f relay_part="2" -f duration="11h" -f delay_minutes="0" --repo ${{ github.repository }} || true
                 echo "✅ Part 2 parallel boot successfully dispatched!"
               fi
             ) &
@@ -135,9 +182,16 @@ jobs:
           done
           
           if [ "$PART" -eq 1 ]; then
-            echo "=========================================================================="
-            echo "⚡ Part 1 (5h 20m) Completed Cleanly! Part 2 is already streaming on YouTube!"
-            echo "=========================================================================="
+            if [ "$DURATION" = "5.5h" ]; then
+              echo "=========================================================================="
+              echo "🎉 5.5-HOUR LIVE STREAM COMPLETED SUCCESSFULLY!"
+              echo "🛑 Cleanly auto-stopped as configured (Single Leg 5h 20m)."
+              echo "=========================================================================="
+            else
+              echo "=========================================================================="
+              echo "⚡ Part 1 (5h 20m) Completed Cleanly! Part 2 is already streaming on YouTube!"
+              echo "=========================================================================="
+            fi
           else
             echo "=========================================================================="
             echo "🎉 FULL 11 HOURS OF LIVE STREAMING COMPLETED SUCCESSFULLY!"
