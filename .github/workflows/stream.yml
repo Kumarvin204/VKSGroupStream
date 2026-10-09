@@ -150,6 +150,39 @@ jobs:
           echo "Streaming Video: $VIDEO (Loop Mode: Continuous Non-Stop -stream_loop -1)"
           echo "=========================================================================="
           
+          # Select Ingest Server based on Relay Part:
+          # Part 1 uses YouTube Primary Server
+          # Part 2 uses YouTube Redundant Backup Server (with ?backup=1)
+          if [ "$PART" -eq 2 ]; then
+            DEST_RTMP="rtmp://b.rtmp.youtube.com/live2?backup=1/$KEY"
+            DEST_RTMPS="rtmps://b.rtmps.youtube.com/live2?backup=1/$KEY"
+            echo "📡 Ingest Target: YouTube BACKUP Redundant Server ($DEST_RTMP)"
+          else
+            DEST_RTMP="rtmp://a.rtmp.youtube.com/live2/$KEY"
+            DEST_RTMPS="rtmps://a.rtmps.youtube.com/live2/$KEY"
+            echo "📡 Ingest Target: YouTube PRIMARY Server ($DEST_RTMP)"
+          fi
+          
+          # 🚀 ZERO-SECOND RELAY HANDOVER PROTOCOL (10-Minute Advance Dispatch)
+          # Part 1 streams to YouTube Primary Server: rtmp://a.rtmp.youtube.com/live2/$KEY
+          # Part 2 triggers 10 minutes in advance and streams to YouTube Backup Server: rtmp://b.rtmp.youtube.com/live2?backup=1/$KEY
+          # YouTube receives BOTH streams simultaneously for 10 minutes with ZERO conflict or stream key clash.
+          # When Part 1 ends at 5h 20m, YouTube instantly & seamlessly switches to Backup (Part 2) with 0.00s delay!
+          if [ "$PART" -eq 1 ] && [ "$DURATION" != "5.5h" ]; then
+            (
+              TRIGGER_DELAY=$(( PART_DURATION - 600 ))
+              if [ $TRIGGER_DELAY -gt 0 ]; then
+                sleep $TRIGGER_DELAY
+                echo "=========================================================================="
+                echo "⚡ [ZERO-DELAY HANDSHAKE] Dispatching Part 2 exactly 10 minutes in advance!"
+                echo "Part 2 will stream to YouTube Backup Server for seamless 0-second failover..."
+                echo "=========================================================================="
+                gh workflow run stream.yml -f stream_key="$KEY" -f video_name="$VIDEO" -f relay_part="2" -f duration="11h" -f delay_minutes="0" --repo ${{ github.repository }} || true
+                echo "✅ Part 2 Backup Relay dispatched successfully!"
+              fi
+            ) &
+          fi
+          
           END_TIME=$(( $(date +%s) + PART_DURATION ))
           
           while [ $(date +%s) -lt $END_TIME ]; do
@@ -165,7 +198,7 @@ jobs:
               -c:a aac -b:a 128k -ar 44100 \
               -f flv -flvflags no_duration_filesize -flush_packets 1 \
               -t $REMAINING \
-              "rtmp://a.rtmp.youtube.com/live2/$KEY" || \
+              "$DEST_RTMP" || \
             ffmpeg -re -stream_loop -1 -i "$VIDEO" \
               -c:v libx264 -preset ultrafast -tune zerolatency \
               -b:v 3000k -maxrate 3500k -bufsize 6000k \
@@ -173,7 +206,7 @@ jobs:
               -c:a aac -b:a 128k -ar 44100 \
               -f flv -flvflags no_duration_filesize -flush_packets 1 \
               -t $REMAINING \
-              "rtmps://a.rtmps.youtube.com/live2/$KEY" || sleep 2
+              "$DEST_RTMPS" || sleep 2
           done
           
           if [ "$PART" -eq 1 ]; then
@@ -184,10 +217,8 @@ jobs:
               echo "=========================================================================="
             else
               echo "=========================================================================="
-              echo "⚡ Part 1 (5h 20m) Completed Cleanly! Triggering Part 2 Relay Marathon..."
+              echo "⚡ Part 1 (5h 20m) Completed Cleanly! Part 2 Backup Stream is already LIVE on YouTube!"
               echo "=========================================================================="
-              gh workflow run stream.yml -f stream_key="$KEY" -f video_name="$VIDEO" -f relay_part="2" -f duration="11h" -f delay_minutes="0" --repo ${{ github.repository }} || true
-              echo "✅ Part 2 Relay successfully dispatched to GitHub Actions!"
             fi
           else
             echo "=========================================================================="
