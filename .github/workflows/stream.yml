@@ -9,25 +9,34 @@ on:
         type: string
         default: 'bqgr-fqwk-0mdc-e0fm-5pxk'
       video_name:
-        description: '📹 Video File Name in Releases v1.0 (e.g. ek_hi_names_hyam.mp4)'
+        description: '📹 Video File Name in Releases v1.0 (e.g. need_mai_shyam_ata_hai.mp4)'
         required: false
         type: string
-        default: 'ek_hi_names_hyam.mp4'
+        default: 'need_mai_shyam_ata_hai.mp4'
       duration:
-        description: '⏱️ Target Duration (11h = 2 Legs Relay Marathon, 5.5h = Single Leg)'
+        description: '⏱️ Live Stream Duration (कितने घंटे चलानी है: 1 से 11 घंटे)'
         required: true
         type: choice
         options:
+          - '1h'
+          - '2h'
+          - '3h'
+          - '4h'
+          - '5h'
+          - '6h'
+          - '7h'
+          - '8h'
+          - '9h'
+          - '10h'
           - '11h'
-          - '5.5h'
-        default: '11h'
+        default: '4h'
       delay_minutes:
         description: '⏳ Quick Start Delay (in Minutes, 0 = Start Now, Max 20 min)'
         required: false
         type: string
         default: '0'
       relay_part:
-        description: '🔄 Relay Part (1 = First 5.5h Leg, 2 = Second 5.5h Leg [Internal])'
+        description: '🔄 Relay Part (1 = First Leg, 2 = Second Leg [Internal])'
         required: false
         type: string
         default: '1'
@@ -57,7 +66,7 @@ jobs:
         run: |
           VIDEO="${{ github.event.inputs.video_name }}"
           if [ -z "$VIDEO" ]; then
-            VIDEO="seth_karamsi_khatu_shyam_1hr_movie.mp4"
+            VIDEO="need_mai_shyam_ata_hai.mp4"
           fi
           
           echo "Target Video: $VIDEO"
@@ -83,12 +92,9 @@ jobs:
             if [ -z "$DELAY" ]; then DELAY=0; fi
             
             # 🛑 CRITICAL SAFETY GUARD: GitHub Actions kills ANY runner after 360 minutes (6 hours).
-            # Live streaming needs 320 minutes (5h 20m). 360 - 320 = 40 minutes maximum buffer.
-            # If delay > 20 minutes, sleeping inside runner causes GitHub to kill the runner!
             if [ "$DELAY" -gt 20 ]; then
               echo "⚠️ [TIMEOUT SAFETY ALERT]: You requested a delay of $DELAY minutes."
               echo "GitHub Actions has a HARD 6-hour (360-minute) maximum job limit."
-              echo "Since streaming needs 5 Hours 20 Mins (320m), sleeping $DELAY minutes would cause GitHub to KILL the stream!"
               echo "Capping in-runner delay to safe maximum of 15 minutes."
               DELAY=15
             fi
@@ -130,23 +136,34 @@ jobs:
           
           DURATION="${{ github.event.inputs.duration }}"
           if [ -z "$DURATION" ]; then
-            DURATION="11h"
+            DURATION="4h"
           fi
           
-          # Exact 5 Hours 20 Mins = 19,200 seconds per leg (Leaves 40 mins safety buffer before GitHub 6h ceiling)
-          # Leg 1 (5h 20m) + Leg 2 (5h 20m) = ~10 Hours 40 Mins (Perfect Safe 11-Hour YouTube Stream)
-          PART_DURATION=19200
+          # Extract numeric hours (e.g., '1h' -> 1, '10h' -> 10, '5.5h' -> 5.5)
+          HOURS_NUM=$(echo "$DURATION" | sed 's/[^0-9.]//g')
+          if [ -z "$HOURS_NUM" ]; then
+            HOURS_NUM=4
+          fi
+
+          TOTAL_SECONDS=$(awk -v h="$HOURS_NUM" 'BEGIN { printf "%.0f", h * 3600 }')
           
           echo "=========================================================================="
-          echo "🚀 YOUTUBE LIVE STREAMING ENGINE (SAFE AUTO-STOP PROTOCOL)"
-          echo "Target Duration Setting: $DURATION"
-          if [ "$DURATION" = "5.5h" ]; then
-            echo "Stream Mode: Single Leg (5.5 Hours Auto-Stop)"
+          echo "🚀 YOUTUBE LIVE STREAMING ENGINE (FLEXIBLE DURATION SELECTOR)"
+          echo "Requested Duration: $DURATION ($HOURS_NUM Hours / $TOTAL_SECONDS seconds)"
+
+          # Check if single leg (<= 5.5 hours) or multi-leg relay (> 5.5 hours)
+          if awk -v h="$HOURS_NUM" 'BEGIN { exit !(h <= 5.5) }'; then
+            IS_RELAY=0
+            PART_DURATION=$TOTAL_SECONDS
+            echo "Stream Mode: Single Leg (Runs continuously for $HOURS_NUM Hours, Auto-Stops cleanly)"
           else
-            echo "Stream Mode: 2-Leg Full Marathon (11 Hours Relay with Zero-Gap Hot Handshake)"
+            IS_RELAY=1
+            PART_DURATION=$(( TOTAL_SECONDS / 2 ))
+            HOURS_PER_LEG=$(awk -v s="$PART_DURATION" 'BEGIN { printf "%.2f", s / 3600 }')
+            echo "Stream Mode: 2-Leg Seamless Relay ($HOURS_NUM Hours Total | Leg $PART Duration: $HOURS_PER_LEG Hours / $PART_DURATION seconds)"
           fi
+          
           echo "Current Leg: Part $PART"
-          echo "Leg Duration: 5 Hours 20 Minutes ($PART_DURATION seconds)"
           echo "Streaming Video: $VIDEO (Loop Mode: Continuous Non-Stop -stream_loop -1)"
           echo "=========================================================================="
           
@@ -164,11 +181,8 @@ jobs:
           fi
           
           # 🚀 ZERO-SECOND RELAY HANDOVER PROTOCOL (10-Minute Advance Dispatch)
-          # Part 1 streams to YouTube Primary Server: rtmp://a.rtmp.youtube.com/live2/$KEY
-          # Part 2 triggers 10 minutes in advance and streams to YouTube Backup Server: rtmp://b.rtmp.youtube.com/live2?backup=1/$KEY
-          # YouTube receives BOTH streams simultaneously for 10 minutes with ZERO conflict or stream key clash.
-          # When Part 1 ends at 5h 20m, YouTube instantly & seamlessly switches to Backup (Part 2) with 0.00s delay!
-          if [ "$PART" -eq 1 ] && [ "$DURATION" != "5.5h" ]; then
+          # Triggers Part 2 ONLY if this is a Multi-Leg stream (duration > 5.5 hours)
+          if [ "$PART" -eq 1 ] && [ "$IS_RELAY" -eq 1 ]; then
             (
               TRIGGER_DELAY=$(( PART_DURATION - 600 ))
               if [ $TRIGGER_DELAY -gt 0 ]; then
@@ -177,7 +191,7 @@ jobs:
                 echo "⚡ [ZERO-DELAY HANDSHAKE] Dispatching Part 2 exactly 10 minutes in advance!"
                 echo "Part 2 will stream to YouTube Backup Server for seamless 0-second failover..."
                 echo "=========================================================================="
-                gh workflow run stream.yml -f stream_key="$KEY" -f video_name="$VIDEO" -f relay_part="2" -f duration="11h" -f delay_minutes="0" --repo ${{ github.repository }} || true
+                gh workflow run stream.yml -f stream_key="$KEY" -f video_name="$VIDEO" -f relay_part="2" -f duration="$DURATION" -f delay_minutes="0" --repo ${{ github.repository }} || true
                 echo "✅ Part 2 Backup Relay dispatched successfully!"
               fi
             ) &
@@ -210,19 +224,19 @@ jobs:
           done
           
           if [ "$PART" -eq 1 ]; then
-            if [ "$DURATION" = "5.5h" ]; then
+            if [ "$IS_RELAY" -eq 0 ]; then
               echo "=========================================================================="
-              echo "🎉 5.5-HOUR LIVE STREAM COMPLETED SUCCESSFULLY!"
-              echo "🛑 Cleanly auto-stopped as configured (Single Leg 5h 20m)."
+              echo "🎉 $DURATION LIVE STREAM COMPLETED SUCCESSFULLY!"
+              echo "🛑 Cleanly auto-stopped as configured ($HOURS_NUM Hours Single Leg)."
               echo "=========================================================================="
             else
               echo "=========================================================================="
-              echo "⚡ Part 1 (5h 20m) Completed Cleanly! Part 2 Backup Stream is already LIVE on YouTube!"
+              echo "⚡ Part 1 ($HOURS_PER_LEG Hours) Completed Cleanly! Part 2 Backup Stream is already LIVE on YouTube!"
               echo "=========================================================================="
             fi
           else
             echo "=========================================================================="
-            echo "🎉 FULL 11 HOURS OF LIVE STREAMING COMPLETED SUCCESSFULLY!"
-            echo "🛑 Auto-stopping now to ensure clean YouTube 1080p video archival & indexing!"
+            echo "🎉 FULL $DURATION LIVE STREAM MARATHON COMPLETED SUCCESSFULLY!"
+            echo "🛑 Auto-stopping now to ensure clean YouTube video archival & indexing!"
             echo "=========================================================================="
           fi
