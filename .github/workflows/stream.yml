@@ -150,23 +150,6 @@ jobs:
           echo "Streaming Video: $VIDEO (Loop Mode: Continuous Non-Stop -stream_loop -1)"
           echo "=========================================================================="
           
-          # 🔥 ZERO-GAP HOT HANDSHAKE: Auto-dispatch Part 2 exactly 2 minutes BEFORE Part 1 ends
-          # Only if duration is '11h' and current leg is Part 1!
-          if [ "$PART" -eq 1 ] && [ "$DURATION" != "5.5h" ]; then
-            (
-              TRIGGER_DELAY=$(( PART_DURATION - 120 ))
-              if [ $TRIGGER_DELAY -gt 0 ]; then
-                sleep $TRIGGER_DELAY
-                echo "=========================================================================="
-                echo "⚡ [ZERO-GAP HOT HANDSHAKE] Dispatching Part 2 in advance (2m buffer)!"
-                echo "Part 2 is booting up in parallel while Part 1 continues streaming uninterrupted..."
-                echo "=========================================================================="
-                gh workflow run stream.yml -f stream_key="$KEY" -f video_name="$VIDEO" -f relay_part="2" -f duration="11h" -f delay_minutes="0" --repo ${{ github.repository }} || true
-                echo "✅ Part 2 parallel boot successfully dispatched!"
-              fi
-            ) &
-          fi
-          
           END_TIME=$(( $(date +%s) + PART_DURATION ))
           
           while [ $(date +%s) -lt $END_TIME ]; do
@@ -201,8 +184,10 @@ jobs:
               echo "=========================================================================="
             else
               echo "=========================================================================="
-              echo "⚡ Part 1 (5h 20m) Completed Cleanly! Part 2 is already streaming on YouTube!"
+              echo "⚡ Part 1 (5h 20m) Completed Cleanly! Triggering Part 2 Relay Marathon..."
               echo "=========================================================================="
+              gh workflow run stream.yml -f stream_key="$KEY" -f video_name="$VIDEO" -f relay_part="2" -f duration="11h" -f delay_minutes="0" --repo ${{ github.repository }} || true
+              echo "✅ Part 2 Relay successfully dispatched to GitHub Actions!"
             fi
           else
             echo "=========================================================================="
