@@ -233,10 +233,6 @@ def session_duration_maximizer(yt, current_vid, niche="bhakti"):
     except Exception:
         pass
 
-def smart_comment_traffic_funnel(yt, hot_vid, hot_views, niche, state):
-    # ❌ DISABLED per YouTube API & Spam Guidelines (Automated Link Injection Prohibited)
-    return None
-
 
 def competitor_spy_tag_hijacker(yt=None, niche="bhakti", state=None):
     """🕵️ FEATURE: Competitor Spy & Tag Hijacker — 100% Zero-Quota Public Suggest Harvester (0 Units Cost)."""
@@ -625,9 +621,6 @@ def competitor_suggested_video_hijacker(yt=None, niche="bhakti", state=None):
         pass
 
     return suggested_tags[:6]
-def live_chat_prayer_sentiment_responder(yt, live_chat_id):
-    # ❌ DISABLED per YouTube API Policy (Automated Live Chat Bots Prohibited)
-    return None
 
 
 def get_shorts_remix_bait_metadata(niche="bhakti"):
@@ -707,7 +700,7 @@ def get_devotee_subscriber_loyalty_hook(niche="bhakti"):
         return "🌸 अगर आप भी बाबा श्याम के पावन परिवार से जुड़ना चाहते हैं, तो अभी SUBSCRIBE करके 🔔 दबाएं ताकि रोज़ सबसे पहले दिव्य दर्शन मिले! 🙏"
     return "🌟 If you want daily life-changing wisdom, SUBSCRIBE and hit the 🔔 icon now! 💪"
 
-def get_emotional_crescendo_comment_trigger(niche="bhakti"):
+def get_emotional_crescendo_reflection_trigger(niche="bhakti"):
     if niche == "bhakti":
         return "🌸 बाबा श्याम के पावन स्वरूप का श्रद्धापूर्वक दर्शन करें और प्रभु के चरणों में अपना नमन समर्पित करें 🙏"
     return "🌟 Watch mindfully and reflect on this insight in your daily routine! 💫"
@@ -884,11 +877,6 @@ def get_community_visual_quiz_metadata(niche="bhakti"):
     }
 
 
-def get_12sec_comment_apv_multiplier_prompt(niche="bhakti"):
-    # ❌ DISABLED per YouTube Fake Engagement Policy (No comment solicitation games)
-    return ""
-
-
 def get_ghost_cache_trigram_stems(niche="bhakti"):
     """🔍 FEATURE: Predictive Search Ghost-Cache Tri-Gram Inserter — Pre-caches YouTube search auto-complete dropdowns."""
     if niche == "bhakti":
@@ -1016,13 +1004,6 @@ def safe_video_update(yt, vid, snip, stat, localizations=None, state=None, actio
     except Exception as e:
         print(f"     ⚠️ Video update error on {vid}: {e}")
         return False
-
-def safe_comment_disabled(yt=None, vid=None, comment_text="", state=None, action_name="Comment"):
-    # ❌ DISABLED per YouTube API & Community Guidelines (Automated Bot Comments Prohibited)
-    return False
-
-safe_comment_insert = safe_comment_disabled
-
 
 def safe_playlist_item_insert(yt, playlist_id, vid, position=0, state=None, action_name="Playlist Item"):
     """Safely inserts video into playlist only if quota governor approves."""
@@ -1433,7 +1414,7 @@ def generate_seo_package(raw_title, niche="bhakti", existing_titles=None, active
     social_preview = get_social_preview_card_header(niche, raw_title)
     panchang_astro, panchang_tags = get_daily_panchang_nakshatra_sync()
     sub_loyalty = get_devotee_subscriber_loyalty_hook(niche)
-    emotional_trigger = get_emotional_crescendo_comment_trigger(niche)
+    emotional_trigger = get_emotional_crescendo_reflection_trigger(niche)
     three_way_intent = get_three_way_search_intent_blocks(niche)
     cliffhanger = get_cliffhanger_retention_anchors(niche)
     infinite_loop = get_infinite_loop_boundary_smoother(niche)
@@ -1441,7 +1422,6 @@ def generate_seo_package(raw_title, niche="bhakti", existing_titles=None, active
     google_schema = get_google_search_schema_markup(niche)
     indic_nlp = get_indic_nlp_semantic_weight_tokens(niche)
     push_notif = get_push_notification_resurrection_anchor(niche)
-    comment_apv = get_12sec_comment_apv_multiplier_prompt(niche)
     hold_hook = get_shorts_3sec_hold_rate_hook(niche, is_short=bool(is_short if "is_short" in locals() else True))
     goal_banner = get_realtime_10k_family_goal_banner(5821, niche)
     is_live_active = bool(active_live_id)
@@ -1506,8 +1486,6 @@ def generate_seo_package(raw_title, niche="bhakti", existing_titles=None, active
 {hold_hook}{goal_banner}
 {push_notif}
 🕉️ {indic_nlp}
-💬 {comment_apv}
-🌐 Visit Website: https://radhekeshyamm.vercel.app/
 
 ==================================================
 🛡️ Content Notice & Transformative Value:
@@ -1518,8 +1496,6 @@ All devotional footage & darshan visuals are creatively curated, color-graded, a
 #KhatuShyam #BabaShyam #KhatuDham #JaiShreeShyam #ShyamDarshan #BhaktiShorts #Shorts #Viral #Trending #HareKeSahare #ShortsFeed #NandiniVinodSoni"""
         raw_tags = VIRAL_TAGS_BHAKTI + extra_tags
         tags = sanitize_tags(raw_tags, max_total_chars=400)
-        # 📿 FEATURE: Mano-Kamna Sankalp 300%+ Pinned Loop Prompt
-        pin = "🌸 ॐ श्री श्याम देवाय नमः | ॐ श्री खाटू नरेशाय नमः | बाबा श्याम के पावन दर्शन से आपका दिन मंगलमय हो! 🙏"
 
     else:
         title = generate_dynamic_unique_title("motivation", existing_titles)
@@ -1560,7 +1536,6 @@ All devotional footage & darshan visuals are creatively curated, color-graded, a
 {hold_hook}{goal_banner}
 {push_notif}
 🕉️ {indic_nlp}
-💬 {comment_apv}
 
 ==================================================
 🛡️ Content Notice & Transformative Value:
@@ -1571,9 +1546,8 @@ This motivational content is uniquely written, curated, and produced by Learning
 #Motivation #LifeLessons #Success #Mindset #PositiveVibes #Shorts #Viral #Trending #ShortsFeed #LearningOfLife"""
         raw_tags = VIRAL_TAGS_MOTIVATION
         tags = sanitize_tags(raw_tags, max_total_chars=400)
-        pin = "🌟 जिंदगी में आगे बढ़ने का आपका #1 नियम क्या है: 1. कभी हार न मानना 2. खुद पर भरोसा 3. ईश्वर का साथ? कमेंट में लिखें! (अंतिम सीख दोबारा सुनें 💫)"
 
-    return title, desc, tags, pin
+    return title, desc, tags
 
 def get_or_create_playlist(yt, title, niche="bhakti"):
     """
@@ -1762,7 +1736,6 @@ def run_cloud_cycle():
             active_live_id = get_active_live_stream_id(yt)
             if active_live_id:
                 print(f"  🔴 [LIVE-TO-SHORTS BRIDGE ACTIVE] Active Live Stream detected: {active_live_id}")
-                live_chat_prayer_sentiment_responder(yt, active_live_id)
 
 
             ch_resp = yt.channels().list(part="contentDetails,statistics", mine=True).execute()
@@ -1808,7 +1781,7 @@ def run_cloud_cycle():
                 # TRIGGER CHECK
                 if re.search(r'\bseo\s*(kr\s*do|kardo|kar\s*do|krdo|kro\s*do|krodo|kr\s*de|karde)\b', title_curr, re.IGNORECASE):
                     print(f"\n🚨 [CLOUD TRIGGER DETECTED] Video {vid}: '{title_curr}'!")
-                    new_title, new_desc, new_tags, pin_comment = generate_seo_package(title_curr, niche, existing_channel_titles, active_live_id=active_live_id)
+                    new_title, new_desc, new_tags = generate_seo_package(title_curr, niche, existing_channel_titles, active_live_id=active_live_id)
                     existing_channel_titles.append(new_title)
                     slot_utc_str, slot_ist_str = get_next_available_slot(existing_scheduled_utc)
                     existing_scheduled_utc.append(slot_utc_str)
@@ -1943,9 +1916,6 @@ def run_cloud_cycle():
                 if not session_done and current_views >= 100:
                     session_duration_maximizer(yt, vid, niche)
                     session_done = True
-
-                # 8️⃣ Smart Comment Traffic Funnel
-                smart_comment_traffic_funnel(yt, vid, current_views, niche, state)
 
                 # 🟢 FEATURE: Long Form & Live Stream Replay Supercharger
                 long_pl_added = prev_record.get("long_pl_added", False)
